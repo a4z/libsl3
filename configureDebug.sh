@@ -1,0 +1,17 @@
+
+BUILDDIR=buildDebug
+
+A4ZDIR=$(dirname $(pwd))/a4z
+
+if [ -d $BUILDDIR ] ; then
+ rm -r $BUILDDIR/*
+else
+ mkdir $BUILDDIR
+fi
+
+
+cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=Debug \
+-DUSE_BOOSTTESTING_DYNLINK=ON \
+ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBoost_NO_BOOST_CMAKE=ON \
+ -DSL3_SQLITE_USERDEFINES=SQLITE_ENABLE_STAT4
+

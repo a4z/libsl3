@@ -1,0 +1,9 @@
+
+# eclipse project
+.project
+.cproject
+.settings
+*~
+build*/
+
+*include/sl3/config.hpp

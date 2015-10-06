@@ -1,0 +1,487 @@
+
+
+
+/*!
+\mainpage A C++ wrapper for SQLite3 
+
+
+\tableofcontents
+
+  libsl3 allows efficient communication with 
+  <a href="https://www.sqlite.org">SQLite3</a>  databases in a natural way, 
+  which is SQL. <BR>
+  The library does not try to be a ORM and does also not introduce some SQL like
+  C++ syntax for communication with a sqlite database. <BR>
+  Read from and write to a database is supported via SQL
+  and prepared commands, aka stored procedures. <BR> 
+  The SQLite duck typing concept is fully supported but there is also a way to add
+  type checking to the communication with a database. <BR>
+
+
+
+\section overview Overview 
+
+  A database is represented via sl3::Database. <BR>
+  A database can execute SQL strings to read or write data. <BR> 
+  
+  A sl3::Command is a compiled SQL statement which can contain parameters. <BR>Thomas de Maizière
+  Parameters are sl3::DbValues, a sl3::Container of sl3::DbValue instances. <BR>
+ 
+  sl3::DbValues can also be used to receive data from a database. <BR> 
+  Requesting data from a database will return a sl3::Dataset with rows
+  of sl3::DbValues where each field is a \ref dbvalue.
+
+  An other, and fully customizable way to receive data from a database is 
+  covered in the \ref rowcallback section.
+    
+  
+\subsection overview_example A first example
+
+\code{.cpp}
+
+#include <cassert>
+#include <iostream>
+#include <sl3/database.hpp>
+
+int main()
+{
+  using namespace sl3;
+  // define a db
+  Database db(":memory:");
+  // run commands against the db
+  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
+  // create a command with parameters
+  auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
+  //add some data
+  cmd.execute({{1}, {"one"}, {1.1} } ); // list of DbValue for parameter values
+  cmd.execute({{2}, {"two"}, {2.1} } ); // list of DbValue for parameter values
+
+  // access the data
+  Dataset ds = db.select("SELECT * FROM tbl;");
+  // Dataset is a container
+  assert(ds.size()==2);
+
+  // of course there is iterator access
+  for(auto& row  :ds) {
+      for (auto& field : row) { // list of DbValue for field values
+          std::cout << field << " " ;
+      }
+      std::cout << std::endl;
+  }
+}
+
+\endcode
+
+since the ostream operator for sl3::DbValue is overloaded, this will print 
+
+\code
+1 one 1.1 
+2 two 2.1
+\endcode
+
+<BR> 
+
+\section database sl3::Database
+
+sl3::Database encapsulates a sqlite database. <BR>
+It can be directly used, but it has also a virtual destructor and can be used
+as a base class.
+
+<BR> 
+
+\section value_types Types in libsl3 
+
+The types in libsl3 are those which are available in  
+  <a href="https://www.sqlite.org/datatype3.html">datatypes as sqlite</a> does.  
+ 
+- sl3::Type::Int stands  for a int64_t.
+- sl3::Type::Real stands for a doube.
+- sl3::Type::Text stands for a std::string.
+- sl3::Type::Blob stands for a sl3::Blob, a char vector
+
+since a database value can also be NULL there is a type it.  
+- sl3::Type::Null , a null value.
+
+There is one additional sl3::Type.  <BR>
+In sqlite a clomun can hold different types and libsl3 supports this concept.
+- sl3::Type::Variant , any value type.
+
+See \ref dbvalue for more information.
+
+
+\note
+Text is a UTF-8 string since this is a good default and keeps things simple.<BR>
+If UTF-16 string types is wanted this needs to be implement
+self. The same is true for the special endianess functions sqlite provides.<BR>
+There are 2 ways to do with writing a own sl3::RowCallback or a 
+sl3::Command::Callback 
+TODO add ref<BR>
+If you think on of these features should be supported by the library please
+file a feature request in the issue tracker.
+
+<BR> 
+
+
+
+\section dbvalue sl3::DbValue 
+
+  This class can be used to read from and write to a sl3::Database. <BR>
+  A sl3::DbValues can hold different types. It can be defined if any type
+  is allowed for an instance or only a certain one.<BR>
+  
+  There are two sl3::Type properties.
+  One defines the type rule, the other the type value.  
+  
+    - sl3::DbValue::getType: The type rule<BR>
+    This property is assigned at creation and can not be change <BR>
+    If the type is sl3::Type::Variant the instance can hold any type, 
+    otherwise only the specified type is allowed, one of: <BR>
+    sl3::Type::Int, sl3::Type::Real, sl3::Type::Text, sl3::Type::Blob
+    <BR>
+    <BR>
+    - sl3::DbValue::getStorageType: The current value type<BR>
+    This property depends on the actual value<BR>
+    If the type is Type::Variant values of any type can be used, 
+    otherwise it has to be the type specified. <BR>
+    If a sl3::DbValue::isNull the storage type is also sl3::Type::Null.
+    
+    
+  Both properties are used to validate reads and writes at runtime. <BR>
+  If a value is set or read that is omitted by the type property 
+  an sl3::ErrTypeMisMatch exception is thrown.
+  
+  
+
+\subsection value_types_and_null Using sl3::DbValues
+
+Setting a value can be done via
+- sl3::DbValue::set
+or the assignment operator.<BR>
+If an invalid type is set a sl3::ErrTypeMisMatch  will be thrown.
+
+sl3::DbValue::setNull can be used to set a value to Null.
+
+There are getters for each type 
+- sl3::DbValue::getInt
+- sl3::DbValue::getReal
+- sl3::DbValue::getText
+- sl3::DbValue::getBlob
+  
+There are 2 version for this function, with and without a default value as 
+argument.
+<BR>
+The version without default value will throw an sl3::ErrNullValueAccess
+exception is case that sl3::DbValue::isNull is true for the instance. <BR>
+The version with a default value as argument  will return the passed argument 
+in  case that the current sl3::DbValue::isNull.
+  
+If a type getter is used for a wrong the storage type a sl3::ErrTypeMisMatch 
+exception is thrown.
+
+- sl3::DbValue::get
+
+Additional, there is a sl3::DbValue::get version which will never throw.<BR>
+This function always requires a default value which has to be one of the 4 value 
+types. <BR> 
+
+If the type is incorrect or the value is Null the given default value will be 
+returned.
+
+\subsection val_example Example
+
+\code
+#include <cassert>
+#include <iostream>
+#include <sl3/database.hpp>
+int main()
+{
+  using namespace sl3;
+
+  DbValue val (Type::Variant);
+  assert (val.isNull ()) ;
+  assert (val.get(1) ==1) ;
+  val = 2 ;
+  std::cout << val << std::endl;
+
+  try
+  {
+      val.getText() ;
+  }
+  catch (const Error& e)
+  {
+      std::cout << e << std::endl;
+  }
+
+  val = "example";
+  std::cout << val << std::endl;
+
+}
+\endcode
+
+This example will print
+\code
+2
+sl3::TypeMisMatch:Int!=Text
+example
+\endcode
+
+<BR>
+
+\section command  sl3::Command    
+  
+A sl3::Command is a compiled SQL statement which can contain parameters. <BR>
+sl3::Database::prepare does create a command. <BR>
+If a command has parameters the types are specified at creation.  
+
+A command can return data or not, depending on the SQL that is used. <BR>
+A insert or update statement does not return data, while a select statement 
+does. <BR>
+A command has therefor 2 ways to run it.
+- sl3::Command::execute, no return data
+- sl3::Command::select , does return data.  
+
+\subsection type_example1  Parameter types
+
+In the \ref overview_example overview example all sl3::Command parameters have
+been of type sl3::Typ::Variant since nothing was specified. <BR>
+But it can be ensured that certain types are used.
+
+\code
+#include <iostream>
+#include <sl3/database.hpp>
+
+int main()
+{
+  using namespace sl3;
+  // define a db
+  Database db(":memory:");
+  // run commands against the db
+  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
+  // create a command with parameters
+  auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);",
+                        DbValues ({Type::Int,Type::Text, Type::Real})) ;
+
+  //this will work,
+  cmd.execute({ {1}, {"one"}, {1.1} } );
+
+  // this will throw since "2" is a wrong type
+  try
+  {
+      cmd.execute({ {"2"}, {"two"}, {2.1} } );
+  }
+  catch (const Error& e)
+  {
+      std::cout << e << std::endl;
+  }
+}
+\endcode
+  
+The output of this program will be:
+\code
+sl3::TypeMisMatch:Int=Text
+\endcode
+
+
+It is not a problem to insert different types into a column, 
+sqlite supports this and so does libsl3 <BR>
+But is might be unwanted and can therefore be turned off.
+
+<BR> 
+
+\section dataset sl3::Dataset
+
+A sl3::Dataset is a generic way to receive data from a sl3::Database.
+
+It is return by a sl3::Command::select or sl3::Database::select 
+
+
+\subsection type_example2  Create a sl3::Dataset     
+
+If there are different types in a column, a sl3::Dataset will automatically
+provide correct sl3::DbValue object.
+
+\code
+
+#include <cassert>
+#include <iostream>
+#include <sl3/database.hpp>
+
+int main()
+{
+  using namespace sl3;
+   // define a db
+   Database db(":memory:");
+   // run commands against the db
+   db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
+   // create a command with parameters
+   auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
+   // no types so we use variants
+   //so this will work
+   cmd.execute(DbValues{ {1}, {"one"}, {1.1} } );
+   //and this will also work
+   cmd.execute({ {"some text"}, {"two"}, {2.1} } );
+
+   // access the data
+   Dataset ds = db.select("SELECT * FROM tbl;");
+
+   assert (ds.size () == 2);       // 2 records
+   assert (ds[0].size() == 3);  // 3 fields
+
+   // first row first field is a integer, as inserted
+   assert (ds[0][0].getType() == Type::Variant) ;
+   assert (ds[0][0].getStorageType() == Type::Int) ;
+   // second row first field is text, as inserted
+   assert (ds[1][0].getType() == Type::Variant) ;
+   assert (ds[1][0].getStorageType() == Type::Text) ;
+
+   // of course we can work wit the values
+   for(auto& row  :ds) {
+       for (auto& field : row) {
+           std::cout << typeName (field.getType()) << "/"
+               << typeName (field.getStorageType()) << ": " << field << ", ";
+       }
+       std::cout << std::endl;
+   }
+}
+\endcode
+
+running this program will print 
+
+\code
+  Variant/Int: 1, Variant/Text: one, Variant/Real: 1.1, 
+  Variant/Text: some text, Variant/Text: two, Variant/Real: 2.1,
+\endcode
+
+
+\subsection type_example3  Ensure types for a sl3::Dataset     
+
+  Of course it might be unwanted to get different types for one column into
+  a sl3::Dataset. <BR> 
+  This can be ensured by passing the allowed sl3::Types to the 
+  sl3::Database::select call. <BR> 
+  If the wanted types are not these which are in the table, an sl3::TypeMisMatch
+  exception is thrown.
+  
+\code
+#include <iostream>
+#include <sl3/database.hpp>
+
+int main()
+{
+  using namespace sl3;
+   // define a db
+   Database db(":memory:");
+   // run commands against the db
+   db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
+   // create a command with parameters
+   auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
+   // no types so we use variants
+   // insert Int, Text, Real
+   cmd.execute({{1}, {"one"}, {1.1}} );
+   // insert Text, Text, Real
+   cmd.execute({{"some text"}, {"two"}, {2.1}});
+
+   // this will throw since types in column0  are different
+   try
+    {
+      Dataset ds = db.select ("SELECT * FROM tbl;",
+                               { Type::Int, Type::Text, Type::Real });
+
+    }
+  catch (const Error& e)
+    {
+      std::cout << e << std::endl ;
+    }
+
+}
+
+\endcode
+
+
+this code will throw an exception, as expected and print
+\code
+sl3::TypeMisMatch:Int not one of required types
+\endcode
+
+<BR> 
+
+\section rowcallback RowCallback and Callback functions  
+  
+  A custom way to handle query results is to usea  
+  a sl3::RowCallback or the sl3::Commad::Callback function. <BR> 
+  They can be passed to the sl3::Database::execute and sl3::Commad::execute 
+  function.<BR>
+  The callback will be called with a sl3::Columns representing the current row
+  for each row in the query result.<BR>
+  The callback returns if it wants proceed to be called or not.
+  
+\subsection columns sl3::Columns
+
+In a callback the sl3::Columns class give access to the current row. <BR> 
+There are several methods to query the type, size and get the values. <BR> 
+
+
+\subsection columns_example Example
+
+\code
+#include <cassert>
+#include <iostream>
+#include <sl3/database.hpp>
+#include <sl3/columns.hpp>
+int main()
+{
+  using namespace sl3;
+  // define a db
+  Database db(":memory:");
+  // run commands against the db
+
+  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);"
+      "INSERT INTO tbl (f1, f2, f3) VALUES (1, 'one', 1.1);"
+      "INSERT INTO tbl (f1, f2, f3) VALUES (2, 'two', 2.2)"
+      );
+
+
+  db.execute ("SELECT f1, f2  FROM tbl;", [](Columns cols)
+              {
+                assert (cols.count() == 2) ;
+                assert (cols.getType(0) == Type::Int) ;
+                assert (cols.getType(1) == Type::Text) ;
+                std::cout << std::to_string(cols.getInt(0))
+                          << "_" << cols.getText(1)
+                          << std::endl;
+                return true ;
+              });
+
+}
+\endcode
+
+Running this program, the output will be
+
+\code
+1_one
+2_two
+\endcode
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
