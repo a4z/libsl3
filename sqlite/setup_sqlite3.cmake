@@ -15,7 +15,8 @@
 #   SQLITE_SOUNDEX
 #   SQLITE_ENABLE_RTREE
 #   SQLITE_OMIT_LOAD_EXTENSION
-#   SQLITE_ENABLE_STAT3   will be always set
+#   SQLITE_ENABLE_STAT4   will be always set 
+#   SQLITE_ENABLE_JSON1   default on, but might change
 
 
 # NOTE file myMacros.cmake must be included bevor this file !!
@@ -54,6 +55,7 @@ if (NOT have_mySqlt3Setup)
                         "defines SQLITE_OMIT_LOAD_EXTENSION if ON")
         endif(DEFINED SQLITE_OMIT_LOAD_EXTENSION)
 
+        # TODO add FTS 4 and 5 
         set( SQLITE_ENABLE_FTS3 ${SQLITE_ENABLE_FTS3} CACHE BOOL
             "defines SQLITE_ENABLE_FTS3 if on")
 
