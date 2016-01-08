@@ -121,27 +121,29 @@ SuiteBase::createSuite() -> boostTestSuite*
   if ( _suite==nullptr )
     {
 #if BOOST_VERSION >= 105900
-		_suite = new boost::unit_test::test_suite(_name, __FILE__ ,__LINE__);
+       _suite = new boost::unit_test::test_suite(_name, __FILE__ ,__LINE__);
 #else
-		_suite = new boost::unit_test::test_suite(_name);
+       _suite = new boost::unit_test::test_suite(_name);
 #endif
 
-      AddCaseCall acc = [=]
-          (const std::string name, TestFunction tc, unsigned expected_failures, unsigned timeout){
-          
+       AddCaseCall acc = [=](const std::string name, 
+                            TestFunction tc, 
+                            unsigned expected_failures, 
+                            unsigned timeout){
 #if BOOST_VERSION >= 105900
-		  _suite->add(boost::unit_test::make_test_case(tc, name, __FILE__, __LINE__) , expected_failures, 0 );
+          (void)timeout;      
+          _suite->add(boost::unit_test::make_test_case(tc, name, __FILE__, __LINE__) , expected_failures, 0 );
 #else
-		  _suite->add(boost::unit_test::make_test_case(tc, name), expected_failures, timeout);
+          _suite->add(boost::unit_test::make_test_case(tc, name), expected_failures, timeout);
 #endif
-      };
+       };
       
-      AddSubSuiteCall ass = [=]( boostTestSuite* bts, unsigned timeout)
-      {
-        _suite->add(bts, timeout);
-      };
-      
-      assambleSuite( acc, ass ); // will also add child suit if there are some so change name ? 
+       AddSubSuiteCall ass = [=]( boostTestSuite* bts, unsigned timeout)
+       {
+         _suite->add(bts, timeout);
+       };
+       
+       assambleSuite( acc, ass ); // will also add child suit if there are some so change name ? 
       
     }
 
