@@ -4,9 +4,9 @@ cmake_minimum_required(VERSION 2.8)
 project(libsl3 C CXX) 
 
 
-set(sl3_MAJOR_VERSION 0)
-set(sl3_MINOR_VERSION 1)
-set(sl3_PATCH_VERSION 0)
+set(sl3_MAJOR_VERSION 1)
+set(sl3_MINOR_VERSION 12)
+set(sl3_PATCH_VERSION 2)
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
 

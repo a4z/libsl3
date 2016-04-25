@@ -14,9 +14,9 @@ namespace {
 void
 CheckLibVersion ()
 { // this is mostly to check the automated cmake generated config file
-  BOOST_CHECK( sl3::MAJOR_VERSION == 0 );
-    BOOST_CHECK( sl3::MINOR_VERSION == 1 );
-    BOOST_CHECK( sl3::PATCH_VERSION == 0 );
+    BOOST_CHECK( sl3::MAJOR_VERSION == 1 );
+    BOOST_CHECK( sl3::MINOR_VERSION == 12 );
+    BOOST_CHECK( sl3::PATCH_VERSION == 2 );
 } //----------------------------------------------------------------------------
 
 void
