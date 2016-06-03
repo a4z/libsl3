@@ -11,8 +11,14 @@ set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
 
 
-include( a4cmk/macros.cmake )
-include( a4cmk/setup_compiler.cmake )
+# Include necessary submodules
+set(CMAKE_MODULE_PATH
+  "${libsl3_SOURCE_DIR}/CMake"
+)
+
+
+include( macros )
+include( setup_compiler )
 
 
 
@@ -38,8 +44,8 @@ unset(_DEFAULT_FLAGS)
 
 include( sqlite/setup_sqlite3.cmake )
 
-include( a4cmk/setup_boost.cmake )
-include( a4cmk/setup_doc.cmake )
+include( setup_boost )
+include( setup_doc )
 
 if(USE_INTERNAL_SQLITE3)
   set(CONFIG_SQLITE3_INTERNAL "true")
@@ -155,7 +161,7 @@ if (DEFINED sl3_BUILD_TESTS)
         set (ALL_A4_TESTING_DISABLED TRUE)
     endif(${sl3_BUILD_TESTS})
 endif (DEFINED sl3_BUILD_TESTS)
-include( a4cmk/setup_testing.cmake )
+include( setup_testing )
  
 
 #optional enable personal test/trial dir
