@@ -4,6 +4,6 @@
 .cproject
 .settings
 *~
+configureCustomFlags
 build*/
-
 *include/sl3/config.hpp

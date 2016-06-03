@@ -1,17 +1,28 @@
 
+if [ -z "$1" ] ; then
+    RDIR=$(pwd)
+else
+    RDIR=$(readlink -f $1)
+fi
+
 BUILDDIR=buildDebug
 
-A4ZDIR=$(dirname $(pwd))/a4z
 
 if [ -d $BUILDDIR ] ; then
- rm -r $BUILDDIR/*
+ rm -rf $BUILDDIR/*
 else
  mkdir $BUILDDIR
 fi
 
 
+
+if [ -f $RDIR/configureCustomFlags ]; then
+        . $RDIR/configureCustomFlags
+fi
+
+ 
 cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=Debug \
 -DUSE_BOOSTTESTING_DYNLINK=ON \
- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBoost_NO_BOOST_CMAKE=ON \
- -DSL3_SQLITE_USERDEFINES=SQLITE_ENABLE_STAT4
+$CUSTOM_CMAKE_FLAG
+
 
