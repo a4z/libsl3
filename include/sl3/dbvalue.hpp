@@ -11,6 +11,8 @@
 
 
 #include <string>
+
+#include <sl3/config.hpp>
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 
@@ -35,7 +37,7 @@ namespace sl3 {
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class DbValue
+  class LIBSL3_API DbValue
   {
 
   public:

@@ -13,7 +13,7 @@
 #include <iosfwd>
 #include <string>
 
-
+#include <sl3/config.hpp>
 
 namespace sl3{
 
@@ -43,7 +43,7 @@ namespace sl3{
    * A command base for all ErrType objects.
    * All exceptions thrown by the library wil have this base type.
    */
-  class Error
+  class LIBSL3_API Error
   {
   protected:
 
@@ -100,7 +100,7 @@ namespace sl3{
    * \param e the Error
    * \return the ostream
    */
-  std::ostream& operator<< (std::ostream& os, const Error& e);
+  std::ostream& LIBSL3_API operator<< (std::ostream& os, const Error& e);
 
 
   /**
@@ -110,7 +110,7 @@ namespace sl3{
    *  Each sl3::ErrCode becomes an ErrType object.
    */
   template<ErrCode ec>
-  class ErrType: public Error
+  class LIBSL3_API ErrType: public Error
   {
 
   public:
@@ -170,7 +170,7 @@ namespace sl3{
    * \see Database::enableExtendedResultCodes
    *
    */
-  class SQLite3Error : public ErrType<ErrCode::SQL3Error>
+  class LIBSL3_API SQLite3Error : public ErrType<ErrCode::SQL3Error>
   {
 
   public:

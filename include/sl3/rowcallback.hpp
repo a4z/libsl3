@@ -12,6 +12,7 @@
 
 #include <functional>
 
+#include <sl3/config.hpp>
 
 namespace sl3 {
 
@@ -25,7 +26,7 @@ namespace sl3 {
    *
    *
    */
-  class RowCallback
+  class LIBSL3_API RowCallback
   {
 
       friend class Command;

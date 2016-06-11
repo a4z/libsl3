@@ -41,7 +41,7 @@ namespace sl3
    * \note for valgrind: http://www.sqlite.org/cvstrac/tktview?tn=3428 \n
    *  since I don't know where to put this note else I place it just here
    */
-  class Database
+  class LIBSL3_API Database
   {
     Database(const Database&) = delete ;
     Database& operator=(const Database&) = delete ;

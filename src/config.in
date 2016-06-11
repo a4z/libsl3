@@ -14,6 +14,21 @@
 #ifndef SL3_CONFIG
 #define SL3_CONFIG
 
+
+#if defined(_WIN32) && defined(_MSC_VER)
+    #if defined(LIBSL3_DLL)
+        #define LIBSL3_API __declspec(dllexport)
+    #elif defined(LINK_SL3_DLL)
+        #define LIBSL3_API __declspec(dllimport)
+    #else
+        #define LIBSL3_API
+    #endif
+#else    
+    #define LIBSL3_API
+#endif
+
+//#define LIBSL3_API
+
 /**
     \namespace sl3
     \brief Namespace of libSL3.

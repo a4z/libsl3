@@ -9,7 +9,9 @@
 #ifndef SL3_COLUMNS_HPP
 #define SL3_COLUMNS_HPP
 
+#include <sl3/config.hpp>
 #include <sl3/dbvalues.hpp>
+
 
 struct sqlite3_stmt;
 
@@ -25,7 +27,7 @@ namespace sl3 {
    * \see Command::Callback
    * \see Database::Callback
    */
-  class Columns
+  class LIBSL3_API Columns
   {
 
     friend class Command ;

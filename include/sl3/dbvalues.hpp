@@ -10,6 +10,8 @@
 #define SL3_DbVALUES_HPP_
 
 #include <initializer_list>
+
+#include <sl3/config.hpp>
 #include <sl3/container.hpp>
 #include <sl3/dbvalue.hpp>
 
@@ -26,7 +28,7 @@ namespace sl3 {
  *
  *
  */
-class DbValues final: public Container<std::vector<DbValue>>
+class LIBSL3_API DbValues final: public Container<std::vector<DbValue>>
 {
 
 public:

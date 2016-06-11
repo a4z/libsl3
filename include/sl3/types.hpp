@@ -13,6 +13,8 @@
 
 #include <string>
 #include <vector>
+
+#include <sl3/config.hpp>
 #include <sl3/container.hpp>
 
 
@@ -53,7 +55,7 @@ std::string typeName (Type);
  *
  *  A fixed size list of sl3::Type values.
  */
-class Types : public Container<std::vector<Type>>
+class LIBSL3_API Types : public Container<std::vector<Type>>
 {
 
 public:

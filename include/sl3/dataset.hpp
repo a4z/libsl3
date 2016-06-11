@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 
+#include <sl3/config.hpp>
 #include <sl3/dbvalues.hpp>
 #include <sl3/error.hpp>
 #include <sl3/rowcallback.hpp>
@@ -44,7 +45,7 @@ namespace sl3{
  *
  *
  */
-class Dataset final: public Container<std::vector<DbValues>>
+class LIBSL3_API Dataset final: public Container<std::vector<DbValues>>
 {
 
   friend class Command;

@@ -13,6 +13,7 @@
 #include <string>
 #include <memory>
 
+#include <sl3/config.hpp>
 #include <sl3/dataset.hpp>
 #include <sl3/dbvalue.hpp>
 
@@ -39,7 +40,7 @@ namespace sl3 {
    *  A command can have parameters.
    *
    */
-  class Command
+  class LIBSL3_API Command
   {
 
       friend class Database;
