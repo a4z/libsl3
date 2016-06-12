@@ -42,17 +42,11 @@ toStream ()
 
 } //----------------------------------------------------------------------------
 
-void
-Unexpected ()
-{
-  BOOST_REQUIRE_THROW (raiseErrUnexpected (), ErrUnexpected);
-}
 
 
 a4TestAdd(
     a4test::suite("errtest")
     .addTest("tostream", toStream)
-    .addTest("unexpected", Unexpected)
 
 );
 

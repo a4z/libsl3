@@ -12,6 +12,8 @@
 
 #include <iosfwd>
 #include <string>
+#include <exception>
+#include <stdexcept>
 
 #include <sl3/config.hpp>
 
@@ -36,6 +38,20 @@ namespace sl3{
     UNEXPECTED = 99 ///< for everything that happens unexpected
   };
 
+  constexpr const char*
+  ErrCodeName(ErrCode ec)
+  {
+    return
+        ec == ErrCode::SQL3Error ? "SQLite3Error" :
+            ec == ErrCode::NoConnection ? "NoConnection" :
+                ec == ErrCode::OutOfRange ? "OutOfRange" :
+                    ec == ErrCode::TypeMisMatch ? "TypeMisMatch" :
+                        ec == ErrCode::NullValueAccess ? "NullValueAccess" :
+                            ec == ErrCode::UNEXPECTED ? "UNEXPECTED" :
+            "NA" ;
+  }
+
+
 
   /**
    * \brief Exception base type
@@ -43,55 +59,20 @@ namespace sl3{
    * A command base for all ErrType objects.
    * All exceptions thrown by the library wil have this base type.
    */
-  class LIBSL3_API Error
+  class LIBSL3_API Error : public std::runtime_error
   {
   protected:
 
-    /**
-     * \brief c'tor
-     *
-     * \param id the ErrCode
-     * \param info info text
-     */
-    Error(ErrCode id, std::string info ) ;
-
   public:
-
-#ifdef _MSC_VER
-    virtual ~Error() = default ;
-#else
-    /// default d'tor
-    virtual ~Error() noexcept = default ;
-#endif
+    /// Inherit constructors from std::runtime_error
+    using std::runtime_error::runtime_error ;
 
     /**
       * \brief Get ErrCode
       * \return the Errcode of the excetion
       */
-      ErrCode getId () const  ;
+    virtual  ErrCode getId () const = 0  ;
 
-     /**
-     * \brief Get info text
-     * \return reference to the info string
-     */
-    const std::string& info () const ;
-
-  protected:
-
-    friend std::ostream& operator<<(std::ostream& os, const Error& e);
-
-    /**
-     * \brief Write to stream
-     *
-     *  Called from the stream operator, allows to customize
-     *  stream output.
-     *  \param os the ostrem
-     */
-    virtual void toStream(std::ostream& os) const;
-
-  private:
-    ErrCode     _id;
-    std::string _info;
   };
 
   /**
@@ -110,24 +91,15 @@ namespace sl3{
    *  Each sl3::ErrCode becomes an ErrType object.
    */
   template<ErrCode ec>
-  class LIBSL3_API ErrType: public Error
+  class LIBSL3_API ErrType final: public Error
   {
 
   public:
-    /**
-     * \brief c'tor
-     * \param msg error message
-     */
-    ErrType (std::string msg = "" )
-      : Error (ec, std::move (msg))
-    {
-    }
+    ErrType() : Error("") {}
 
-#ifdef _MSC_VER
-    virtual ~ErrType () = default ;
-#else
-    virtual ~ErrType () noexcept = default ;
-#endif
+    using Error::Error ;
+
+    ErrCode getId () const override { return ec ;}
 
   };
 
@@ -148,14 +120,6 @@ namespace sl3{
   ///thrown if something unexpected happened, mostly used by test tools and in debug mode
   using ErrUnexpected =  ErrType<ErrCode::UNEXPECTED>;
 
-  /**
-   *  \brief throw an ErrUnexpected exception.
-   *
-   * can be used on location where the comiler should not see that
-   * an exception is raised.
-   * \param msg optional message
-   */
-  void raiseErrUnexpected (const std::string& msg = "") ;
 
   /**
    * \brief packaging an error from sqlite3.
@@ -170,7 +134,8 @@ namespace sl3{
    * \see Database::enableExtendedResultCodes
    *
    */
-  class LIBSL3_API SQLite3Error : public ErrType<ErrCode::SQL3Error>
+  template<>
+  class LIBSL3_API  ErrType<ErrCode::SQL3Error> final : public Error
   {
 
   public:
@@ -179,44 +144,55 @@ namespace sl3{
      * \param sl3ec sqite error code
      * \param sl3msg sqite error code
      */
-      SQLite3Error (int sl3ec, const char* sl3msg);
+    ErrType<ErrCode::SQL3Error> (int sl3ec, const char* sl3msg)
+    : ErrType<ErrCode::SQL3Error>(sl3ec, sl3msg, "")
+    {
 
-      /**
-       * \brief c'tor
-       * \param sl3ec sqite error code
-       * \param sl3msg sqite error code
-       * \param msg additional message
-       */
-      SQLite3Error (int sl3ec, const char* sl3msg, const std::string& msg);
+    }
 
-#ifdef _MSC_VER
-    virtual ~SQLite3Error () = default ;
-#else
-    virtual ~SQLite3Error () noexcept = default ;
-#endif
+    /**
+     * \brief c'tor
+     * \param sl3ec sqite error code
+     * \param sl3msg sqite error code
+     * \param msg additional message
+     */
+    ErrType<ErrCode::SQL3Error> (int sl3ec,
+                                 const char* sl3msg,
+                                 const std::string& msg)
+        : Error ("(" + std::to_string(sl3ec) + ":" +  sl3msg + "):" + msg)
+         ,_sqlite_ec(sl3ec)
+         , _sqlite_msg(sl3msg)
+         {
+
+         }
 
 
-      /**
-       * \brief  Get the sqlite3 error code
-       * \return the sqlite3 error code
-       */
-      int SQLiteErrorCode () const ;
+    ErrCode getId () const override { return ErrCode::SQL3Error ;}
 
-      /**
-       * \brief  Get the sqlite3 error message.
-       *
-       * If sqlite has a error message to the current error
-       *
-       * \return the sqlite3 error message
-       */
-      const std::string& SQLiteErrorMessage() const ;
+    /**
+     * \brief  Get the sqlite3 error code
+     * \return the sqlite3 error code
+     */
+    int SQLiteErrorCode () const {return _sqlite_ec; }
+
+    /**
+     * \brief  Get the sqlite3 error message.
+     *
+     * If the exception was created with a sqlite a error message
+     * it can be accessed here.
+     *
+     * \return the sqlite3 error message
+     */
+    const std::string& SQLiteErrorMessage() const {return _sqlite_msg; } ;
 
   private:
-      virtual void toStream(std::ostream& os)  const override ;
 
-      int m_sqlite_ec;
-      std::string m_sqlite_msg;
+    int _sqlite_ec;
+    std::string _sqlite_msg;
   };
+
+
+  using SQLite3Error = ErrType<ErrCode::SQL3Error>;
 
 
 #define  ASSERT_EXCEPT( exp , except ) if ( !( exp ) ) \

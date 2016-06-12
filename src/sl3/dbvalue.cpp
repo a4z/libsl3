@@ -111,6 +111,14 @@ namespace sl3
       Type type;
     };
 
+
+    void
+    raiseErrUnexpected (const std::string& msg)
+    {
+      throw ErrUnexpected (msg) ;
+    }
+
+
   } //--------------------------------------------------------------------------
 
 
