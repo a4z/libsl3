@@ -111,11 +111,11 @@ namespace sl3
       Type type;
     };
 
-
+    
+    // not in coverage, only used in never reachable case/if branches
     void
-    raiseErrUnexpected (const std::string& msg)
-    {
-      throw ErrUnexpected (msg) ;
+    raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
+    {       throw ErrUnexpected (msg) ;               // LCOV_EXCL_LINE
     }
 
 
