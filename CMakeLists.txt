@@ -5,8 +5,17 @@ project(libsl3 C CXX)
 
 
 set(sl3_MAJOR_VERSION 1)
-set(sl3_MINOR_VERSION 13)
-set(sl3_PATCH_VERSION 0)
+set(sl3_MINOR_VERSION 0)
+
+# sqlite major is always 3, no need to use that here
+# set(internal_SQLITE_MAJOR_V 3)
+set(internal_SQLITE_MINOR_V 13)
+set(internal_SQLITE_PATCH_V  0)
+
+# sqlite uses (X*1000000 + Y*1000 + Z),
+# but minor patch used since major is always 3
+math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE_PATCH_V}")
+
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
 
@@ -146,7 +155,7 @@ if(sl3_BUILD_SHARED_LIB)
     # TODO, link against sqlt3 if not included / or required mysqlt3_LIBS ..
     add_library( sl3_so SHARED  ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
     set_target_properties(sl3_so PROPERTIES VERSION ${sl3_VERSION})
-    set_target_properties(sl3_so PROPERTIES SOVERSION ${sl3_VERSION})
+    set_target_properties(sl3_so PROPERTIES SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION})
     SET_TARGET_PROPERTIES(sl3_so PROPERTIES OUTPUT_NAME sl3)
     set(sl3_install_targets ${sl3_install_targets} sl3_so)
 endif(sl3_BUILD_SHARED_LIB)

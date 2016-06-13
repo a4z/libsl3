@@ -26,12 +26,10 @@ namespace sl3 {
           );
           
           // check that the cmake file was updated correct
-          std::string expectedVersion =
-              "3." + std::to_string(sl3::MINOR_VERSION) + "." +
-              std::to_string(sl3::PATCH_VERSION) ;
-
+          auto expectedVersion =  3*1000000 + sl3::PATCH_VERSION ;
+            
           // check that the cmake file was updated correct
-          BOOST_CHECK(expectedVersion == sqliteRuntimeVersion()) ;
+          BOOST_CHECK(expectedVersion == sqliteCompiledVersionNumber()) ;
                     
         }
     }
