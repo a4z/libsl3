@@ -70,7 +70,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}
 add_definitions(${mysqlt3_DEFINES})
 
 include_directories(
-include
+${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 

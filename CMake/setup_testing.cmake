@@ -2,8 +2,15 @@
 
 #requires a tests subdir, creates ${PROJECT_NAME}_BUILD_TESTS and sets a4_TEST_DEFINES   
 if(NOT ALL_A4_TESTING_DISABLED)
-    
-    option(${PROJECT_NAME}_BUILD_TESTS "build tests" ON)
+
+    if (DEFINED ${PROJECT_NAME}_BUILD_TESTS)
+      option(${PROJECT_NAME}_BUILD_TESTS 
+        "build tests" 
+        ${PROJECT_NAME}_BUILD_TESTS
+      )
+    else (DEFINED ${PROJECT_NAME}_BUILD_TESTS)
+      option(${PROJECT_NAME}_BUILD_TESTS "build tests" ON)
+    endif(DEFINED ${PROJECT_NAME}_BUILD_TESTS)
     
     if (${PROJECT_NAME}_BUILD_TESTS)
     
