@@ -1,8 +1,8 @@
 
 BUILDDIR=buildLLVMDebug
 
-export CC=/usr/bin/clang
-export CXX=/usr/bin/clang++
+export CC=$(which clang)
+export CXX=$(which clang++)
 
 A4ZDIR=$(dirname $(pwd))/a4z
 
