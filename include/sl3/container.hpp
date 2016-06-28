@@ -32,6 +32,16 @@ template<typename ContainerType>
 class Container
 {
  public:
+  //@{
+  using conatiner_type =  ContainerType ;
+  using iterator = typename conatiner_type::iterator;
+  using const_iterator = typename conatiner_type::const_iterator;
+  using value_type = typename conatiner_type::value_type;
+  using reference = typename conatiner_type::reference;
+  using const_reference = typename conatiner_type::const_reference;
+  using size_type = typename conatiner_type::size_type;
+  using container_type = ContainerType;
+  //@}
 
 
   /**
@@ -60,7 +70,7 @@ class Container
    *
    * \param container values
    */
-  Container(std::initializer_list<typename ContainerType::value_type> container)
+  Container(std::initializer_list<value_type> container)
    :_cont(std::move(container))
   {
   }
@@ -99,16 +109,6 @@ class Container
   virtual ~Container()
      noexcept(std::is_nothrow_destructible<ContainerType>::value) = default;
 
-  //@{
-  using conatiner_type =  ContainerType ;
-  using iterator = typename conatiner_type::iterator;
-  using const_iterator = typename conatiner_type::const_iterator;
-  using value_type = typename conatiner_type::value_type;
-  using reference = typename conatiner_type::reference;
-  using const_reference = typename conatiner_type::const_reference;
-  using size_type = typename conatiner_type::size_type;
-  using container_type = ContainerType;
-  //@}
 
 
   /**
