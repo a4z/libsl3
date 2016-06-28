@@ -1,0 +1,14 @@
+BasedOnStyle:  GNU
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlinesLeft: true
+BinPackArguments: false
+BinPackParameters: false
+BreakConstructorInitializersBeforeComma: true
+Cpp11BracedListStyle: true
+NamespaceIndentation: All
+PointerAlignment: Left
+Standard:        Cpp11
+ConstructorInitializerIndentWidth: 0
+KeepEmptyLinesAtTheStartOfBlocks: false
+
