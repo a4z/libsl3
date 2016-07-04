@@ -18,7 +18,7 @@ math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE
 
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Include necessary submodules
 set(CMAKE_MODULE_PATH
