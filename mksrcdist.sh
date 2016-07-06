@@ -18,7 +18,8 @@ rsync -a \
 --exclude=.?* \
 --exclude=*.sh \
 --exclude=build* \
- $(pwd)/*  ${tmpdir}/libsl3-${version} \
+--exclude=configureCustomFlags* \
+$(pwd)/*  ${tmpdir}/libsl3-${version} \
 
  #pack the stuff 
 tar -C ${tmpdir} -cvzf ${outname} libsl3-${version}

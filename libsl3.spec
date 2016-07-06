@@ -4,7 +4,7 @@ Release:    1%{?dist}
 Summary:    The convenient modern C++ interface for SQLite 3.x
 
 Group:      Development/Libraries
-License:    MPL2
+License:    MPL-2.0
 URL:        http://a4z.bitbucket.org/docs/libsl3/html/index.html
 Source0:    https://bitbucket.org/a4z/%{name}/downloads/%{name}-%{version}.tar.gz
 
