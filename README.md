@@ -1,6 +1,11 @@
-libsl3 is a c++ wrapper for sqlite3   
-The library allows simple and efficient communication with sqlite3 databases in 
-a natural way: SQL.
+libsl3, the convenient modern C++ interface for SQLite 3.x
+
+libsl3 is designed to enable a comfortable and efficient communication with
+SQLite 3.x database based based on it's natural language, which is SQL.
+
+
+
+
 
 A short usage example:
 This is
@@ -70,7 +75,7 @@ Tested with:
 gcc 4.8.2 and clang 3.3 on Slackware.    
 mingw-gcc 4.9.2 and Visual Studio 2015 on Windows 10
 
-Documentation can be found here:
+The documentation can be found here:
 http://a4z.bitbucket.org/docs/libsl3/html/index.html
 
 License: https://www.mozilla.org/en-US/MPL/2.0/
