@@ -397,6 +397,15 @@ namespace sl3
    */
   bool operator== (const DbValue& a, const DbValue& b) noexcept ;
 
+
+   /**
+   * \brief global unequal 
+   *   
+   * Check if 2 DbValue instances are not equal.
+   *
+   * \returns true if given DbValue instances are not equal
+   */
+ 
   bool operator!= (const DbValue& a, const DbValue& b) noexcept ;
   
   // variant like access
