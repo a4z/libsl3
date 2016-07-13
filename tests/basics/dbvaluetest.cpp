@@ -5,6 +5,7 @@
 #include <sl3/error.hpp>
 #include <sstream>
 #include <string>
+#include <cmath>
 
 namespace sl3
 {
@@ -309,16 +310,26 @@ namespace sl3
         BOOST_CHECK (intval == 1);
         int64_t v64 = 1;
         BOOST_CHECK (intval == v64);
+        BOOST_CHECK (intval == DbValue(v64));      
+        DbValue variant {v64, Type::Variant};
+        BOOST_CHECK ((intval == variant) == false) ;
         v64 -= 1;
         BOOST_CHECK (intval != v64);
+        BOOST_CHECK (intval != DbValue(v64));
         BOOST_CHECK (intval != 1.0);
         BOOST_CHECK (intval != "foo");
         BOOST_CHECK (intval != Blob{});
       }
 
       {
-        auto realval = DbValue{1.0};
-        BOOST_CHECK (realval == 1.0);
+        double d1 = 0.2;
+        double d2 = 1 / std::sqrt(5) / std::sqrt(5);
+        BOOST_CHECK (d1 != d2); 
+        auto realval = DbValue{d1};
+        BOOST_CHECK (realval == d2);
+        BOOST_CHECK (realval == DbValue(d2));
+        BOOST_CHECK (realval != 0.2000001);
+        BOOST_CHECK (DbValue (0.20000002) != DbValue (0.20000001));
         BOOST_CHECK (realval != 1);
         BOOST_CHECK (realval != "bar");
         BOOST_CHECK (realval != Blob{});
@@ -327,15 +338,20 @@ namespace sl3
       {
         auto txtval = DbValue{"foobar"};
         BOOST_CHECK (txtval == "foobar");
+        BOOST_CHECK (txtval == DbValue("foobar"));
+        BOOST_CHECK (txtval != DbValue("bar"));
+
         BOOST_CHECK (txtval != int64_t (1));
         BOOST_CHECK (txtval != 2.0);
         BOOST_CHECK (txtval != Blob{});
       }
 
       {
-        auto              blobval = DbValue{Blob{1, 2, 3}};
+        auto blobval = DbValue{Blob{1, 2, 3}};
         std::vector<char> v       = {1, 2, 3};
         BOOST_CHECK (blobval == v);
+        BOOST_CHECK (blobval == DbValue(v));
+        BOOST_CHECK (blobval != DbValue(Blob{1, 2, 3, 4}) );
         BOOST_CHECK (blobval != 1);
         BOOST_CHECK (blobval != 2.0);
         BOOST_CHECK (blobval != Blob{});

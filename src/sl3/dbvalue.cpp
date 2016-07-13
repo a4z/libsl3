@@ -7,10 +7,14 @@
  ******************************************************************************/
 
 #include <sl3/dbvalue.hpp>
-
-#include <utility>
-#include <ostream>
 #include <sl3/error.hpp>
+
+#include <cmath>
+#include <limits>
+#include <iomanip>
+#include <ostream>
+#include <type_traits>
+#include <algorithm>
 
 
 namespace sl3
@@ -122,6 +126,63 @@ namespace sl3
   } //--------------------------------------------------------------------------
 
 
+
+  template<class T>
+  typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
+  almost_equal(T x, T y, int ulp)
+  {
+    using std::numeric_limits ;
+    // the machine epsilon has to be scaled to the magnitude of the values used
+    // and multiplied by the desired precision in ULPs (units in the last place)
+    return std::abs(x-y) < numeric_limits<T>::epsilon() * std::abs(x+y) * ulp
+    // unless the result is subnormal
+                           || std::abs(x-y) < numeric_limits<T>::min();
+  }
+  
+
+  bool
+  operator== (const DbValue& a, const DbValue& b) noexcept
+  {
+    if (check(a.getType ()).sameAs (b.getType ()) &&
+        check(a.getStorageType ()).sameAs (b.getStorageType ())) 
+      {
+        switch (a.getStorageType ())
+          {
+          case Type::Null:
+            return true ;
+ 
+          case Type::Int:
+            return a.getInt () == b.getInt () ;
+            break ;            
+            
+          case Type::Real:
+            return almost_equal (a.getReal (), b.getReal (), 2) ;
+            break;
+
+          case Type::Text:
+            return a.getText () == b.getText () ;
+            break ;
+
+          case Type::Blob:
+            return a.getBlob () == b.getBlob () ;
+            break ;
+           
+          default:
+            return false ;
+
+          }
+      }
+
+     return false;
+        
+  }
+  
+  bool
+  operator!= (const DbValue& a, const DbValue& b) noexcept
+  {
+    return !(a == b) ;
+  }
+  
   DbValue::DbValue (Type type) noexcept
   : _type(type == Type::Null ? Type::Variant : type)
   , _storageType(Type::Null)
@@ -641,7 +702,7 @@ namespace sl3
   DbValue::operator== (const double& val) const
   {
     if (_storageType == Type::Real)
-      return _store.realval == val;
+      return almost_equal (_store.realval, val, 2);
 
     return false;
   }

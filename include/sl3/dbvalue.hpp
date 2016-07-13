@@ -348,7 +348,7 @@ namespace sl3
      * If this function return true, the other value can
      * be assign because it is type compatible.
      *
-     * \param other vlaue to check
+     * \param other value to check
      * \return true if the other value can be assigned
      */
     bool canAssign (const DbValue& other) const;
@@ -379,7 +379,7 @@ namespace sl3
   };
 
   /**
-   * \brief Steram op for a DbValue
+   * \brief Stream op for a DbValue
    *
    * \param stm an outstream
    * \param v the value to stream
@@ -387,8 +387,19 @@ namespace sl3
    */
   std::ostream& operator<< (std::ostream& stm, const sl3::DbValue& v);
 
-  // variant like access
 
+  /**
+   * \brief global equality 
+   *   
+   * Check if 2 DbValue instances are of the same type and of the same value.
+   *
+   * \return true if the type and the current value are equal, false otherwise
+   */
+  bool operator== (const DbValue& a, const DbValue& b) noexcept ;
+
+  bool operator!= (const DbValue& a, const DbValue& b) noexcept ;
+  
+  // variant like access
   template <typename T> struct always_false
   {
     enum
