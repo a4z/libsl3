@@ -357,8 +357,54 @@ namespace sl3
         BOOST_CHECK (blobval != Blob{});
       }
 
+
+      
+      BOOST_CHECK (DbValue (Type::Variant) == DbValue (Type::Variant));
+
+      BOOST_CHECK (DbValue (Type::Blob) != DbValue (Type::Variant));
+      // Note, if this is true, than one has to be less as the other ....
+
     } //-----------------------------------------------------------------------------
 
+
+    void
+    lessCompare ()
+    {
+      BOOST_CHECK ( !(DbValue (Type::Int) < DbValue (Type::Int)));
+
+      BOOST_CHECK ( (DbValue (Type::Text) < DbValue (1)));
+      BOOST_CHECK ( !(DbValue (1) < DbValue (Type::Blob)));
+
+      BOOST_CHECK ( (DbValue (1) < DbValue (1.1)));
+      
+      BOOST_CHECK ( !(DbValue (1) < DbValue (1)));
+      BOOST_CHECK ( (DbValue (1) < DbValue ("foo")));
+
+
+      BOOST_CHECK (DbValue (Type::Blob) < DbValue (Type::Variant));
+      BOOST_CHECK (DbValue (Type::Variant) < DbValue (1)); 
+      BOOST_CHECK (DbValue (Type::Text) < DbValue (Type::Blob));
+
+
+      // these have different types so that needs to be like that
+      BOOST_CHECK ( (DbValue (1) < DbValue (1.0)));
+      BOOST_CHECK ( !(DbValue (1) == DbValue (1.0)) );
+      BOOST_CHECK ( !(DbValue (1.0) < DbValue (1)));
+      // same values with same type, variant, need to be like that 
+      BOOST_CHECK ( !(DbValue (1, Type::Variant) < DbValue (1.0, Type::Variant)));
+      BOOST_CHECK ( (DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
+      BOOST_CHECK ( !(DbValue (1.0, Type::Variant) < DbValue (1, Type::Variant)));
+
+      
+      // BOOST_CHECK (DbValue (Type::Int) < DbValue (Type::Variant));
+      // TODO is is not possible that
+      // a < b == false and  a != b == false and a > b == false
+      // if the type is like that, than do not use the standard <==> operators
+      
+    }
+
+
+    
     void
     Eject ()
     {
@@ -589,6 +635,7 @@ namespace sl3
                    .addTest ("wrongtypes", DontCreateWrongTypes)
                    .addTest ("copymove", CopyAndMove)
                    .addTest ("compare", Compare)
+                   .addTest ("lesscompare", lessCompare)
                    .addTest ("eject", Eject)
                    .addTest ("assign", Assign)
                    .addTest ("getWithDefault", getWithDefault)

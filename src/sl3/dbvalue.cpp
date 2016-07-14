@@ -138,43 +138,71 @@ namespace sl3
     // unless the result is subnormal
                            || std::abs(x-y) < numeric_limits<T>::min();
   }
+
+
+
+  bool
+  sameValue (const DbValue& a, const DbValue& b)
+  {
+    switch (a.getStorageType ())
+      {
+      case Type::Null:
+        return b.getStorageType () == Type::Null ;
+ 
+      case Type::Int:
+        if(b.getStorageType () == Type::Int)
+          return a.getInt () == b.getInt () ;
+        else if (b.getStorageType () == Type::Real)
+          return almost_equal (static_cast<double> (a.getInt ()),
+                               b.getReal (),
+                               2) ;  
+        else
+          return false ;
+        break ;            
+            
+      case Type::Real:
+        if (b.getStorageType () == Type::Real)
+          return almost_equal (a.getReal (), b.getReal (), 2) ;
+        else if (b.getStorageType () == Type::Int)
+          return almost_equal (a.getReal (),
+                               static_cast<double>(b.getInt ()),
+                               2) ;
+        else
+          return false ;
+        break;
+
+      case Type::Text:
+        if (b.getStorageType () == Type::Text)
+          return a.getText () == b.getText () ;
+        else
+          return false ;
+        break ;
+
+      case Type::Blob:
+        if (b.getStorageType () == Type::Blob)              
+          return a.getBlob () == b.getBlob () ;
+        else
+          return false ;
+        break ;
+           
+      default:
+        return false ;
+
+      }
+    
+    return false ; 
+  }
   
 
   bool
   operator== (const DbValue& a, const DbValue& b) noexcept
   {
-    if (check(a.getType ()).sameAs (b.getType ()) &&
-        check(a.getStorageType ()).sameAs (b.getStorageType ())) 
+    if (check(a.getType ()).sameAs (b.getType ()))
       {
-        switch (a.getStorageType ())
-          {
-          case Type::Null:
-            return true ;
- 
-          case Type::Int:
-            return a.getInt () == b.getInt () ;
-            break ;            
-            
-          case Type::Real:
-            return almost_equal (a.getReal (), b.getReal (), 2) ;
-            break;
-
-          case Type::Text:
-            return a.getText () == b.getText () ;
-            break ;
-
-          case Type::Blob:
-            return a.getBlob () == b.getBlob () ;
-            break ;
-           
-          default:
-            return false ;
-
-          }
+        return sameValue  (a, b) ;
       }
 
      return false;
-        
   }
   
   bool
@@ -182,6 +210,95 @@ namespace sl3
   {
     return !(a == b) ;
   }
+
+
+  bool
+  operator< (const DbValue& a, const DbValue& b) noexcept
+  {
+    // todo if we have the same storage type, but different type,
+    // than a variant should be NOT less a concrete type
+    
+    if (a.getStorageType () == Type::Null)
+      {
+        if (b.getStorageType () == Type::Null)
+          return a.getType () < b.getType () ;
+        else
+          return true ;
+      }
+    
+    if (b.getStorageType () == Type::Null)
+      return false ; // a not null handled above
+
+    
+    if (a.getStorageType () == Type::Blob)
+      {
+        if (b.getStorageType () == Type::Blob)
+          {
+            if (a.getBlob () < b.getBlob ())
+              {
+                return true ;
+              }
+            else if (a.getBlob () == b.getBlob ())
+              return a.getType () < b.getType () ;
+            else
+              return false ;
+          }
+        else
+          return false ; // blob always bigger than other types
+      }
+    
+    if (b.getStorageType () == Type::Blob)
+      return true ;
+
+    if (a.getStorageType () == Type::Text)
+      {
+        if (b.getStorageType () == Type::Text)
+          {
+            if (a.getText () < b.getText ())
+              return true ;
+            else if (a.getText () == b.getText ())
+              return a.getType () < b.getType () ;
+            else
+              return false ;
+          }
+        else
+          return false ; // blob already handled, text > than numbers
+      }
+    
+    if (b.getStorageType () == Type::Text) 
+      return true ; // we are a number, therefore smaller
+
+    
+    if (a.getStorageType () == Type::Int)
+      {
+        if (b.getStorageType () == Type::Int)
+          if (a.getInt () < b.getInt ())
+            return true ;
+          else if(a.getInt () == b.getInt ())
+            return a.getType () < b.getType () ;
+          else
+            return false ;
+        else if (b.getStorageType () == Type::Real) 
+          return a.getInt () < b.getReal () ;
+        // same value for different types int / real handled below
+      }
+
+    // we are real :-)
+    if (b.getStorageType () == Type::Int)
+        return a.getReal () < b.getInt () ;
+    else if (b.getStorageType () == Type::Real)
+        return a.getReal () < b.getReal () ;
+
+    if (sameValue (a,b))
+      {
+        return a.getType () < b.getType () ;
+      }
+                              
+    
+    return false ;
+  }
+
+
   
   DbValue::DbValue (Type type) noexcept
   : _type(type == Type::Null ? Type::Variant : type)

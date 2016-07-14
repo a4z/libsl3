@@ -398,15 +398,33 @@ namespace sl3
   bool operator== (const DbValue& a, const DbValue& b) noexcept ;
 
 
-   /**
+  /**
    * \brief global unequal 
    *   
    * Check if 2 DbValue instances are not equal.
    *
-   * \returns true if given DbValue instances are not equal
+   * \return true if given DbValue instances are not equal
    */
- 
   bool operator!= (const DbValue& a, const DbValue& b) noexcept ;
+
+  /**
+   * \brief global less operator for DbValue 
+   *   
+   * Applies following rules which are equal to the sorting rules of sqlite.
+   * 
+   * - Type::Null is alwasy less than any other storage type.
+   * - Type::Interger or Type::Real is always less than Type::Text or Type::Blob
+   * - Type::Text is less than Type::Blob 
+   *
+   *  The type used is DbValue.getStorageType. 
+   * 
+   *  The comparison of the value itself is implemented via std::less.
+   *
+   * \returns true if given DbValue a is less than given DbValue b
+   */
+  bool operator< (const DbValue& a, const DbValue& b) noexcept ;
+
+
   
   // variant like access
   template <typename T> struct always_false
