@@ -395,6 +395,16 @@ namespace sl3
       BOOST_CHECK ( (DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
       BOOST_CHECK ( !(DbValue (1.0, Type::Variant) < DbValue (1, Type::Variant)));
 
+
+      BOOST_CHECK ( (DbValue ("aa") < DbValue ("ab")));
+      BOOST_CHECK ( !(DbValue ("aa") == DbValue ("ab")) );
+      BOOST_CHECK ( !(DbValue ("ab") < DbValue ("aa")) );
+      // same values with same type, variant, need to be bigger
+      BOOST_CHECK ( !(DbValue ("aa", Type::Variant) < DbValue ("aa")));
+      BOOST_CHECK ( !(DbValue ("aa", Type::Variant) == DbValue ("aa")));
+      BOOST_CHECK ( (DbValue ("aa") < DbValue ("aa", Type::Variant)));
+
+
       
       // BOOST_CHECK (DbValue (Type::Int) < DbValue (Type::Variant));
       // TODO is is not possible that

@@ -272,15 +272,23 @@ namespace sl3
     if (a.getStorageType () == Type::Int)
       {
         if (b.getStorageType () == Type::Int)
-          if (a.getInt () < b.getInt ())
-            return true ;
-          else if(a.getInt () == b.getInt ())
-            return a.getType () < b.getType () ;
-          else
-            return false ;
-        else if (b.getStorageType () == Type::Real) 
-          return a.getInt () < b.getReal () ;
-        // same value for different types int / real handled below
+          {
+            if (a.getInt () < b.getInt ())
+              return true ;
+            else if(a.getInt () == b.getInt ())
+              return a.getType () < b.getType () ;
+            else
+              return false ;
+          }
+        else  // b is real
+          {
+             if (a.getInt () < b.getReal ())
+              return true ;
+             else if( sameValue (a,b))
+              return a.getType () < b.getType () ;
+            else
+              return false ;
+          }
       }
 
     // we are real :-)
@@ -293,7 +301,6 @@ namespace sl3
       {
         return a.getType () < b.getType () ;
       }
-                              
     
     return false ;
   }
