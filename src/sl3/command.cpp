@@ -254,7 +254,7 @@ namespace sl3
 
 
   void
-  Command::execute (Callback cb, const DbValues& parameters)
+  Command::execute (Callback callback, const DbValues& parameters)
   {
     _connection->ensureValid ();
 
@@ -262,6 +262,10 @@ namespace sl3
       setParameters (parameters);
 
     bind (_stmt, _parameters);
+
+    // use this to ensure a reset of _stmt
+    using ResetGuard = std::unique_ptr<sqlite3_stmt, decltype(&sqlite3_reset)>;
+    ResetGuard resetGuard(_stmt, &sqlite3_reset);
 
     bool loop = true;
     while (loop)
@@ -273,14 +277,12 @@ namespace sl3
           case SQLITE_OK:
           case SQLITE_DONE:
             {
-              sqlite3_reset (_stmt);
               loop = false;
               break;
             }
           case SQLITE_ROW:
             {
-              Columns c(_stmt);
-              loop = cb (c);
+             loop = callback(Columns{_stmt});
               break;
             }
 
@@ -288,7 +290,6 @@ namespace sl3
             {
               auto db = sqlite3_db_handle (_stmt);
               SQLite3Error sl3error (rc, sqlite3_errmsg (db));
-              sqlite3_reset (_stmt);
               throw sl3error;
             }
 
