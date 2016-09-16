@@ -126,7 +126,6 @@ namespace sl3
   }
 
 
-/// return all columns at once
   DbValues
   Columns::getRow (const Types& types) const
   {
@@ -143,7 +142,6 @@ namespace sl3
     return DbValues (std::move (v));
 
   }
-//-----------------------------------------------------------------------------
 
 
   Type
