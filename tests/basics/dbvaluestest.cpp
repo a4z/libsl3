@@ -13,6 +13,7 @@ namespace {
   
 void assingCheckSize ()
 {
+  bool unused{false};
   DbValues r1 ({DbValue (1)});
   DbValues r2 ({DbValue (2), DbValue ("b")});
 
@@ -23,13 +24,15 @@ void assingCheckSize ()
 
   BOOST_CHECK_NO_THROW (r3 = r2);
 
-  BOOST_CHECK_NO_THROW (r3.at(0) == r2.at(0).getInt ());
-  BOOST_CHECK_NO_THROW (r3.at(1) == r2.at(1).getText ());
+  BOOST_CHECK_NO_THROW (unused = r3.at(0) == r2.at(0).getInt ());
+  BOOST_CHECK_NO_THROW (unused = r3.at(1) == r2.at(1).getText ());
 
+  (void)(unused) ;
 }
 
 void assingCheckType ()
 {
+  bool unused{false};
   {
     DbValues r1 ({DbValue ("a"), DbValue("a")});
     DbValues r2 ({DbValue (2), DbValue("b")});
@@ -51,9 +54,8 @@ void assingCheckType ()
     DbValues r2 ({DbValue ("b", Type::Variant), DbValue("b")});
 
     BOOST_CHECK_NO_THROW(r1 = r2);
-
-    BOOST_CHECK_NO_THROW(r1.at(0).getText () == "b");
-    BOOST_CHECK_NO_THROW(r1.at(1).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused = r1.at(0).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused =  r1.at(1).getText () == "b");
   }
 
 
@@ -63,8 +65,8 @@ void assingCheckType ()
 
     BOOST_CHECK_NO_THROW(r1 = r2);
 
-    BOOST_CHECK_NO_THROW(r1.at(0).getText () == "b");
-    BOOST_CHECK_NO_THROW(r1.at(1).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused = r1.at(0).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused = r1.at(1).getText () == "b");
   }
 
   {
@@ -73,8 +75,8 @@ void assingCheckType ()
 
     BOOST_CHECK_NO_THROW(r1 = std::move (r2));
 
-    BOOST_CHECK_NO_THROW(r1.at(0).getText () == "b");
-    BOOST_CHECK_NO_THROW(r1.at(1).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused = r1.at(0).getText () == "b");
+    BOOST_CHECK_NO_THROW(unused = r1.at(1).getText () == "b");
   }
 
 
@@ -83,12 +85,13 @@ void assingCheckType ()
     DbValues r2 ({DbValue ("b"), DbValue("a")});
 
     BOOST_CHECK_NO_THROW(r1 = std::move (r2));
-
-    BOOST_CHECK_NO_THROW(r1.at(0).getText () == "b");
-    BOOST_CHECK_NO_THROW(r1.at(1).getText () == "b");
+    
+    BOOST_CHECK_NO_THROW(r1.at(0).getText ());
+    BOOST_CHECK_NO_THROW(r1.at(1).getText ());
   }
 
 
+  (void)(unused) ;
 }
 
 

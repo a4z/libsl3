@@ -114,7 +114,8 @@ UseTransaction ()
   BOOST_CHECK(db.selectValue ("select count(*) from tbl;").getInt () == 1);
 
     { // also test the move constructor
-      auto trans = std::move(db.beginTransaction ());
+      auto trans = db.beginTransaction ();
+      auto mtrans = std::move(trans) ;
       db.execute ("INSERT INTO tbl (f1, f2 ) VALUES (1,'one');");
     }
   BOOST_CHECK(db.selectValue ("select count(*) from tbl;").getInt () == 1);

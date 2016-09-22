@@ -18,7 +18,7 @@ testdb ()
               "INSERT INTO tbl (f1, f2 ) VALUES (2,'two');"
               "INSERT INTO tbl (f1, f2 ) VALUES (3,'three');");
 
-  return std::move (db);
+  return db;
 }
 
 
@@ -154,7 +154,7 @@ checkGetRow ()
       BOOST_REQUIRE_NO_THROW ( columns.getRow ());
       BOOST_REQUIRE ( columns.getRow ().size () == 2);
 
-      Types wrongTypes1 { {Type::Real } };
+      Types wrongTypes1 { Type::Real  };
       Types wrongTypes2 { {Type::Real, Type::Blob, Type::Blob} };
       Types wrongTypes3 { {Type::Real, Type::Blob} };
       Types rightTypes { {Type::Int, Type::Text} };

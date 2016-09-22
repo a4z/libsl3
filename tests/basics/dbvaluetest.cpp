@@ -334,6 +334,22 @@ namespace sl3
         BOOST_CHECK (realval != "bar");
         BOOST_CHECK (realval != Blob{});
       }
+    
+      {
+        DbValue a{1, Type::Variant} ;
+        DbValue b{1.0, Type::Variant} ;
+        BOOST_CHECK (a == b) ;
+        BOOST_CHECK (b == a) ;
+
+        DbValue blob{Blob {1,2}} ;
+
+        BOOST_CHECK (a != blob) ;
+        BOOST_CHECK (b != blob) ;
+        BOOST_CHECK (blob != a) ;
+        BOOST_CHECK (blob != a) ;
+      }
+
+
 
       {
         auto txtval = DbValue{"foobar"};
@@ -405,7 +421,31 @@ namespace sl3
       BOOST_CHECK ( (DbValue ("aa") < DbValue ("aa", Type::Variant)));
 
 
+      Blob a{1,2} ;
+      Blob b{3,4} ;
+
+      BOOST_CHECK (DbValue{a} < DbValue{b});
+      BOOST_CHECK (!(DbValue{b} < DbValue{a}));
       
+
+      BOOST_CHECK (DbValue{1} < DbValue{b});
+      
+      DbValue ivariant {1, Type::Variant} ;
+      DbValue bvariant {a, Type::Variant } ;
+
+      BOOST_CHECK ( ivariant < DbValue{b});
+      BOOST_CHECK ( ivariant < bvariant );
+      BOOST_CHECK ( DbValue{1} < DbValue{b});
+      BOOST_CHECK ( DbValue{1} < bvariant );
+
+
+
+      BOOST_CHECK (  bvariant < (DbValue{b, Type::Variant}));
+
+      BOOST_CHECK (!(DbValue{a, Type::Variant} < DbValue{1, Type::Variant}));
+
+      BOOST_CHECK (!(DbValue{a} < DbValue{1, Type::Variant}));
+
       // BOOST_CHECK (DbValue (Type::Int) < DbValue (Type::Variant));
       // TODO is is not possible that
       // a < b == false and  a != b == false and a > b == false
