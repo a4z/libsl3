@@ -8,7 +8,7 @@
 # run total clean and  rebuild
  find . -name '*.gcda' | xargs rm -f
  find . -name '*.gcno' | xargs rm -f
- NUMJOBS=${NUMJOBS:--j3}
+ NUMJOBS=${NUMJOBS:--j$(nproc)}
  make clean && make $NUMJOBS VERBOSE=1
 
 # Run the code so the gcov data files (.gcda) are generated. For example:
@@ -39,7 +39,9 @@ rm -f *.lcov
 # Generate the lcov trace file.
 lcov --capture --directory ./CMakeFiles/sl3.dir/src/sl3 --output-file src.lcov
 
-lcov --capture --directory ./tests/CMakeFiles/sl3_basics.dir/basics --output-file basics.lcov
+lcov --capture --directory ./tests/basics/CMakeFiles/sl3_basics.dir --output-file basics.lcov
+lcov --capture --directory ./tests/dbval/CMakeFiles/sl3_dbval.dir --output-file dbval.lcov
+
 lcov --capture --directory ./tests/sample/CMakeFiles/sl3_sample.dir --output-file sample.lcov
 lcov --capture --directory ./tests/CMakeFiles/test_main.dir --output-file test.lcov
 
@@ -48,6 +50,7 @@ lcov --capture --directory ./tests/CMakeFiles/test_main.dir --output-file test.l
 #merge the files
 lcov -a src.lcov \
  -a basics.lcov \
+ -a dbval.lcov \
  -a sample.lcov \
  -a test.lcov \
  -o all.lcov
