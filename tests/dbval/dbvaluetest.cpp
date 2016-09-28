@@ -396,6 +396,12 @@ namespace sl3
       BOOST_CHECK ( !(DbValue (1) < DbValue (1)));
       BOOST_CHECK ( (DbValue (1) < DbValue ("foo")));
 
+      BOOST_CHECK ( (DbValue (1) < DbValue (2)));
+      BOOST_CHECK ( (DbValue (1, Type::Variant) < DbValue (2)));
+      BOOST_CHECK ( (DbValue (1) < DbValue (2, Type::Variant)));
+      BOOST_CHECK ( (DbValue (2) < DbValue (2, Type::Variant)));
+      BOOST_CHECK ( !(DbValue (1, Type::Variant) < DbValue (1)));
+      BOOST_CHECK ( !(DbValue (1, Type::Variant) == DbValue (1)));
 
       BOOST_CHECK (DbValue (Type::Blob) < DbValue (Type::Variant));
       BOOST_CHECK (DbValue (Type::Variant) < DbValue (1)); 
@@ -410,7 +416,11 @@ namespace sl3
       BOOST_CHECK ( !(DbValue (1, Type::Variant) < DbValue (1.0, Type::Variant)));
       BOOST_CHECK ( (DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
       BOOST_CHECK ( !(DbValue (1.0, Type::Variant) < DbValue (1, Type::Variant)));
-
+      
+      BOOST_CHECK ( (DbValue (1.0) < DbValue (1.1)));
+      BOOST_CHECK ( (DbValue (1.0) < DbValue (1.1, Type::Variant)));
+      BOOST_CHECK ( (DbValue (1.0, Type::Variant) < DbValue (1.1)));
+      BOOST_CHECK ( (DbValue (1.0, Type::Variant) < DbValue (1.1, Type::Variant)));
 
       BOOST_CHECK ( (DbValue ("aa") < DbValue ("ab")));
       BOOST_CHECK ( !(DbValue ("aa") == DbValue ("ab")) );
@@ -426,7 +436,12 @@ namespace sl3
 
       BOOST_CHECK (DbValue{a} < DbValue{b});
       BOOST_CHECK (!(DbValue{b} < DbValue{a}));
-      
+     
+// equal 
+      BOOST_CHECK (!(DbValue{a} < DbValue{a}));
+      BOOST_CHECK (!(DbValue(a, Type::Variant) < DbValue{a}));
+      BOOST_CHECK ((DbValue{a} < DbValue(a, Type::Variant)));
+      BOOST_CHECK (!(DbValue{a, Type::Variant} < DbValue{a, Type::Variant}));
 
       BOOST_CHECK (DbValue{1} < DbValue{b});
       

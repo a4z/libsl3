@@ -144,53 +144,47 @@ namespace sl3
   bool
   sameValue (const DbValue& a, const DbValue& b)
   {
+    bool retVal = false ;
+
     switch (a.getStorageType ())
       {
       case Type::Null:
-        return b.getStorageType () == Type::Null ;
- 
+        retVal = b.getStorageType () == Type::Null ;
+      break;
+      
       case Type::Int:
         if(b.getStorageType () == Type::Int)
-          return a.getInt () == b.getInt () ;
+          retVal = a.getInt () == b.getInt () ;
         else if (b.getStorageType () == Type::Real)
-          return almost_equal (static_cast<double> (a.getInt ()),
+          retVal = almost_equal (static_cast<double> (a.getInt ()),
                                b.getReal (),
                                2) ;  
-        else
-          return false ;
         break ;            
             
       case Type::Real:
         if (b.getStorageType () == Type::Real)
-          return almost_equal (a.getReal (), b.getReal (), 2) ;
+          retVal = almost_equal (a.getReal (), b.getReal (), 2) ;
         else if (b.getStorageType () == Type::Int)
-          return almost_equal (a.getReal (),
+          retVal = almost_equal (a.getReal (),
                                static_cast<double>(b.getInt ()),
                                2) ;
-        else
-          return false ;
-        break;
+       break;
 
       case Type::Text:
         if (b.getStorageType () == Type::Text)
-          return a.getText () == b.getText () ;
-        else
-          return false ;
+          retVal = a.getText () == b.getText () ;
         break ;
 
       case Type::Blob:
         if (b.getStorageType () == Type::Blob)              
-          return a.getBlob () == b.getBlob () ;
-        else
-          return false ;
+          retVal = a.getBlob () == b.getBlob () ;
         break ;
            
       default:
-        return false ;
-
+        break; // never reached?
       }
     
-    return false ; 
+    return retVal ;
   }
   
 
