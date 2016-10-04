@@ -357,7 +357,7 @@ namespace sl3
 
   private:
     Type _type;
-    // type never changes, even == makes just the value, not the type, 
+    // type never changes, even == makes just the value, not the type,
     // except when swapping .....
 
     Type _storageType;
@@ -390,43 +390,41 @@ namespace sl3
    */
   std::ostream& operator<< (std::ostream& stm, const sl3::DbValue& v);
 
-
   /**
-   * \brief global equality 
-   *   
+   * \brief global equality
+   *
    * Check if 2 DbValue instances are of the same type and of the same value.
    *
    * \return true if the type and the current value are equal, false otherwise
    */
-  bool operator== (const DbValue& a, const DbValue& b) noexcept ;
-
+  bool operator== (const DbValue& a, const DbValue& b) noexcept;
 
   /**
-   * \brief global unequal 
-   *   
+   * \brief global unequal
+   *
    * Check if 2 DbValue instances are not equal.
    *
    * \return true if given DbValue instances are not equal
    */
-  bool operator!= (const DbValue& a, const DbValue& b) noexcept ;
+  bool operator!= (const DbValue& a, const DbValue& b) noexcept;
 
   /**
-   * \brief global less operator for DbValue 
-   *   
-   * Applies following rules which are equal to the sorting rules of sqlite.
-   * 
-   * - Type::Null is alwasy less than any other storage type.
-   * - Type::Interger or Type::Real is always less than Type::Text or Type::Blob
-   * - Type::Text is less than Type::Blob 
+   * \brief global less operator for DbValue
    *
-   *  The type used is DbValue.getStorageType. 
-   * 
+   * Applies following rules which are equal to the sorting rules of sqlite.
+   *
+   * - Type::Null is alwasy less than any other storage type.
+   * - Type::Interger or Type::Real is always less than Type::Text or
+   * Type::Blob
+   * - Type::Text is less than Type::Blob
+   *
+   *  The type used is DbValue.getStorageType.
+   *
    *  The comparison of the value itself is implemented via std::less.
    *
    * \returns true if given DbValue a is less than given DbValue b
    */
-  bool operator< (const DbValue& a, const DbValue& b) noexcept ;
-
+  bool operator< (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief DbValue specialised swap function
@@ -435,9 +433,8 @@ namespace sl3
    *  This can be theroretical be abused to bypass the tye checking,
    *  but is up to the user to do so or not.
    */
-  void swap (DbValue& a, DbValue& b) noexcept ;
+  void swap (DbValue& a, DbValue& b) noexcept;
 
-  
   // variant like access
   template <typename T> struct always_false
   {
