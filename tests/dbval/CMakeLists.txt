@@ -4,6 +4,7 @@ SET (TESTNAME dbval)
 SET( test_SRC
     dbvaluetest.cpp
     dbvaluestest.cpp
+    sorttest.cpp
 )
 
 

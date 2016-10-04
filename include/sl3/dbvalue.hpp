@@ -353,9 +353,12 @@ namespace sl3
      */
     bool canAssign (const DbValue& other) const;
 
+    friend void swap (DbValue& a, DbValue& b) noexcept;
+
   private:
-    const Type _type;
-    // type never changes, even == makes just the value, not the type,
+    Type _type;
+    // type never changes, even == makes just the value, not the type, 
+    // except when swapping .....
 
     Type _storageType;
     // that's the type for the union and what is applied in the db
@@ -424,6 +427,15 @@ namespace sl3
    */
   bool operator< (const DbValue& a, const DbValue& b) noexcept ;
 
+
+  /**
+   * \brief DbValue specialised swap function
+   *
+   *  Independend of the type, a DbValue is always swapable.
+   *  This can be theroretical be abused to bypass the tye checking,
+   *  but is up to the user to do so or not.
+   */
+  void swap (DbValue& a, DbValue& b) noexcept ;
 
   
   // variant like access
