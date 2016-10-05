@@ -37,7 +37,8 @@ namespace sl3
   {
   }
 
-  DbValues::DbValues (DbValues&& row)
+  DbValues::DbValues (DbValues&& row) 
+    noexcept(std::is_nothrow_move_constructible<DbValue>::value)
   : Container (std::move (row))
   {
   }

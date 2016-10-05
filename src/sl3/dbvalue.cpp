@@ -430,7 +430,7 @@ namespace sl3
   }
 
   DbValue&
-  DbValue::operator= (DbValue&& other)
+  DbValue::operator= (DbValue&& other) 
   {
     if (!canAssign (other))
       {
@@ -440,15 +440,13 @@ namespace sl3
                                             + " with storage type"
                                             + typeName (other._storageType)
                                       : typeName (other._type)));
-      }
-
+      }   
     if (_storageType != Type::Null)
       clearValue ();
 
-    // _type = other._type ;
-    // NOTE do not change the type,
+    //_type = std::move (other._type);
+   // NOTE do not change the type,
     // if type is incompatible this line should not be reached!
-
     _storageType = std::move (other._storageType);
 
     switch (_storageType)

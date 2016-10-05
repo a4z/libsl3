@@ -20,8 +20,13 @@ namespace sl3
     stdSort ()
     {
       using namespace std;
-      vector<DbValue> vals{
-          DbValue (2.2), DbValue ("foo"), DbValue (Blob{}), DbValue (1)};
+    //  vector<DbValue> vals{
+    //      DbValue (2.2), DbValue ("foo"), DbValue (Blob{}), DbValue (1)};
+
+  vector<DbValue> vals{
+          DbValue (2.2), DbValue ("foo"), DbValue(Blob{}) , DbValue (1)};
+
+
 
       sort (begin (vals), end (vals));
       // for (const auto& val : vals) cout << val << endl ;
@@ -31,6 +36,31 @@ namespace sl3
                             BOOST_CHECK (vals.at (2) == "foo");
                             BOOST_CHECK (vals.at (3) == Blob{}));
     }
+
+
+    void
+    variantSort ()
+    {
+      using namespace std;
+
+      vector<DbValue> vals{  DbValue (2.2, Type::Variant), 
+        DbValue ("foo", Type::Variant), 
+        DbValue(Blob{}, Type::Variant) , 
+        DbValue (1, Type::Variant)};
+
+
+
+      sort (begin (vals), end (vals));
+      // for (const auto& val : vals) cout << val << endl ;
+
+      BOOST_CHECK_NO_THROW (BOOST_CHECK (vals.at (0) == 1);
+                            BOOST_CHECK (vals.at (1) == 2.2);
+                            BOOST_CHECK (vals.at (2) == "foo");
+                            BOOST_CHECK (vals.at (3) == Blob{}));
+    }
+
+
+
 
     Database
     testdb ()
@@ -104,6 +134,7 @@ namespace sl3
 
     a4TestAdd (a4test::suite ("sorting")
                    .addTest ("stdsort", stdSort)
+                   .addTest ("variantSort", variantSort)
                    .addTest ("sortRecord", sortRecord));
   }
 }

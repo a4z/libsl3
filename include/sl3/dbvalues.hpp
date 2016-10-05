@@ -49,7 +49,7 @@ namespace sl3
 #else
 
     DbValues (conatiner_type) noexcept (
-        std::is_nothrow_move_constructible<conatiner_type>::value);
+        std::is_nothrow_move_constructible<DbValue>::value);
 
     DbValues (std::initializer_list<typename conatiner_type::value_type>);
 
@@ -61,7 +61,8 @@ namespace sl3
 
     /** \brief Move constructor
      */
-    DbValues (DbValues&&);
+    DbValues (DbValues&&)
+      noexcept(std::is_nothrow_move_constructible<DbValue>::value) ;
 
     /** \brief Assigment
      *  \throw sl3::ErrTypeMisMatch if size() is different

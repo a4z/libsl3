@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <iosfwd>
 
 #include <sl3/config.hpp>
 #include <sl3/container.hpp>
@@ -49,6 +50,15 @@ enum class Type
  * \return the type name as string
  */
 std::string typeName (Type);
+
+  /**
+   * \brief overloaded stream operator for sl3::Type
+   * \param os ostream
+   * \param t the Type
+   * \return the ostream
+   */
+  std::ostream& LIBSL3_API operator<< (std::ostream& os, const Type& t);
+
 
 /**
  * \brief A Container holding sl3::Type values.

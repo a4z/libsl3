@@ -10,6 +10,7 @@
 
 #include <sl3/types.hpp>
 
+#include <ostream>
 
 
 
@@ -44,6 +45,15 @@ namespace sl3
 
     return "unknown" ;                         // LCOV_EXCL_LINE
   }
+
+
+  std::ostream&
+  operator<< (std::ostream& os, const Type& t)
+  {
+    os << "sl3::Type::" << typeName (t) ;
+    return os;
+  }
+
 
 
   void

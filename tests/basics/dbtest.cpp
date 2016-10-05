@@ -74,7 +74,7 @@ SelectSingleValue ()
       DbValue val = db.selectValue ("select f1 from tbl where f1 = 1;",
             Type::Int);
       BOOST_CHECK (!val.isNull ());
-      BOOST_CHECK (val.getType () == Type::Int);
+      BOOST_CHECK_EQUAL (val.getType () ,Type::Int);
       BOOST_CHECK (val.getStorageType () == Type::Int);
     }
 
