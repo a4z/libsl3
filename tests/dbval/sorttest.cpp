@@ -93,7 +93,6 @@ namespace sl3
       };
 
       using namespace std;
-
       sort (begin (ds), end (ds), lessValues);
     }
 
@@ -117,6 +116,22 @@ namespace sl3
       return true;
     }
 
+
+    //void printDS(const Dataset& ds)
+    //{
+
+      //std::cout << ".................." << std::endl ;
+      //for (const auto& row: ds)
+      //{
+        //for (const auto& field : row)
+          //std::cout << field << " " ;
+
+        //std::cout << std::endl ;
+      //}
+
+      //std::cout << ".................." << std::endl ;
+    //}
+
     void
     sortRecord ()
     {
@@ -127,9 +142,14 @@ namespace sl3
       auto checkSQL = "SELECT * FROM tbltest ORDER BY intFld;";
       BOOST_CHECK (sameDS (ds, db.select (checkSQL)));
 
-      sortDS (ds, {1, 2});
-      checkSQL = "SELECT * FROM tbltest ORDER BY txtFld, dblFld";
-      BOOST_CHECK (sameDS (ds, db.select (checkSQL)));
+      sortDS (ds, {1, 2, 0});
+      checkSQL = "SELECT * FROM tbltest ORDER BY txtFld, dblFld, intFld";
+      
+      auto dbsort = db.select (checkSQL);
+      //printDS (ds);
+      //printDS(dbsort) ;
+
+      BOOST_CHECK (sameDS (ds, dbsort));
     }
 
     a4TestAdd (a4test::suite ("sorting")

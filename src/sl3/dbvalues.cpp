@@ -7,8 +7,9 @@
  ******************************************************************************/
 
 #include <sl3/dbvalues.hpp>
-
 #include <sl3/error.hpp>
+
+
 
 namespace sl3
 {
@@ -70,8 +71,8 @@ namespace sl3
   {
     // in case of exception , both needs to stay unchanged
     // first all checks, than assign
-
-    if (size () != row.size ())
+    // if there is not size, it is OK, was possible moved
+    if (size () &&  size () != row.size ())
       throw ErrTypeMisMatch ();
 
     for (size_t i = 0; i < size (); ++i)
