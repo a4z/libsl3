@@ -78,24 +78,6 @@ namespace sl3
       return db;
     }
 
-    void
-    sortDS (Dataset& ds, const std::vector<size_t>& idxs)
-    {
-      auto lessValues = [&idxs](const DbValues& a, const DbValues& b) -> bool {
-        for (auto cur : idxs)
-          {
-            if (a.at (cur) < b.at (cur))
-              return true;
-            else if (b.at (cur) < a.at (cur))
-              return false;
-          }
-        return false;
-      };
-
-      using namespace std;
-      sort (begin (ds), end (ds), lessValues);
-    }
-
     bool
     sameDS (const Dataset& a, const Dataset& b)
     {
@@ -138,11 +120,11 @@ namespace sl3
       auto db = testdb ();
       auto ds = db.select ("SELECT * FROM tbltest;");
 
-      sortDS (ds, {0});
+      ds.sort ({0});
       auto checkSQL = "SELECT * FROM tbltest ORDER BY intFld;";
       BOOST_CHECK (sameDS (ds, db.select (checkSQL)));
 
-      sortDS (ds, {1, 2, 0});
+      ds.sort( {1, 2, 0});
       checkSQL = "SELECT * FROM tbltest ORDER BY txtFld, dblFld, intFld";
       
       auto dbsort = db.select (checkSQL);
