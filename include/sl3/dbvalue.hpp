@@ -426,14 +426,14 @@ namespace sl3
    */
   bool operator< (const DbValue& a, const DbValue& b) noexcept;
 
-  /**
+  /*  disable for now, sorting does not always call swap, ..  
    * \brief DbValue specialised swap function
    *
    *  Independend of the type, a DbValue is always swapable.
    *  This can be theroretical be abused to bypass the tye checking,
    *  but is up to the user to do so or not.
    */
-  void swap (DbValue& a, DbValue& b) noexcept;
+  //void swap (DbValue& a, DbValue& b) noexcept;
 
   // variant like access
   template <typename T> struct always_false

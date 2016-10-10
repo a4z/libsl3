@@ -50,7 +50,7 @@ namespace sl3
   std::ostream&
   operator<< (std::ostream& os, const Type& t)
   {
-    os << "sl3::Type::" << typeName (t) ;
+    os << "Type::" << typeName (t) ;
     return os;
   }
 

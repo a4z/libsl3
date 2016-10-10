@@ -16,51 +16,7 @@ namespace sl3
 {
   namespace
   {
-    void
-    stdSort ()
-    {
-      using namespace std;
-    //  vector<DbValue> vals{
-    //      DbValue (2.2), DbValue ("foo"), DbValue (Blob{}), DbValue (1)};
-
-  vector<DbValue> vals{
-          DbValue (2.2), DbValue ("foo"), DbValue(Blob{}) , DbValue (1)};
-
-
-
-      sort (begin (vals), end (vals));
-      // for (const auto& val : vals) cout << val << endl ;
-
-      BOOST_CHECK_NO_THROW (BOOST_CHECK (vals.at (0) == 1);
-                            BOOST_CHECK (vals.at (1) == 2.2);
-                            BOOST_CHECK (vals.at (2) == "foo");
-                            BOOST_CHECK (vals.at (3) == Blob{}));
-    }
-
-
-    void
-    variantSort ()
-    {
-      using namespace std;
-
-      vector<DbValue> vals{  DbValue (2.2, Type::Variant), 
-        DbValue ("foo", Type::Variant), 
-        DbValue(Blob{}, Type::Variant) , 
-        DbValue (1, Type::Variant)};
-
-
-
-      sort (begin (vals), end (vals));
-      // for (const auto& val : vals) cout << val << endl ;
-
-      BOOST_CHECK_NO_THROW (BOOST_CHECK (vals.at (0) == 1);
-                            BOOST_CHECK (vals.at (1) == 2.2);
-                            BOOST_CHECK (vals.at (2) == "foo");
-                            BOOST_CHECK (vals.at (3) == Blob{}));
-    }
-
-
-
+  
 
     Database
     testdb ()
@@ -99,24 +55,27 @@ namespace sl3
     }
 
 
-    //void printDS(const Dataset& ds)
-    //{
+    auto  printDS = [](const Dataset& ds)
+    {
 
-      //std::cout << ".................." << std::endl ;
-      //for (const auto& row: ds)
-      //{
-        //for (const auto& field : row)
-          //std::cout << field << " " ;
+      std::cout << ".................." << std::endl ;
+      for (const auto& row: ds)
+      {
+        for (const auto& field : row)
+          std::cout << field << " " ;
 
-        //std::cout << std::endl ;
-      //}
+        std::cout << std::endl ;
+      }
 
-      //std::cout << ".................." << std::endl ;
-    //}
+      std::cout << ".................." << std::endl ;
+    };
 
     void
     sortRecord ()
     {
+
+     (void)printDS ; // avoid not used as long I need this function here
+
       auto db = testdb ();
       auto ds = db.select ("SELECT * FROM tbltest;");
 
@@ -134,9 +93,98 @@ namespace sl3
       BOOST_CHECK (sameDS (ds, dbsort));
     }
 
+    
+    void
+    sortTypedRecord ()
+    {
+      auto db = testdb ();
+      Types types =  {Type::Int, Type::Text, Type::Real};
+      auto ds = db.select ("SELECT * FROM tbltest;", types);
+
+      ds.sort ({0});
+      auto checkSQL = "SELECT * FROM tbltest ORDER BY intFld;";
+      BOOST_CHECK (sameDS (ds, db.select (checkSQL, types)));
+
+      ds.sort( {1, 2, 0});
+      checkSQL = "SELECT * FROM tbltest ORDER BY txtFld, dblFld, intFld";
+      
+      auto dbsort = db.select (checkSQL, types);
+      //printDS (ds);
+      //printDS(dbsort) ;
+
+      BOOST_CHECK (sameDS (ds, dbsort));
+    }
+
+    void
+    sortLargeRecord ()
+    {
+
+
+      auto db = testdb ();
+
+      
+       db.execute (
+          "INSERT INTO tbltest VALUES (21, 'aa', NULL) ;"
+          "INSERT INTO tbltest VALUES (11, 'bb', 2.22) ;"
+          "INSERT INTO tbltest VALUES (11, 'bb', 1.11) ;"
+          "INSERT INTO tbltest VALUES (NULL, 'bb', 2.22) ;"
+          "INSERT INTO tbltest VALUES (11, 'bb', 2.22) ;"
+          "INSERT INTO tbltest VALUES (31, NULL, NULL) ;"
+          "INSERT INTO tbltest VALUES (22, 'aa', NULL) ;"
+          "INSERT INTO tbltest VALUES (12, 'bb', 2.242) ;"
+          "INSERT INTO tbltest VALUES (12, 'bb', 1.1671) ;"
+          "INSERT INTO tbltest VALUES (NULL, 'bb', 2.22) ;"
+          "INSERT INTO tbltest VALUES (13, 'bb', 32.22) ;"
+          "INSERT INTO tbltest VALUES (33, NULL, NULL) ;"
+          "INSERT INTO tbltest VALUES (24, 'aa', NULL) ;"
+          "INSERT INTO tbltest VALUES (14, 'abb', 2.242) ;"
+          "INSERT INTO tbltest VALUES (15, 'sbb', 21.171) ;"
+          "INSERT INTO tbltest VALUES (NULL, 'dbb', 32.22) ;"
+          "INSERT INTO tbltest VALUES (16, 'bdb', 2.242) ;"
+          "INSERT INTO tbltest VALUES (33, NULL, NULL) ;"
+          "INSERT INTO tbltest VALUES (22, 'afa', NULL) ;"
+          "INSERT INTO tbltest VALUES (14, 'bbf', 72.322) ;"
+          "INSERT INTO tbltest VALUES (15, 'bbg', 1.11) ;"
+          "INSERT INTO tbltest VALUES (NULL, 'hubb', 32.22) ;"
+          "INSERT INTO tbltest VALUES (16, 'bbk', 72.22) ;"
+          "INSERT INTO tbltest VALUES (38, NULL, NULL) ;"
+          "INSERT INTO tbltest VALUES (29, 'aau', NULL) ;"
+          "INSERT INTO tbltest VALUES (10, 'bbt', 32.22) ;"
+          "INSERT INTO tbltest VALUES (10, 'bbr', 1.311) ;"
+          "INSERT INTO tbltest VALUES (NULL, 'rbb', 22.22) ;"
+          "INSERT INTO tbltest VALUES (1909, 'btb', 2.22) ;"
+          "INSERT INTO tbltest VALUES (300, NULL, NULL) ;"
+         
+          );
+
+     
+      
+      
+      
+      auto ds = db.select ("SELECT intFld FROM tbltest;");
+
+      ds.sort ({0});
+      auto checkSQL = "SELECT intFld FROM tbltest ORDER BY intFld;";
+      BOOST_CHECK (sameDS (ds, db.select (checkSQL)));
+
+
+      ds = db.select ("SELECT * FROM tbltest;");
+      ds.sort( {1, 2, 0});
+      checkSQL = "SELECT * FROM tbltest ORDER BY txtFld, dblFld, intFld";
+      
+      auto dbsort = db.select (checkSQL);
+      //printDS (ds);
+      //printDS(dbsort) ;
+
+      BOOST_CHECK (sameDS (ds, dbsort));
+    }
+
+
+
     a4TestAdd (a4test::suite ("sorting")
-                   .addTest ("stdsort", stdSort)
-                   .addTest ("variantSort", variantSort)
-                   .addTest ("sortRecord", sortRecord));
+                   .addTest ("sortRecord", sortRecord)
+                   .addTest ("sortTypedRecord", sortTypedRecord)
+                   .addTest ("sortLargeRecord", sortLargeRecord)
+                   );
   }
 }
