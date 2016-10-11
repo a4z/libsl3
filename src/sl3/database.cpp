@@ -153,11 +153,11 @@ namespace sl3
   Database::selectValue (const std::string& sql, Type type)
   {
 
-    DbValue retVal (type);
+    DbValue retVal {type};
 
-    auto cb = [&retVal](Columns cols) -> bool
+    auto cb = [&retVal, type](Columns cols) -> bool
       {
-        retVal = cols.at (0);
+        retVal = cols.at (0, type);
         return false; //exit after first row
       };
 
