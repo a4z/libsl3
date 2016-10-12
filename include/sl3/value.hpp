@@ -23,15 +23,8 @@ namespace sl3
    * This class models the duck typing sqlite uses.
    * It supports int, real, text, blob and null values.
    *
-  * The type can be a variant, to support all of the possible types,
-   * or it can be set explicit to a wanted type.
+   * The class has the current type info availalbe.
    *
-   * Using this type for communication with the database can ensure either
-   * type guarantee or give the flexibility of variant types.
-   *
-   * If a type is of type variant, the storage type can be any of the
-   * supported types, otherwise, if the type is set to a specific type, it
-   * is guaranteed that the type will match, or an exception occurs.
    *
    */
   class LIBSL3_API Value
@@ -42,35 +35,34 @@ namespace sl3
      *
      * Creates a Null Value
      */
-    Value() noexcept ;
-
+    Value () noexcept;
 
     /** \brief Constructor
      *
      *  This constructor wiht an initialization value
      *  \param val initial value
      */
-    explicit Value (int val) noexcept; 
+    Value (int val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    explicit Value (int64_t val) noexcept;
+    Value (int64_t val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    explicit Value (std::string val) noexcept;
+    Value (std::string val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    explicit Value (double val) noexcept;
+    Value (double val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    explicit Value (Blob val) noexcept;
+    Value (Blob val) noexcept;
 
     /**
      * \brief Destructor
@@ -130,42 +122,41 @@ namespace sl3
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
-     *  \throw sl3::ErrTypeMisMatch if getType is incorrect
-     *  \return reference to the value
+     *  \throw sl3::ErrTypeMisMatch if getType is incompatible
+     *  \throw sl3::ErrOutOfRange is the stored value is an int64_t
+     *  \return  the value
      */
     operator int () const;
 
+    /** \brief Implicit conversion operator
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if getType is incompatible
+     *  \return  the value
+     */
     operator int64_t () const;
 
-    operator double () const ;
-
-    operator std::string& () const ; // TODO ref or val
-
-    operator Blob& () const ; // TODO ref or val
-
-
-    /**
-     * \brief Get the valye applying type conversion if required.
-     *
-     * Applies the same conversion rules as sqlite3 does.
-     *
+    /** \brief Implicit conversion operator
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if getType is incompatible
+     *  \throw sl3::ErrOutOfRange is the stored value is an int64_t and out of
+     *    the min or max double range.
+     *  \return  the value
      */
-    double asInt () const;
+    operator double () const;
 
-    /**
-     * \copydoc getInt() const
+    /** \brief Implicit conversion operator
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if getType is incompatible
+     *  \return  the value
      */
-    double asReal () const;
+    operator const std::string& () const; // TODO ref or val
 
-    /**
-     * \copydoc getInt() const
+    /** \brief Implicit conversion operator
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if getType is incompatible
+     *  \return  the value
      */
-    std::string asText () const;
-
-    /**
-     * \copydoc getInt() const
-     */
-    Blob asBlob () const;
+    operator const Blob& () const; // TODO ref or val
 
     /** \brief Value access with default for a NULL value.
      *
@@ -183,43 +174,17 @@ namespace sl3
     /**
      * \copydoc getInt(int64_t defval) const;
      */
-    std::string getText (const std::string& defval) const;
+    const std::string& getText (const std::string& defval) const;
 
     /**
      * \copydoc getInt(int64_t defval) const;
      */
-    Blob getBlob (const Blob& defval) const;
-
-    /** \brief Value access with default for a NULL and different type value.
-     *
-     *  This method will not throw. If the actual value is null or of a
-     *  different type, the fiven default value will be returned.
-     *
-     *  \param defval default value to return
-     *  \return the value or the give default value if the value needs to be
-     *      replaced
-     */
-    int64_t get (int64_t defval) const;
+    const Blob& getBlob (const Blob& defval) const;
 
     /**
      * \copydoc get(int64_t defval) const;
      */
-    int64_t get (int defval) const;
-
-    /**
-     * \copydoc get(int64_t defval) const;
-     */
-    double get (double defval) const;
-
-    /**
-     * \copydoc get(int64_t defval) const;
-     */
-    const std::string& get (const std::string& defval) const;
-
-    /**
-     * \copydoc get(int64_t defval) const;
-     */
-    const Blob& get (const Blob& defval) const;
+    const Blob& get (const Blob& defval) const noexcept;
 
     /**
      * \brief Compare value for equality
@@ -291,33 +256,27 @@ namespace sl3
     /**
      * \brief Set to NULL
      */
-    void setNull ();
+    void setNull () noexcept;
 
     /**
      * \brief Check Null
      * \return if the value is null
      */
-    bool isNull () const;
+    bool isNull () const noexcept;
 
     /**
      * \brief The Type of the value.
      *
-     * This is the type with which the Value has been created
-     * and will not change.
-     *
-     * The type might be Type::Varian, so that a Value can hold any value,
-     * or a specific Type to guarantee the only the allow type is used.
-     *
      * \return the type
      */
-    Type getType () const;
+    Type getType () const noexcept;
 
-
+    friend bool operator== (const Value& a, const Value& b) noexcept;
+    friend bool operator< (const Value& a, const Value& b) noexcept;
+    friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
   private:
     Type _type;
-    // type never changes, even == makes just the value, not the type,
-    // except when swapping .....
 
     // that's the type for the union and what is applied in the db
     union Store
@@ -331,12 +290,6 @@ namespace sl3
     };
 
     Store _store;
-
-    friend class DbValues;
-
-    void assign (const Value& other);
-
-    void clearValue ();
   };
 
   /**
@@ -364,7 +317,11 @@ namespace sl3
    *
    * \return true if given Value instances are not equal
    */
-  bool operator!= (const Value& a, const Value& b) noexcept;
+  inline bool
+  operator!= (const Value& a, const Value& b) noexcept
+  {
+    return !(a == b);
+  }
 
   /**
    * \brief global less operator for Value
@@ -372,11 +329,9 @@ namespace sl3
    * Applies following rules which are equal to the sorting rules of sqlite.
    *
    * - Type::Null is alwasy less than any other storage type.
-   * - Type::Interger or Type::Real is always less than Type::Text or
-   * Type::Blob
+   * - Type::Interger or Type::Real
+   *     are always less than Type::Text or Type::Blob
    * - Type::Text is less than Type::Blob
-   *
-   *  The type used is Value.getStorageType.
    *
    *  The comparison of the value itself is implemented via std::less.
    *
@@ -384,59 +339,32 @@ namespace sl3
    */
   bool operator< (const Value& a, const Value& b) noexcept;
 
-  /*  disable for now, sorting does not always call swap, ..  
+  inline bool
+  operator> (const Value& x, const Value& y) noexcept
+  {
+    return y < x;
+  }
+
+  inline bool
+  operator<= (const Value& x, const Value& y) noexcept
+  {
+    return !(y < x);
+  }
+
+  inline bool
+  operator>= (const Value& x, const Value& y) noexcept
+  {
+    return !(x < y);
+  }
+
+  /*
    * \brief Value specialised swap function
    *
    *  Independend of the type, a Value is always swapable.
    *  This can be theroretical be abused to bypass the tye checking,
    *  but is up to the user to do so or not.
    */
-  //void swap (Value& a, Value& b) noexcept;
-
-  // variant like access
-  template <typename T> struct always_false
-  {
-    enum
-    {
-      value = false
-    };
-  };
-
-  template <typename T>
-  inline const T&
-  get (const Value&)
-  {
-    static_assert (always_false<T>::value,
-                   "Invalid type to get from Value!");
-  }
-
-  template <>
-  inline const int64_t&
-  get (const Value& v)
-  {
-    return v.getInt ();
-  }
-
-  template <>
-  inline const double&
-  get (const Value& v)
-  {
-    return v.getReal ();
-  }
-
-  template <>
-  inline const std::string&
-  get (const Value& v)
-  {
-    return v.getText ();
-  }
-
-  template <>
-  inline const Blob&
-  get (const Value& v)
-  {
-    return v.getBlob ();
-  }
+  void swap (Value& a, Value& b) noexcept;
 }
 
-#endif 
+#endif

@@ -5,6 +5,7 @@ SET( test_SRC
     dbvaluetest.cpp
     dbvaluestest.cpp
     sorttest.cpp
+    valuetest.cpp
 )
 
 
