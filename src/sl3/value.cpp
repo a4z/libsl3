@@ -45,7 +45,7 @@ namespace sl3
     // requires std::is_integral<OutT>::value
     // requires is_floating_point<InT>::value
     inline OutT
-    loseLessConvert1 (InT in)
+    losslessConvert1 (InT in)
     {
       InT converted = std::trunc (in);
       if (in - converted != 0.0)
@@ -62,7 +62,7 @@ namespace sl3
     // requires std::is_integral<OutT>::value
     // requires is_floating_point<InT>::value
     inline OutT
-    loseLessConvert2 (InT in)
+    losslessConvert2 (InT in)
     {
       InT converted{0.0};
       InT fraction = std::modf (in, &converted);
@@ -394,7 +394,7 @@ namespace sl3
     if (isNull ())
       throw ErrNullValueAccess ();
     else if (_type == Type::Real)
-      return loseLessConvert1<double, int64_t> (_store.realval);
+      return losslessConvert1<double, int64_t> (_store.realval);
     else if (_type != Type::Int)
       throw ErrTypeMisMatch ("Implicit conversion: " + typeName (_type)
                              + " to int64_t");
@@ -412,7 +412,7 @@ namespace sl3
     if (isNull ())
       throw ErrNullValueAccess ();
     else if (_type == Type::Real)
-      return loseLessConvert1<double, int64_t> (_store.realval);
+      return losslessConvert1<double, int64_t> (_store.realval);
     else if (_type != Type::Int)
       throw ErrTypeMisMatch ("Implicit conversion: " + typeName (_type)
                              + " to int64_t");
