@@ -41,6 +41,42 @@ namespace sl3
              || std::abs (x - y) < numeric_limits<T>::min ();
     }
 
+    template <typename InT, typename OutT>
+    // requires std::is_integral<OutT>::value
+    // requires is_floating_point<InT>::value
+    inline OutT
+    loseLessConvert1 (InT in)
+    {
+      InT converted = std::trunc (in);
+      if (in - converted != 0.0)
+        throw ErrOutOfRange{"Conversion loses fraction"};
+
+      using limit = std::numeric_limits<OutT>;
+      if (converted < limit::min () || converted > limit::max ())
+        throw ErrOutOfRange{"Converted value to big"};
+
+      return static_cast<OutT> (converted);
+    }
+
+    template <typename InT, typename OutT>
+    // requires std::is_integral<OutT>::value
+    // requires is_floating_point<InT>::value
+    inline OutT
+    loseLessConvert2 (InT in)
+    {
+      InT converted{0.0};
+      InT fraction = std::modf (in, &converted);
+
+      if (fraction != 0.0)
+        throw ErrOutOfRange{"Conversion loses fraction"};
+
+      using limit = std::numeric_limits<OutT>;
+      if (converted < limit::min () || converted > limit::max ())
+        throw ErrOutOfRange{"Converted value to big"};
+
+      return static_cast<OutT> (converted);
+    }
+
   } //--------------------------------------------------------------------------
 
   Value::Value () noexcept
@@ -357,13 +393,16 @@ namespace sl3
   {
     if (isNull ())
       throw ErrNullValueAccess ();
+    else if (_type == Type::Real)
+      return loseLessConvert1<double, int64_t> (_store.realval);
     else if (_type != Type::Int)
-      throw ErrTypeMisMatch (typeName (_type) + " != " + typeName (Type::Int));
+      throw ErrTypeMisMatch ("Implicit conversion: " + typeName (_type)
+                             + " to int64_t");
 
     using limit = std::numeric_limits<int>;
 
-    if (_store.intval < limit::lowest () || _store.intval > limit::max ())
-      throw ErrOutOfRange ();
+    if (_store.intval < limit::min () || _store.intval > limit::max ())
+      throw ErrOutOfRange ("Implicit conversion int64_t to int, value to big");
 
     return _store.intval;
   }
@@ -372,8 +411,11 @@ namespace sl3
   {
     if (isNull ())
       throw ErrNullValueAccess ();
+    else if (_type == Type::Real)
+      return loseLessConvert1<double, int64_t> (_store.realval);
     else if (_type != Type::Int)
-      throw ErrTypeMisMatch (typeName (_type) + " != " + typeName (Type::Int));
+      throw ErrTypeMisMatch ("Implicit conversion: " + typeName (_type)
+                             + " to int64_t");
 
     return _store.intval;
   }
@@ -388,7 +430,7 @@ namespace sl3
       {
         using limit = std::numeric_limits<double>;
 
-        if (_store.intval < limit::lowest () || _store.intval > limit::max ())
+        if (_store.intval < limit::min () || _store.intval > limit::max ())
           throw ErrOutOfRange ();
 
         return _store.intval;
@@ -646,9 +688,6 @@ namespace sl3
   bool
   operator== (const Value& a, const Value& b) noexcept
   {
-    if (a.getType () != b.getType ())
-      return false;
-
     bool retval = false;
 
     switch (a.getType ())
@@ -658,19 +697,29 @@ namespace sl3
         break;
 
       case Type::Int:
-        retval = a._store.intval == b._store.intval;
+        if (b._type == Type::Int)
+          retval = a._store.intval == b._store.intval;
+        else if (b._type == Type::Real)
+          retval = a._store.intval == b._store.realval;
+
         break;
 
       case Type::Real:
-        retval = a._store.realval == b._store.realval;
+        if (b._type == Type::Int)
+          retval = a._store.realval == b._store.intval;
+        else if (b._type == Type::Real)
+          retval = a._store.realval == b._store.realval;
+
         break;
 
       case Type::Text:
-        retval = a._store.textval == b._store.textval;
+        if (b._type == Type::Text)
+          retval = a._store.textval == b._store.textval;
         break;
 
       case Type::Blob:
-        retval = a._store.blobval == b._store.blobval;
+        if (b._type == Type::Blob)
+          retval = a._store.blobval == b._store.blobval;
         break;
 
       default:
