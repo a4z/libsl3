@@ -744,7 +744,12 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          return a._store.intval < b._store.realval;
+        {
+          if (a._store.intval <= b._store.realval)
+            return true;
+          else 
+            return false ; 
+         }
 
         return true;
       }
@@ -752,7 +757,7 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          return a._store.realval < b._store.intval;
+          return a._store.realval <= b._store.intval;
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;

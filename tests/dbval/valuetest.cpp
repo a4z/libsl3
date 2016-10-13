@@ -14,7 +14,9 @@ namespace sl3
 
     void createValue ()
     {
-    
+   
+// regular a == b, b != a 
+
       {
        Value a ;
        Value b (a);
@@ -117,15 +119,8 @@ namespace sl3
        BOOST_CHECK (a < c);
 
        BOOST_CHECK ( !(a < Value{1.0}));
-       // this should be the same as SELECT 1 < 1.00000; // and this is false 
-
-        // or, but than add it to the doce 
-        // Null < 0 < 0.0 < "" < Blob{}
- 
-
-       // and make an affinity class for comparisson ??? 
-       // maybe not now but in future ..
-      }
+      
+       }
 
 
     }
