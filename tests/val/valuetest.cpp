@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+#include <algorithm>
+
 
 namespace sl3
 {
@@ -118,11 +120,36 @@ namespace sl3
        BOOST_CHECK (b < c);
        BOOST_CHECK (a < c);
 
-       BOOST_CHECK ( !(a < Value{1.0}));
+       BOOST_CHECK ( a < Value{1.0});
       
        }
 
+// TODO this is great, put it on a better place
 
+       auto trichotomous = [](const Value& a, const Value& b) -> bool {
+         std::vector<bool> v = { a<b, a==b, b<a } ; 
+         return std::count (std::begin (v), std::end (v), true) ;
+       };
+
+
+
+       BOOST_CHECK (trichotomous (Value(1), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(2), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(3), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(1.0), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(2.0), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(2.0), Value (2))) ;
+       BOOST_CHECK (trichotomous (Value(2.0), Value (2.0))) ;
+
+
+
+//Reflexive: a == b implies eq(a, b)
+//Symmetric: eq(a, b) implies eq(b, a)
+//Transitive: eq(a, b) && eq(b, c) implies eq(a, c)
+
+
+//(strict) weak order 	ordered partitions: a<b implies a<c or c<b
+//(strict) total order 	trichotomous: exactly one of a<b, a=b, b<a
     }
 
 

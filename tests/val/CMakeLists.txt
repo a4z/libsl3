@@ -1,10 +1,9 @@
 
-SET (TESTNAME dbval)
+SET (TESTNAME val)
 
 SET( test_SRC
-    dbvaluetest.cpp
-    dbvaluestest.cpp
-    sorttest.cpp
+    intval.cpp
+    valuetest.cpp
 )
 
 
