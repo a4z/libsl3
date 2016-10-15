@@ -302,9 +302,10 @@ namespace sl3
   std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
   /**
-   * \brief global equality
+   * \brief total order equality Value
    *
    * Check if 2 Value instances are of the same type and of the same value.
+   *
    *
    * \return true if the type and the current value are equal, false otherwise
    */
@@ -324,13 +325,16 @@ namespace sl3
   }
 
   /**
-   * \brief global less operator for Value
+   * \brief total order less than Value
    *
    * Applies following rules which are equal to the sorting rules of sqlite.
    *
    * - Type::Null is alwasy less than any other storage type.
    * - Type::Interger or Type::Real
-   *     are always less than Type::Text or Type::Blob
+   *     -- if the type is different, but the value equal,
+   *     than Type::Int < Type::Real .
+   *     if this is unwanted, use the weak_lt function.
+   *     -- always less than Type::Text or Type::Blob
    * - Type::Text is less than Type::Blob
    *
    *  The comparison of the value itself is implemented via std::less.
@@ -357,6 +361,18 @@ namespace sl3
     return !(x < y);
   }
 
+
+  /**
+   * \brief weak order equality
+   */
+  bool weak_eq (const Value& a, const Value& b) noexcept;
+
+  /**
+   * \brief weak order less than
+   */
+  bool weak_lt (const Value& a, const Value& b) noexcept;
+
+
   /*
    * \brief Value specialised swap function
    *
@@ -365,6 +381,14 @@ namespace sl3
    *  but is up to the user to do so or not.
    */
   void swap (Value& a, Value& b) noexcept;
+
+  // TODO do I want this like that?
+  static const Value NullValue ;
+
+
 }
+
+
+
 
 #endif
