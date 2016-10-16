@@ -22,6 +22,8 @@ if (NOT have_myCompilerSetup)
       endif(MINGW)
     endif(NOT CMAKE_CXX_FLAGS)
     
+    # TODO for the debug build, set -Og -ggdb
+    
     SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING 
       "Flags used by the compiler during all build types." 
       FORCE )  
