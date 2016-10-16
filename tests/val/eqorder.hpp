@@ -1,10 +1,7 @@
 #pragma once
 
 #include <functional>
-
 #include <boost/test/test_tools.hpp>
-
-
 
 namespace sl3
 {
@@ -26,7 +23,8 @@ namespace sl3
       if (a == b)
         return weakeq (a, b);
 
-      BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: a == b");
+      BOOST_ERROR (std::string (__FUNCTION__)
+                   + " wrong input, expected: a == b");
       return false;
     }
 
@@ -39,7 +37,8 @@ namespace sl3
       if (equal (a, b))
         return equal (b, a);
 
-      BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: a == b");
+      BOOST_ERROR (std::string (__FUNCTION__)
+                   + " wrong input, expected: a == b");
       return false;
     }
 
@@ -53,13 +52,15 @@ namespace sl3
     {
       if (!equal (a, b))
         {
-          BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: equal (a, b)");
-          return false ;
+          BOOST_ERROR (std::string (__FUNCTION__)
+                       + " wrong input, expected: equal (a, b)");
+          return false;
         }
       if (!equal (b, c))
         {
-          BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: equal (b, c)");
-          return false ;
+          BOOST_ERROR (std::string (__FUNCTION__)
+                       + " wrong input, expected: equal (b, c)");
+          return false;
         }
 
       return equal (a, c);
@@ -76,13 +77,15 @@ namespace sl3
     {
       if (!r (a, b))
         {
-          BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: r (a, b)");
-          return false ;
+          BOOST_ERROR (std::string (__FUNCTION__)
+                       + " wrong input, expected: r (a, b)");
+          return false;
         }
       if (!r (b, c))
         {
-          BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: r (b, c)");
-          return false ;
+          BOOST_ERROR (std::string (__FUNCTION__)
+                       + " wrong input, expected: r (b, c)");
+          return false;
         }
 
       return r (a, c) && !(r (a, b) && r (b, a));
@@ -98,7 +101,8 @@ namespace sl3
     {
       if (!eq_symmetric (a, b, eq))
         {
-          BOOST_ERROR (std::string(__FUNCTION__) + " , expected eq_symmetric (a,b)");
+          BOOST_ERROR (std::string (__FUNCTION__)
+                       + " , expected eq_symmetric (a,b)");
           return false;
         }
 
@@ -118,34 +122,32 @@ namespace sl3
           return less (a, b) || less (b, a);
         }
 
-      BOOST_ERROR (std::string(__FUNCTION__) + " wrong input, expected: a != b");
+      BOOST_ERROR (std::string (__FUNCTION__)
+                   + " wrong input, expected: a != b");
       return false;
     }
-
-    // TODO define a weak order eq und < for Value that ignores the type but
-    // the weak order eq funciton must be true if == (strict total ordered)
 
     /*
      regular type
 
 
      1. Equality: in order to use find and other related algorithms STL
-     requires
-     operator== to be defined and assumes certain properties of it.
+     requires operator== to be defined and assumes certain properties of it.
+
      2. Total ordering: sorting and binary searching that allow us to find
-     equal elements
-     fast and on which sorted associative containers are based require
-     operator<
-     and assume that it possesses certain properties. Total ordering must be
-     consistent
-     with equality.
+     equal elements fast and on which sorted associative containers are based
+     require operator< and assume that it possesses certain properties.
+     Total ordering must be consistent with equality.
+
      3. Copying and assignment: in order to put things into containers and to
-     move
-     them with the help of different mutating algorithms STL assumes the
-     existence of
-     copy constructors, assignment and related operations. They must be
-     consistent
-     with equality.
+     move them with the help of different mutating algorithms STL assumes the
+     existence of copy constructors, assignment and related operations.
+     They must be consistent with equality.
+
+
+     here I can add if it is move constructable / assignable,
+     and this with nothrow, it is optimal....
+
      */
 
     /*
@@ -173,10 +175,7 @@ namespace sl3
      */
 
     /*
-
-     for the weak_eq and weak_lt function
-
-     (note, add a check for if Type::Real and NaN or Inf, sane rules are paused
+     weak order
 
      Reflexive: a == b implies eq(a, b)
      Symmetric: eq(a, b) implies eq(b, a)
