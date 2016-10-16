@@ -688,6 +688,10 @@ namespace sl3
   bool
   operator== (const Value& a, const Value& b) noexcept
   {
+
+    if (a.getType () != b.getType())
+      return false ;
+
     bool retval = false;
 
     switch (a.getType ())
@@ -697,28 +701,24 @@ namespace sl3
         break;
 
       case Type::Int:
-        if (b._type == Type::Int)
+//        if (b._type == Type::Int)
           retval = a._store.intval == b._store.intval;
-        else if (b._type == Type::Real)
-          retval = a._store.intval == b._store.realval;
 
         break;
 
       case Type::Real:
-        if (b._type == Type::Int)
-          retval = a._store.realval == b._store.intval;
-        else if (b._type == Type::Real)
+  //      if (b._type == Type::Real)
           retval = a._store.realval == b._store.realval;
 
         break;
 
       case Type::Text:
-        if (b._type == Type::Text)
+    //    if (b._type == Type::Text)
           retval = a._store.textval == b._store.textval;
         break;
 
       case Type::Blob:
-        if (b._type == Type::Blob)
+      //  if (b._type == Type::Blob)
           retval = a._store.blobval == b._store.blobval;
         break;
 
@@ -798,5 +798,105 @@ namespace sl3
     a = std::move (b);
     b = std::move (t);
   }
+
+
+  bool
+  weak_eq (const Value& a, const Value& b) noexcept
+  {
+    bool retval = false;
+
+    switch (a.getType ())
+      {
+      case Type::Null:
+        retval = b.isNull ();
+        break;
+
+      case Type::Int:
+        if (b._type == Type::Int)
+          retval = a._store.intval == b._store.intval;
+        else if (b._type == Type::Real)
+          retval = a._store.intval == b._store.realval;
+
+        break;
+
+      case Type::Real:
+        if (b._type == Type::Int)
+          retval = a._store.realval == b._store.intval;
+        else if (b._type == Type::Real)
+          retval = a._store.realval == b._store.realval;
+
+        break;
+
+      case Type::Text:
+        if (b._type == Type::Text)
+          retval = a._store.textval == b._store.textval;
+        break;
+
+      case Type::Blob:
+        if (b._type == Type::Blob)
+          retval = a._store.blobval == b._store.blobval;
+        break;
+
+      default:
+        break; // LCOV_EXCL_LINE
+      }
+
+    return retval;
+  }
+
+
+  bool
+  weak_lt (const Value& a, const Value& b) noexcept
+  {
+    if (b.isNull ())
+      return false;
+
+    if (a.isNull ())
+      return true;
+
+    if (a.getType () == Type::Int)
+      {
+        if (b.getType () == Type::Int)
+          return a._store.intval < b._store.intval;
+
+        if (b.getType () == Type::Real)
+          return a._store.intval < b._store.realval;
+
+        return true;
+      }
+
+    if (a.getType () == Type::Real)
+      {
+        if (b.getType () == Type::Int)
+          return a._store.realval < b._store.intval;
+
+        if (b.getType () == Type::Real)
+          return a._store.realval < b._store.realval;
+
+        return true;
+      }
+
+    if (a.getType () == Type::Text)
+      {
+        if (b.getType () == Type::Text)
+          return a._store.textval < b._store.textval;
+
+        if (b.getType () == Type::Blob)
+          return true;
+        else
+          return false;
+      }
+
+    // TODO assert a.getType () == Type::Blob
+
+    // this is blob
+    if (b.getType () != Type::Blob)
+      return false;
+
+    // we are both bolb
+    return a._store.blobval == b._store.blobval;
+  }
+
+
 
 } // ns

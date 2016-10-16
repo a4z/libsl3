@@ -275,6 +275,9 @@ namespace sl3
     friend bool operator< (const Value& a, const Value& b) noexcept;
     friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
+    friend bool weak_eq (const Value& a, const Value& b) noexcept;
+    friend bool weak_lt (const Value& a, const Value& b) noexcept;
+
   private:
     Type _type;
 
