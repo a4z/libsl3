@@ -2,8 +2,12 @@
 SET (TESTNAME val)
 
 SET( test_SRC
+    blobval.cpp
     intval.cpp
+    realval.cpp
+    textval.cpp
     valuetest.cpp
+    eqorder.hpp
 )
 
 

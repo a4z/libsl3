@@ -6,8 +6,19 @@
 #include "eqorder.hpp"
 #include <functional>
 
+#include <ostream>
+
+  std::ostream& operator<< (std::ostream& stm, const sl3::Blob& blob)
+  {
+    for ( auto b: blob)
+      stm << b ;
+    return stm ;
+  }
+
 namespace sl3
 {
+
+
   namespace
   {
 
@@ -22,26 +33,26 @@ namespace sl3
     void
     create ()
     {
-      Value a(100);
+      Value a(Blob({0,0,0}));
       Value b(a);
       Value c = a ;
-      Value d = 100 ;
+      Value d = Blob({0,0,0}) ;
 
-      BOOST_CHECK_EQUAL (a, 100) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 100) ;
-      BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 100) ;
-      BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 100) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
+      BOOST_CHECK (a == Blob({0,0,0})) ;
+      BOOST_CHECK  (a.getType()== Type::Blob) ;
+      BOOST_CHECK  (b== Blob({0,0,0})) ;
+      BOOST_CHECK  (b.getType()== Type::Blob) ;
+      BOOST_CHECK  (c== Blob({0,0,0})) ;
+      BOOST_CHECK  (c.getType()== Type::Blob) ;
+      BOOST_CHECK  (d== Blob({0,0,0})) ;
+      BOOST_CHECK  (d.getType()== Type::Blob) ;
 
       Value e;
       BOOST_CHECK (e.isNull()) ;
       BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = 100 ;
-      BOOST_CHECK_EQUAL (e, 100) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Int) ;
+      e = Blob({0,0,0}) ;
+      BOOST_CHECK (e == Blob({0,0,0})) ;
+      BOOST_CHECK_EQUAL (e.getType(), Type::Blob) ;
       BOOST_CHECK (!e.isNull()) ;
 
     }
@@ -54,45 +65,45 @@ namespace sl3
       Value a;
       BOOST_CHECK (a.isNull()) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
-      int64_t intval = 100 ;
-      a = intval ;
-      BOOST_CHECK_EQUAL (a , intval) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
+      Blob blob = {1,2,3};
+      a = blob ;
+      BOOST_CHECK (a == blob) ;
+      BOOST_CHECK_EQUAL (a.getType(), Type::Blob) ;
       BOOST_CHECK (!a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK_EQUAL (b , intval) ;
-      BOOST_CHECK_EQUAL (b , a) ;
+      BOOST_CHECK (b == blob) ;
+      BOOST_CHECK (b == a) ;
 
     }
 
     void
     move()
     {
-      Value a{1};
+      Value a{Blob{0,1,0}};
       BOOST_CHECK (!a.isNull()) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
+      BOOST_CHECK_EQUAL (a.getType(), Type::Blob) ;
 
       Value b{std::move(a)};
       BOOST_CHECK (a.isNull()) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
-      BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 1) ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Blob) ;
+      BOOST_CHECK (b == Blob({0,1,0})) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
-      BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 1) ;
+      BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
+      BOOST_CHECK  (c == Blob({0,1,0})) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 1) ;
+      BOOST_CHECK_EQUAL (d.getType(), Type::Blob) ;
+      BOOST_CHECK (d == Blob({0,1,0})) ;
 
 
     }
@@ -100,7 +111,7 @@ namespace sl3
     void
      equality ()
      {
-        Value a(100), b(100), c(100) ;
+        Value a(Blob{0,1,0}), b(Blob{0,1,0}), c(Blob{0,1,0}) ;
         using namespace eqo ;
 
         BOOST_CHECK (eq_reflexive (a, strong_eq));
@@ -121,11 +132,11 @@ namespace sl3
      {
        using namespace eqo ;
 
-       BOOST_CHECK (strong_eq(Value{1}, Value{1}));
-       BOOST_CHECK (!strong_eq(Value{1}, Value{1.0}));
+       BOOST_CHECK (strong_eq(Value{Blob{0,1,0}}, Value{Blob{0,1,0}}));
+       BOOST_CHECK (!strong_eq(Value{Blob{0,1,0}}, Value{Blob{1,1,1}}));
 
-       Value a(100), b(100), c(100) ;
-       Value d(100), e(200), f(300) ;
+       Value a(Blob{0,1,0}), b(Blob{0,1,0}), c(Blob{0,1,0}) ;
+       Value d(Blob{0}), e(Blob{0,0}), f(Blob{0,0,0}) ;
 
        BOOST_CHECK (eq_reflexive (a, strong_eq));
        BOOST_CHECK (eq_symmetric (a,b, strong_eq));
@@ -142,20 +153,7 @@ namespace sl3
      void
      weakTotalOrdered ()
      {
-       using namespace eqo ;
-       BOOST_CHECK (weak_eq(Value{1}, Value{1}));
-       BOOST_CHECK (weak_eq(Value{1}, Value{1.0}));
-
-       Value a(100), b(100.0), c(100) ;
-       Value d(100), e(200.0), f(300) ;
-
-       BOOST_CHECK (weak_reflexive (a,a, weak_eq));
-       BOOST_CHECK (eq_symmetric (a,b, weak_eq));
-       BOOST_CHECK (eq_transitive (a,b,c, weak_eq));
-
-       BOOST_CHECK (irreflexive (a,b, weak_eq, weak_lt));
-       BOOST_CHECK (lt_transitive (d,e,f, weak_lt));
-       BOOST_CHECK (trichotomy (d,e, weak_eq, weak_lt));
+       // makes no sense with blob
 
      }
 
@@ -170,22 +168,23 @@ namespace sl3
        Value textVal ("a");
        Value blobVal (Blob{});
 
-       BOOST_CHECK (intVal != nullVal);
-       BOOST_CHECK (intVal > nullVal);
+       BOOST_CHECK (blobVal != nullVal);
+       BOOST_CHECK (blobVal > nullVal);
 
-       BOOST_CHECK (intVal != realVal);
-       BOOST_CHECK (intVal < realVal);
+       BOOST_CHECK (blobVal != intVal);
+       BOOST_CHECK (blobVal > intVal);
 
-       BOOST_CHECK (intVal != textVal);
-       BOOST_CHECK (intVal < textVal);
+       BOOST_CHECK (blobVal != realVal);
+       BOOST_CHECK (blobVal > realVal);
 
-       BOOST_CHECK (intVal != blobVal);
-       BOOST_CHECK (intVal < blobVal);
+       BOOST_CHECK (blobVal != textVal);
+       BOOST_CHECK (blobVal > textVal);
+
 
      }
 
 
-    a4TestAdd (a4test::suite ("intval")
+    a4TestAdd (a4test::suite ("blobval")
           .addTest ("create", create)
           .addTest ("assing", assing)
           .addTest ("move", move)

@@ -57,6 +57,11 @@ namespace sl3
     /**
      * \copydoc Value(int val)
      */
+    Value (const char* val) ;
+
+    /**
+     * \copydoc Value(int val)
+     */
     Value (double val) noexcept;
 
     /**

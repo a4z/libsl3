@@ -102,6 +102,12 @@ namespace sl3
     new (&_store.textval) std::string (std::move (val));
   }
 
+  Value::Value (const char* val)
+  : _type (Type::Text)
+  {
+    new (&_store.textval) std::string (val);
+  }
+
   Value::Value (double val) noexcept
   : _type (Type::Real)
   {
@@ -788,7 +794,7 @@ namespace sl3
       return false;
 
     // we are both bolb
-    return a._store.blobval == b._store.blobval;
+    return a._store.blobval < b._store.blobval;
   }
 
   void

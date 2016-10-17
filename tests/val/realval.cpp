@@ -22,26 +22,26 @@ namespace sl3
     void
     create ()
     {
-      Value a(100);
+      Value a(100.0);
       Value b(a);
       Value c = a ;
-      Value d = 100 ;
+      Value d = 100.0 ;
 
-      BOOST_CHECK_EQUAL (a, 100) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 100) ;
-      BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 100) ;
-      BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 100) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
+      BOOST_CHECK_EQUAL (a, 100.00) ;
+      BOOST_CHECK_EQUAL (a.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (b, 100.00) ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (c, 100.00) ;
+      BOOST_CHECK_EQUAL (c.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (d, 100.00) ;
+      BOOST_CHECK_EQUAL (d.getType(), Type::Real) ;
 
       Value e;
       BOOST_CHECK (e.isNull()) ;
       BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = 100 ;
-      BOOST_CHECK_EQUAL (e, 100) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Int) ;
+      e = 100.00 ;
+      BOOST_CHECK_EQUAL (e, 100.00) ;
+      BOOST_CHECK_EQUAL (e.getType(), Type::Real) ;
       BOOST_CHECK (!e.isNull()) ;
 
     }
@@ -54,15 +54,15 @@ namespace sl3
       Value a;
       BOOST_CHECK (a.isNull()) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
-      int64_t intval = 100 ;
-      a = intval ;
-      BOOST_CHECK_EQUAL (a , intval) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
+      double real = 100.0 ;
+      a = real ;
+      BOOST_CHECK_EQUAL (a , real) ;
+      BOOST_CHECK_EQUAL (a.getType(), Type::Real) ;
       BOOST_CHECK (!a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK_EQUAL (b , intval) ;
+      BOOST_CHECK_EQUAL (b , real) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
     }
@@ -70,29 +70,29 @@ namespace sl3
     void
     move()
     {
-      Value a{1};
+      Value a{1.0};
       BOOST_CHECK (!a.isNull()) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
+      BOOST_CHECK_EQUAL (a.getType(), Type::Real) ;
 
       Value b{std::move(a)};
       BOOST_CHECK (a.isNull()) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
-      BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 1) ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (b, 1.0) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
-      BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 1) ;
+      BOOST_CHECK_EQUAL (c.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (c, 1.0) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 1) ;
+      BOOST_CHECK_EQUAL (d.getType(), Type::Real) ;
+      BOOST_CHECK_EQUAL (d, 1.0) ;
 
 
     }
@@ -100,7 +100,7 @@ namespace sl3
     void
      equality ()
      {
-        Value a(100), b(100), c(100) ;
+        Value a(100.0), b(100.0), c(100.0) ;
         using namespace eqo ;
 
         BOOST_CHECK (eq_reflexive (a, strong_eq));
@@ -121,11 +121,11 @@ namespace sl3
      {
        using namespace eqo ;
 
-       BOOST_CHECK (strong_eq(Value{1}, Value{1}));
+       BOOST_CHECK (strong_eq(Value{1.0}, Value{1.0}));
        BOOST_CHECK (!strong_eq(Value{1}, Value{1.0}));
 
-       Value a(100), b(100), c(100) ;
-       Value d(100), e(200), f(300) ;
+       Value a(1.00), b(1.00), c(1.00) ;
+       Value d(1.00), e(2.00), f(3.00) ;
 
        BOOST_CHECK (eq_reflexive (a, strong_eq));
        BOOST_CHECK (eq_symmetric (a,b, strong_eq));
@@ -146,8 +146,8 @@ namespace sl3
        BOOST_CHECK (weak_eq(Value{1}, Value{1}));
        BOOST_CHECK (weak_eq(Value{1}, Value{1.0}));
 
-       Value a(100), b(100.0), c(100) ;
-       Value d(100), e(200.0), f(300) ;
+       Value a(100.0), b(100.0), c(100) ;
+       Value d(100), e(200.0), f(300.0) ;
 
        BOOST_CHECK (weak_reflexive (a,a, weak_eq));
        BOOST_CHECK (eq_symmetric (a,b, weak_eq));
@@ -170,22 +170,22 @@ namespace sl3
        Value textVal ("a");
        Value blobVal (Blob{});
 
-       BOOST_CHECK (intVal != nullVal);
-       BOOST_CHECK (intVal > nullVal);
+       BOOST_CHECK (realVal != nullVal);
+       BOOST_CHECK (realVal > nullVal);
 
-       BOOST_CHECK (intVal != realVal);
-       BOOST_CHECK (intVal < realVal);
+       BOOST_CHECK (realVal != intVal);
+       BOOST_CHECK (realVal > intVal);
 
-       BOOST_CHECK (intVal != textVal);
-       BOOST_CHECK (intVal < textVal);
+       BOOST_CHECK (realVal != textVal);
+       BOOST_CHECK (realVal < textVal);
 
-       BOOST_CHECK (intVal != blobVal);
-       BOOST_CHECK (intVal < blobVal);
+       BOOST_CHECK (realVal != blobVal);
+       BOOST_CHECK (realVal < blobVal);
 
      }
 
 
-    a4TestAdd (a4test::suite ("intval")
+    a4TestAdd (a4test::suite ("realval")
           .addTest ("create", create)
           .addTest ("assing", assing)
           .addTest ("move", move)
