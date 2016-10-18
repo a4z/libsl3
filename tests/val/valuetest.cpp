@@ -14,152 +14,147 @@ namespace sl3
   namespace
   {
 
-    void createValue ()
+    void compare ()
     {
+      Value ival {1} ;
+      Value rval {1.0} ;
+      Value txtval {"foo"} ;
+      Value blobval {Blob()} ;
+
+
+      BOOST_CHECK (ival == 1);
+      BOOST_CHECK (ival == 1.0);
+      BOOST_CHECK (ival != std::string("foo"));
+
+      BOOST_CHECK (rval == 1);
+      BOOST_CHECK (rval == 1.0);
+      BOOST_CHECK (rval != std::string("foo"));
+
+
+      BOOST_CHECK (txtval == std::string("foo"));
    
-// regular a == b, b != a 
-
-      {
-       Value a ;
-       Value b (a);
-       Value c = b ;
-
-       BOOST_CHECK_EQUAL (a.getType (), Type::Null);
-       BOOST_CHECK_EQUAL (b.getType (), Type::Null);
-       BOOST_CHECK_EQUAL (c.getType (), Type::Null);
-       BOOST_CHECK (c.isNull ()) ; 
-      }
-      
-       {
-       Value a{1} ;
-       Value b (a);
-       Value c = b ;
-       Value d = 1 ;
-       BOOST_CHECK_EQUAL (a.getType (), Type::Int);
-
-       BOOST_CHECK_EQUAL (b.getType (), Type::Int);
-       BOOST_CHECK_EQUAL (c.getType (), Type::Int);
-       BOOST_CHECK_EQUAL (d.getType (), Type::Int);
-       BOOST_CHECK (!d.isNull ()) ;        
-      }
-     
-      {
-       Value a{1.1} ;
-       Value b (a);
-       Value c = b ;
-       Value d = 1.1 ;
-       BOOST_CHECK_EQUAL (a.getType (), Type::Real);
-       BOOST_CHECK_EQUAL (b.getType (), Type::Real);
-       BOOST_CHECK_EQUAL (c.getType (), Type::Real);
-       BOOST_CHECK_EQUAL (d.getType (), Type::Real);
-       BOOST_CHECK (!d.isNull ()) ;        
-      }
-  
-      {
-       Value a{std::string{}} ;
-       Value b (a);
-       Value c = b ;
-       Value d = std::string{} ;
-       BOOST_CHECK_EQUAL (a.getType (), Type::Text);
-       BOOST_CHECK_EQUAL (b.getType (), Type::Text);
-       BOOST_CHECK_EQUAL (c.getType (), Type::Text);
-       BOOST_CHECK_EQUAL (d.getType (), Type::Text);
-       BOOST_CHECK (!d.isNull ()) ;        
-      }
-  
-
-       {
-       Value a{Blob{}} ;
-       Value b (a);
-       Value c = b ;
-       Value d = Blob{} ;
-       BOOST_CHECK_EQUAL (a.getType (), Type::Blob);
-
-       BOOST_CHECK_EQUAL (b.getType (), Type::Blob);
-       BOOST_CHECK_EQUAL (c.getType (), Type::Blob);
-       BOOST_CHECK_EQUAL (d.getType (), Type::Blob);
-       BOOST_CHECK (!d.isNull ()) ;        
-      }
-    }
-
-
-    using VauleRelation = std::function<bool(const Value&, const Value&)>;
-
-    VauleRelation strong_eq = std::equal_to<sl3::Value>() ;
-    VauleRelation strong_lt = std::less<Value>() ;
-
-    VauleRelation weak_eq = sl3::weak_eq;
-    VauleRelation weak_lt = sl3::weak_lt ;
-
-
-
-    void
-    equality ()
-    {
-       Value a(100), b(100), c(100) ;
-       using namespace eqo ;
-
-       BOOST_CHECK (eq_reflexive (a, strong_eq));
-       BOOST_CHECK (weak_reflexive (a,b, weak_eq));
-
-       BOOST_CHECK (eq_symmetric (a,b, strong_eq));
-       BOOST_CHECK (eq_symmetric (a,b, weak_eq));
-
-       BOOST_CHECK (eq_transitive (a,b,c, strong_eq));
-       BOOST_CHECK (eq_transitive (a,b,c, weak_eq));
+      BOOST_CHECK (blobval != std::string("foo"));
+      BOOST_CHECK (blobval == Blob());
 
     }
 
-
-
-    void 
-    strictTotalOrdered ()
-    {
-      using namespace eqo ;
-      Value a(100), b(100), c(100) ;
-      Value d(100), e(100.0), f("foo") ;
-
-      BOOST_CHECK (strong_eq(Value{1}, Value{1}));
-      BOOST_CHECK (!strong_eq(Value{1}, Value{1.0}));
-
-      BOOST_CHECK (eq_reflexive (a, strong_eq));
-      BOOST_CHECK (eq_symmetric (a,b, strong_eq));
-      BOOST_CHECK (eq_transitive (a,b,c, strong_eq));
-
-      BOOST_CHECK (irreflexive (a,b, strong_eq, strong_lt));
-      BOOST_CHECK (lt_transitive (d,e,f, strong_lt));
-      BOOST_CHECK (trichotomy (d,e, strong_eq, strong_lt));
-    }
-
-
-    void
-    weakTotalOrdered ()
-    {
-      using namespace eqo ;
-      Value a(100), b(100.0), c(100) ;
-      Value d(100), e(200.0), f(300) ;
-
-      BOOST_CHECK (weak_eq(Value{1}, Value{1}));
-      BOOST_CHECK (weak_eq(Value{1}, Value{1.0}));
-
-      BOOST_CHECK (weak_reflexive (a,a, weak_eq));
-      BOOST_CHECK (eq_symmetric (a,b, weak_eq));
-      BOOST_CHECK (eq_transitive (a,b,c, weak_eq));
-
-      BOOST_CHECK (irreflexive (a,b, weak_eq, weak_lt));
-      BOOST_CHECK (lt_transitive (d,e,f, weak_lt));
-      BOOST_CHECK (trichotomy (d,e, weak_eq, weak_lt));
-
-    }
-
+    // todo throw with convert usw ..
+    // trow on illegal access ....
 
 
     a4TestAdd (a4test::suite ("value")
-          .addTest ("create", createValue)
-          .addTest ("equality", equality)
-          .addTest ("totalOrder", strictTotalOrdered)
-          .addTest ("weakOrder", weakTotalOrdered)
+          .addTest ("compare", compare)
+
                    );
   }
 }
+
+
+
+
+
+
+/*
+ *
+ * das kann jetzt jeder selber implementieren, wenn gewollt
+ *
+  template <typename T>
+  inline const T&
+  get (const Value&)
+  {
+    static_assert (false,
+                   "Invalid type to get from DbValue!");
+  }
+
+  template <typename T>
+  inline const T*
+  get_if (const Value&)
+  {
+    static_assert (false,
+                   "Invalid type to get from DbValue!");
+  }
+
+
+  template <>
+  inline const int64_t&
+  get (const Value& v)
+  {
+    if (v._type() == Type::Null)
+      throw ErrNullValueAccess() ;
+    else if (v._type() != Type::Int)
+      throw ErrTypeMisMatch();
+
+    return v._store.intval ;
+  }
+
+  template <>
+  inline const int64_t*
+  get_if (const Value& v)
+  {
+    return v._type() != Type::Int ? nullptr : v._store.intval ;
+  }
+
+
+  template <>
+  inline const double&
+  get (const Value& v)
+  {
+    if (v._type() == Type::Null)
+      throw ErrNullValueAccess() ;
+    else if (v._type() != Type::Real)
+      throw ErrTypeMisMatch();
+
+    return v._store.realval ;
+  }
+
+  template <>
+  inline const double*
+  get_if (const Value& v)
+  {
+    return v._type() != Type::Real ? nullptr : v._store.realval ;
+  }
+
+
+
+  template <>
+  inline const std::string&
+  get (const Value& v)
+  {
+    if (v._type() == Type::Null)
+      throw ErrNullValueAccess() ;
+    else if (v._type() != Type::Text)
+      throw ErrTypeMisMatch();
+
+    return v._store.textval ;
+  }
+
+  template <>
+  inline const std::string*
+  get_if (const Value& v)
+  {
+    return v._type() != Type::Text ? nullptr : v._store.textval ;
+  }
+
+
+
+  template <>
+  inline const Blob&
+  get (const Value& v)
+  {
+    if (v._type() == Type::Null)
+      throw ErrNullValueAccess() ;
+    else if (v._type() != Type::Blob)
+      throw ErrTypeMisMatch();
+
+    return v._store.blobval ;
+  }
+
+  template <>
+  inline const Blob*
+  get_if (const Value& v)
+  {
+    return v._type() != Type::Blob ? nullptr : v._store.blobval ;
+  }
+*/
+
 

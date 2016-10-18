@@ -472,24 +472,24 @@ namespace sl3
     return _store.blobval;
   }
 
-  int64_t
-  Value::getInt (int64_t defval) const
+  const int64_t&
+  Value::int64 () const
   {
     if (isNull ())
-      return defval;
+      throw ErrNullValueAccess ();
 
     const auto wanted = Type::Int;
     if (_type != wanted)
       throw ErrTypeMisMatch (typeName (_type) + " != " + typeName (wanted));
 
-    return _store.realval;
+    return _store.intval;
   }
 
-  double
-  Value::getReal (double defval) const
+  const double&
+  Value::real () const
   {
     if (isNull ())
-      return defval;
+      throw ErrNullValueAccess ();
 
     const auto wanted = Type::Real;
     if (_type != wanted)
@@ -499,10 +499,10 @@ namespace sl3
   }
 
   const std::string&
-  Value::getText (const std::string& defval) const
+  Value::text () const
   {
     if (isNull ())
-      return defval;
+      throw ErrNullValueAccess ();
 
     const auto wanted = Type::Text;
     if (_type != wanted)
@@ -512,16 +512,19 @@ namespace sl3
   }
 
   const Blob&
-  Value::getBlob (const Blob& defval) const
+  Value::blob () const
   {
     if (isNull ())
-      return defval;
+      throw ErrNullValueAccess ();
 
-    const auto wanted = Type::Text;
+    const auto wanted = Type::Blob;
     if (_type != wanted)
       throw ErrTypeMisMatch (typeName (_type) + " != " + typeName (wanted));
+
     return _store.blobval;
   }
+
+
 
   bool
   Value::operator== (const int val) const
@@ -574,35 +577,7 @@ namespace sl3
     return false;
   }
 
-  bool
-  Value::operator!= (const int val) const
-  {
-    return !(*this == val);
-  }
 
-  bool
-  Value::operator!= (const int64_t& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  Value::operator!= (const std::string& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  Value::operator!= (const double& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  Value::operator!= (const Blob& val) const
-  {
-    return !(*this == val);
-  }
 
   std::string
   Value::ejectText ()

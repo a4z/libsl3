@@ -15,6 +15,8 @@
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 
+#include <boost/operators.hpp>
+
 namespace sl3
 {
   /**
@@ -27,7 +29,12 @@ namespace sl3
    *
    *
    */
-  class LIBSL3_API Value
+  class LIBSL3_API Value :
+      boost::totally_ordered<Value> ,
+      boost::equality_comparable<Value, int> ,
+      boost::equality_comparable<Value, int64_t> ,
+      boost::equality_comparable<Value, std::string>,
+      boost::equality_comparable<Value, Blob>
   {
   public:
     /**
@@ -163,33 +170,36 @@ namespace sl3
      */
     operator const Blob& () const; // TODO ref or val
 
-    /** \brief Value access with default for a NULL value.
-     *
-     *  \throw sl3::ErrTypeMisMatch if getType is incorrect
-     *  \param defval default value to return if value is NULL/
-     *  \return the value or the give defval in case value is NULL
-     */
-    int64_t getInt (int64_t defval) const;
 
-    /**
-     * \copydoc getInt(int64_t defval) const;
+    /** \brief Access the value
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if the current value has a different type.
+     *  \return  reference to the value
      */
-    double getReal (double defval) const;
+    const int64_t& int64 () const;
 
-    /**
-     * \copydoc getInt(int64_t defval) const;
+    /** \brief Access the value
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if the current value has a different type.
+     *  \return  reference to the value
      */
-    const std::string& getText (const std::string& defval) const;
+    const double& real () const;
 
-    /**
-     * \copydoc getInt(int64_t defval) const;
+    /** \brief Access the value
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if the current value has a different type.
+     *  \return  reference to the value
      */
-    const Blob& getBlob (const Blob& defval) const;
+    const std::string& text () const;
 
-    /**
-     * \copydoc get(int64_t defval) const;
+    /** \brief Access the value
+     *  \throw sl3::ErrNullValueAccess if value is null.
+     *  \throw sl3::ErrTypeMisMatch if the current value has a different type.
+     *  \return  reference to the value
      */
-    const Blob& get (const Blob& defval) const noexcept;
+    const Blob& blob () const;
+
+
 
     /**
      * \brief Compare value for equality
@@ -218,21 +228,11 @@ namespace sl3
      */
     bool operator== (const Blob& val) const;
 
-    /** \brief Compare value inequality.
-     * \param val value to compare with
-     * \return if given values are not equal
-     */
-    bool operator!= (const int val) const;
 
     /**
      * \copydoc operator!=(const int val) const
      */
-    bool operator!= (const int64_t& val) const;
-
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const std::string& val) const;
+    //bool operator!= (const std::string& val) const;
 
     /**
      * \copydoc operator!=(const int val) const
@@ -276,12 +276,16 @@ namespace sl3
      */
     Type getType () const noexcept;
 
+
     friend bool operator== (const Value& a, const Value& b) noexcept;
     friend bool operator< (const Value& a, const Value& b) noexcept;
     friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
     friend bool weak_eq (const Value& a, const Value& b) noexcept;
     friend bool weak_lt (const Value& a, const Value& b) noexcept;
+
+
+
 
   private:
     Type _type;
@@ -319,18 +323,6 @@ namespace sl3
    */
   bool operator== (const Value& a, const Value& b) noexcept;
 
-  /**
-   * \brief global unequal
-   *
-   * Check if 2 Value instances are not equal.
-   *
-   * \return true if given Value instances are not equal
-   */
-  inline bool
-  operator!= (const Value& a, const Value& b) noexcept
-  {
-    return !(a == b);
-  }
 
   /**
    * \brief total order less than Value
@@ -350,24 +342,6 @@ namespace sl3
    * \returns true if given Value a is less than given Value b
    */
   bool operator< (const Value& a, const Value& b) noexcept;
-
-  inline bool
-  operator> (const Value& x, const Value& y) noexcept
-  {
-    return y < x;
-  }
-
-  inline bool
-  operator<= (const Value& x, const Value& y) noexcept
-  {
-    return !(y < x);
-  }
-
-  inline bool
-  operator>= (const Value& x, const Value& y) noexcept
-  {
-    return !(x < y);
-  }
 
 
   /**
@@ -391,7 +365,9 @@ namespace sl3
   void swap (Value& a, Value& b) noexcept;
 
   // TODO do I want this like that?
-  static const Value NullValue ;
+  static const Value NullValue{} ;
+
+
 
 
 }
