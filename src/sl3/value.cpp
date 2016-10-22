@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
-#include <limits>
+#include <climits>
 #include <ostream>
 #include <type_traits>
 
@@ -49,7 +49,7 @@ namespace sl3
     {
       InT converted = std::trunc (in);
       if (in - converted != 0.0)
-        throw ErrOutOfRange{"Conversion loses fraction"};
+        throw ErrTypeMisMatch{"Conversion loses fraction"};
 
       using limit = std::numeric_limits<OutT>;
       if (converted < limit::min () || converted > limit::max ())

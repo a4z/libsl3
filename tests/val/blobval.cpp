@@ -155,6 +155,21 @@ namespace sl3
      {
        // makes no sense with blob
 
+       // but I use this for the eject test
+
+       Blob blob = Blob{0,1};
+       Value val (blob);
+
+       BOOST_CHECK_THROW(val.ejectText(), ErrTypeMisMatch);
+
+       auto blob2 =  val.ejectBlob() ;
+
+       BOOST_CHECK (blob2  == blob );
+
+       BOOST_CHECK (val.isNull() );
+
+       BOOST_CHECK_THROW(val.ejectBlob(), ErrNullValueAccess);
+
      }
 
 

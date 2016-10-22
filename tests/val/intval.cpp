@@ -4,7 +4,10 @@
 #include <sl3/value.hpp>
 #include <sl3/error.hpp>
 #include "eqorder.hpp"
+
 #include <functional>
+#include <climits>
+
 
 namespace sl3
 {
@@ -22,6 +25,7 @@ namespace sl3
     void
     create ()
     {
+
       Value a(100);
       Value b(a);
       Value c = a ;
@@ -44,6 +48,13 @@ namespace sl3
       BOOST_CHECK_EQUAL (e.getType(), Type::Int) ;
       BOOST_CHECK (!e.isNull()) ;
 
+
+      int64_t i64 = 100 ;
+      Value f{i64};
+      BOOST_CHECK_EQUAL (f, i64) ;
+      BOOST_CHECK_EQUAL (f.getType(), Type::Int) ;
+      BOOST_CHECK (!f.isNull()) ;
+
     }
 
 
@@ -63,6 +74,11 @@ namespace sl3
       Value b;
       b = a ;
       BOOST_CHECK_EQUAL (b , intval) ;
+      BOOST_CHECK_EQUAL (b , a) ;
+
+      b = Value{} ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Null) ;
+      a.setNull() ;
       BOOST_CHECK_EQUAL (b , a) ;
 
     }
@@ -146,8 +162,8 @@ namespace sl3
        BOOST_CHECK (weak_eq(Value{1}, Value{1}));
        BOOST_CHECK (weak_eq(Value{1}, Value{1.0}));
 
-       Value a(100), b(100.0), c(100) ;
-       Value d(100), e(200.0), f(300) ;
+       Value a(100), b(100), c(100) ;
+       Value d{1}, e(200), f(300) ;
 
        BOOST_CHECK (weak_reflexive (a,a, weak_eq));
        BOOST_CHECK (eq_symmetric (a,b, weak_eq));
@@ -173,6 +189,8 @@ namespace sl3
        BOOST_CHECK (intVal != nullVal);
        BOOST_CHECK (intVal > nullVal);
 
+       BOOST_CHECK (!(intVal < nullVal));
+
        BOOST_CHECK (intVal != realVal);
        BOOST_CHECK (intVal < realVal);
 
@@ -182,6 +200,80 @@ namespace sl3
        BOOST_CHECK (intVal != blobVal);
        BOOST_CHECK (intVal < blobVal);
 
+
+       BOOST_CHECK (intVal != std::string("foo"));
+       BOOST_CHECK (!(intVal == Blob{}));
+
+     }
+
+
+     void
+     implicitConvert ()
+     {
+       Value a(100);
+
+       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; })
+       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; })
+       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; })
+       BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
+       BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
+
+       {
+         int x = a ;
+         BOOST_CHECK_EQUAL(x , 100) ;
+       }
+       {
+         int64_t x = a ;
+         BOOST_CHECK_EQUAL(x , 100) ;
+       }
+       {
+         double x = a ;
+         BOOST_CHECK_EQUAL(x , 100.0) ;
+       }
+
+       BOOST_CHECK_THROW({ int x = Value{}; (void)x; }, ErrNullValueAccess);
+       BOOST_CHECK_THROW({ int64_t x = Value{}; (void)x; }, ErrNullValueAccess);
+
+       BOOST_CHECK_THROW ({int x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
+       BOOST_CHECK_THROW({int x = Value{Blob{}}; (void)x;}, ErrTypeMisMatch);
+
+       BOOST_CHECK_THROW({int64_t x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
+       BOOST_CHECK_THROW({int64_t x = Value{Blob{}}; (void)x;}, ErrTypeMisMatch);
+
+
+       BOOST_CHECK_THROW ({int x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
+
+
+       {
+         int64_t tobig = std::numeric_limits<int64_t>::max ();
+         BOOST_CHECK_THROW ({int x = Value{tobig}; (void)x;}, ErrOutOfRange);
+       }
+
+       {
+         int64_t toless = std::numeric_limits<int64_t>::min ();
+         BOOST_CHECK_THROW ({int x = Value{toless}; (void)x;}, ErrOutOfRange);
+       }
+
+       {
+         double tobig = std::numeric_limits<double>::max ();
+         BOOST_CHECK_THROW ({int x = Value{tobig}; (void)x;}, ErrOutOfRange);
+       }
+
+       {
+         double tobig = std::numeric_limits<double>::max ();
+         BOOST_CHECK_THROW ({int64_t x = Value{tobig}; (void)x;},
+                            ErrOutOfRange);
+       }
+
+     }
+
+     void
+     getValue ()
+     {
+       BOOST_CHECK_THROW (Value{}.int64(); , ErrNullValueAccess);
+       BOOST_CHECK_THROW (Value{"x"}.int64(); , ErrTypeMisMatch);
+       BOOST_CHECK_THROW (Value{1.0}.int64(); , ErrTypeMisMatch);
+       BOOST_CHECK_NO_THROW (Value{0}.int64(); );
      }
 
 
@@ -193,8 +285,9 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-
-                   );
+          .addTest ("implicitConvert", implicitConvert)
+          .addTest ("getValue", getValue)
+    );
   }
 }
 

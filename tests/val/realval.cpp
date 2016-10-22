@@ -65,6 +65,11 @@ namespace sl3
       BOOST_CHECK_EQUAL (b , real) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
+      b = Value{} ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Null) ;
+      a.setNull() ;
+      BOOST_CHECK_EQUAL (b , a) ;
+
     }
 
     void
@@ -146,8 +151,8 @@ namespace sl3
        BOOST_CHECK (weak_eq(Value{1}, Value{1}));
        BOOST_CHECK (weak_eq(Value{1}, Value{1.0}));
 
-       Value a(100.0), b(100.0), c(100) ;
-       Value d(100), e(200.0), f(300.0) ;
+       Value a(100.0), b(100.0), c(100.0) ;
+       Value d{1.1}, e(2.00), f(300.2) ;
 
        BOOST_CHECK (weak_reflexive (a,a, weak_eq));
        BOOST_CHECK (eq_symmetric (a,b, weak_eq));
@@ -172,6 +177,7 @@ namespace sl3
 
        BOOST_CHECK (realVal != nullVal);
        BOOST_CHECK (realVal > nullVal);
+       BOOST_CHECK (!(realVal < nullVal));
 
        BOOST_CHECK (realVal != intVal);
        BOOST_CHECK (realVal > intVal);
@@ -181,6 +187,64 @@ namespace sl3
 
        BOOST_CHECK (realVal != blobVal);
        BOOST_CHECK (realVal < blobVal);
+
+       BOOST_CHECK (realVal != std::string("foo"));
+       BOOST_CHECK (!(realVal == Blob{}));
+
+     }
+
+
+     void
+     implicitConvert ()
+     {
+       Value a(100.0);
+
+       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; })
+       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; })
+       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; })
+       BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
+       BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
+
+       {
+         int x = a ;
+         BOOST_CHECK_EQUAL(x , 100) ;
+       }
+       {
+         int64_t x = a ;
+         BOOST_CHECK_EQUAL(x , 100) ;
+       }
+       {
+         double x = a ;
+         BOOST_CHECK_EQUAL(x , 100.0) ;
+       }
+
+
+       Value b(100.001);
+       BOOST_CHECK_THROW ({int x = b; (void)x;}, ErrTypeMisMatch);
+       BOOST_CHECK_THROW({int64_t x = b; (void)x;}, ErrTypeMisMatch);
+
+
+       BOOST_CHECK_THROW({double x = Value{}; (void)x;}, ErrNullValueAccess);
+       BOOST_CHECK_THROW({double x = Value{"foo"}; (void)x;}, ErrTypeMisMatch);
+
+//       {
+//           int64_t tobig = std::numeric_limits<int64_t>::max ();
+//           BOOST_CHECK_THROW ({double x = Value{tobig}; (void)x;},
+//                              ErrOutOfRange);
+//         }
+
+
+
+     }
+
+
+     void
+     getValue ()
+     {
+       BOOST_CHECK_THROW (Value{}.real(); , ErrNullValueAccess);
+       BOOST_CHECK_THROW (Value{"x"}.real(); , ErrTypeMisMatch);
+       BOOST_CHECK_THROW (Value{1}.real(); , ErrTypeMisMatch);
+       BOOST_CHECK_NO_THROW (Value{1.0}.real(); );
 
      }
 
@@ -193,8 +257,9 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-
-                   );
+          .addTest ("implicitConvert", implicitConvert)
+          .addTest ("getValue", getValue)
+    );
   }
 }
 

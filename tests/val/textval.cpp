@@ -143,6 +143,22 @@ namespace sl3
      weakTotalOrdered ()
      {
        // weak order makes only senes with  int and real
+
+       // but I use this for the eject test
+
+       std::string txt = "a";
+       Value val (txt);
+
+       BOOST_CHECK_THROW(val.ejectBlob(), ErrTypeMisMatch);
+
+       auto txt2 =  val.ejectText() ;
+
+       BOOST_CHECK (txt2  == txt2 );
+
+       BOOST_CHECK (val.isNull() );
+
+       BOOST_CHECK_THROW(val.ejectText(), ErrNullValueAccess);
+
      }
 
 
@@ -170,6 +186,28 @@ namespace sl3
 
      }
 
+     void
+      implicitConvert ()
+      {
+        Value a("foo");
+
+        BOOST_CHECK_NO_THROW({ std::string x = a  ; (void)x; })
+        BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ int x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ int64_t x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ double x = a  ; (void)x; }, ErrTypeMisMatch);
+
+        {
+          std::string x = a ;
+          BOOST_CHECK_EQUAL(x , "foo") ;
+        }
+
+
+        BOOST_CHECK_THROW({ std::string x = Value{}; (void)x; },
+                          ErrNullValueAccess);
+
+      }
+
 
     a4TestAdd (a4test::suite ("textval")
           .addTest ("create", create)
@@ -179,8 +217,8 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-
-                   );
+          .addTest ("implicitConvert", implicitConvert)
+          );
   }
 }
 
