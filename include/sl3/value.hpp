@@ -33,6 +33,7 @@ namespace sl3
       boost::totally_ordered<Value> ,
       boost::equality_comparable<Value, int> ,
       boost::equality_comparable<Value, int64_t> ,
+      boost::equality_comparable<Value, double> ,
       boost::equality_comparable<Value, std::string>,
       boost::equality_comparable<Value, Blob>
   {
@@ -229,20 +230,6 @@ namespace sl3
     bool operator== (const Blob& val) const;
 
 
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    //bool operator!= (const std::string& val) const;
-
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const double& val) const;
-
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const Blob& val) const;
 
     /** \brief Moves the current value into the return value
      *

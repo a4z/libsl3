@@ -76,6 +76,24 @@ namespace sl3
       BOOST_CHECK (b == blob) ;
       BOOST_CHECK (b == a) ;
 
+      Value null{} ;
+      b = null ;
+      BOOST_CHECK (b.isNull()) ;
+
+
+      Value c{Blob{}};
+      c = a ;
+      BOOST_CHECK (a == c) ;
+      BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
+      b = Blob{} ;
+      BOOST_CHECK_EQUAL (b.getType(), Type::Blob) ;
+      b =  blob;
+      BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
+      BOOST_CHECK ( b.blob() == blob ) ;
+      c = std::move (b);
+      BOOST_CHECK (b.isNull()) ;
+      c = std::move (b);
+      BOOST_CHECK (c.isNull()) ;
     }
 
     void
@@ -149,9 +167,21 @@ namespace sl3
 
      }
 
-
      void
      weakTotalOrdered ()
+     {
+       BOOST_CHECK (!weak_lt (Value(Blob{}),Value(1)));
+
+       Blob a {1,2} ;
+       Blob b {2,3} ;
+
+       BOOST_CHECK (weak_lt (Value(Blob{a}),Value(b)));
+       BOOST_CHECK (!weak_lt (Value(Blob{}),Value(Blob{})));
+     }
+
+
+     void
+     eject ()
      {
        // makes no sense with blob
 
@@ -195,8 +225,48 @@ namespace sl3
        BOOST_CHECK (blobVal != textVal);
        BOOST_CHECK (blobVal > textVal);
 
+       Blob blob{1,2} ;
+       BOOST_CHECK (blobVal != blob);
+       BOOST_CHECK (blobVal == Blob{});
 
+       BOOST_CHECK (blobVal != 1);
+       BOOST_CHECK (blobVal != int64_t{1});
+       BOOST_CHECK (blobVal != 1.1);
+
+       BOOST_CHECK (! (Value{blob} < Value{2}) );
      }
+
+
+     void
+     implicitConvert ()
+     {
+       Blob blob{1,2,3};
+        Value a(blob);
+
+        BOOST_CHECK_NO_THROW({ Blob x = a  ; (void)x; })
+        BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ int x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ int64_t x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_THROW({ double x = a  ; (void)x; }, ErrTypeMisMatch);
+
+        {
+          Blob x = a ;
+          BOOST_CHECK(x == blob) ;
+        }
+
+
+        BOOST_CHECK_THROW({ Blob x = Value{}; (void)x; },
+                          ErrNullValueAccess);
+
+
+        BOOST_CHECK_THROW( Value{}.blob () ,
+                          ErrNullValueAccess);
+
+        BOOST_CHECK_THROW( Value{1}.blob () ,
+                          ErrTypeMisMatch);
+
+
+      }
 
 
     a4TestAdd (a4test::suite ("blobval")
@@ -207,8 +277,9 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-
-                   );
+          .addTest ("eject", eject)
+          .addTest ("implicitConvert", implicitConvert)
+          );
   }
 }
 

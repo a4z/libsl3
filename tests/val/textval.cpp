@@ -65,6 +65,29 @@ namespace sl3
       BOOST_CHECK_EQUAL (b , text) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
+      Value c{"bar"} ;
+      BOOST_CHECK_EQUAL(c.text(), "bar") ;
+      c = a  ;
+      BOOST_CHECK_EQUAL(c.text(), "foo") ;
+
+      Value d{} ;
+      d = std::move (c) ;
+      BOOST_CHECK (c.isNull()) ;
+      BOOST_CHECK_EQUAL(d.text(), "foo") ;
+
+      Value e{""};
+      BOOST_CHECK_EQUAL(e.text(), "") ;
+      e = std::string ("bar");
+      BOOST_CHECK_EQUAL(e.text(), "bar") ;
+
+      e = std::move (d);
+      BOOST_CHECK (d.isNull()) ;
+      BOOST_CHECK_EQUAL(e.text(), "foo") ;
+
+      e = std::move (d);
+      BOOST_CHECK (e.isNull()) ;
+
+
     }
 
     void
@@ -138,9 +161,20 @@ namespace sl3
 
      }
 
-
      void
      weakTotalOrdered ()
+     {
+
+       BOOST_CHECK (!weak_lt (Value("a"),Value(1)));
+       BOOST_CHECK (weak_lt (Value("a"),Value("b")));
+       BOOST_CHECK (weak_lt (Value("a"),Value(Blob{})));
+
+     }
+
+
+
+     void
+     eject()
      {
        // weak order makes only senes with  int and real
 
@@ -184,11 +218,22 @@ namespace sl3
        BOOST_CHECK (textVal != blobVal);
        BOOST_CHECK (textVal < blobVal);
 
+       BOOST_CHECK (textVal != std::string());
+       BOOST_CHECK (textVal == std::string("a"));
+
+       BOOST_CHECK (textVal != 1);
+       BOOST_CHECK (textVal != int64_t{1});
+       BOOST_CHECK (textVal != 1.1);
+
+       BOOST_CHECK (! (Value{""} < Value{2}) );
+
+
+
      }
 
      void
-      implicitConvert ()
-      {
+     implicitConvert ()
+     {
         Value a("foo");
 
         BOOST_CHECK_NO_THROW({ std::string x = a  ; (void)x; })
@@ -206,6 +251,14 @@ namespace sl3
         BOOST_CHECK_THROW({ std::string x = Value{}; (void)x; },
                           ErrNullValueAccess);
 
+
+        BOOST_CHECK_THROW( Value{}.text () ,
+                          ErrNullValueAccess);
+
+        BOOST_CHECK_THROW( Value{1}.text () ,
+                          ErrTypeMisMatch);
+
+
       }
 
 
@@ -218,6 +271,7 @@ namespace sl3
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
           .addTest ("implicitConvert", implicitConvert)
+          .addTest ("eject", eject)
           );
   }
 }

@@ -875,7 +875,7 @@ namespace sl3
       return false;
 
     // we are both bolb
-    return a._store.blobval == b._store.blobval;
+    return a._store.blobval < b._store.blobval;
   }
 
 

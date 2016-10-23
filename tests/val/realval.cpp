@@ -182,6 +182,10 @@ namespace sl3
        BOOST_CHECK (realVal != intVal);
        BOOST_CHECK (realVal > intVal);
 
+       BOOST_CHECK (Value{1.9} < Value{2});
+
+
+
        BOOST_CHECK (realVal != textVal);
        BOOST_CHECK (realVal < textVal);
 
@@ -191,6 +195,9 @@ namespace sl3
        BOOST_CHECK (realVal != std::string("foo"));
        BOOST_CHECK (!(realVal == Blob{}));
 
+       int64_t i = 1;
+       BOOST_CHECK (realVal == i);
+       BOOST_CHECK (Value{2.0} != i);
      }
 
 
@@ -227,11 +234,11 @@ namespace sl3
        BOOST_CHECK_THROW({double x = Value{}; (void)x;}, ErrNullValueAccess);
        BOOST_CHECK_THROW({double x = Value{"foo"}; (void)x;}, ErrTypeMisMatch);
 
-//       {
-//           int64_t tobig = std::numeric_limits<int64_t>::max ();
-//           BOOST_CHECK_THROW ({double x = Value{tobig}; (void)x;},
-//                              ErrOutOfRange);
-//         }
+       {
+           int64_t tobig = std::numeric_limits<int64_t>::min ();
+           BOOST_CHECK_THROW ({double x = Value{tobig}; (void)x;},
+                              ErrOutOfRange);
+         }
 
 
 

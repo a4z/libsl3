@@ -194,6 +194,10 @@ namespace sl3
        BOOST_CHECK (intVal != realVal);
        BOOST_CHECK (intVal < realVal);
 
+       BOOST_CHECK (!(Value{2} < Value{1.1}));
+       BOOST_CHECK (!(Value{3} < Value{2}));
+       BOOST_CHECK (!(Value{2} < Value{1.0}));
+
        BOOST_CHECK (intVal != textVal);
        BOOST_CHECK (intVal < textVal);
 

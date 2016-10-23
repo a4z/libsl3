@@ -145,6 +145,22 @@ namespace sl3
         s = std::move (v) ;
         BOOST_CHECK (s.getType() == Type::Text) ;
         BOOST_CHECK (v.isNull()) ;
+        v = std::string("foo") ;
+        BOOST_CHECK (v.getType() == Type::Text) ;
+        v = 1.1 ;
+        BOOST_CHECK (v.getType() == Type::Real) ;
+
+        v = std::string("foo") ;
+        BOOST_CHECK (v.getType() == Type::Text) ;
+        int64_t i = 1 ;
+        v = i ;
+        BOOST_CHECK (v.getType() == Type::Int) ;
+
+        v = std::string("foo") ;
+        BOOST_CHECK (v.getType() == Type::Text) ;
+        v = Blob{} ;
+        BOOST_CHECK (v.getType() == Type::Blob) ;
+        BOOST_CHECK (v.blob() == Blob{}) ;
       }
 
       {
@@ -157,6 +173,29 @@ namespace sl3
         v = 1.1 ;
         BOOST_CHECK (v.getType() == Type::Real) ;
       }
+
+      {
+        Value v{Blob{} } ;
+        BOOST_CHECK (v.getType() == Type::Blob) ;
+        v = 1 ;
+        BOOST_CHECK (v.getType() == Type::Int) ;
+      }
+      {
+        Value v{Blob{} } ;
+        BOOST_CHECK (v.getType() == Type::Blob) ;
+        int64_t i = 1 ;
+        v = i ;
+        BOOST_CHECK (v.getType() == Type::Int) ;
+      }
+      {
+        Value v{Blob{} } ;
+        BOOST_CHECK (v.getType() == Type::Blob) ;
+        v = std::string() ;
+        BOOST_CHECK (v.getType() == Type::Text) ;
+      }
+
+
+
     }
 
 
@@ -194,12 +233,27 @@ namespace sl3
       }
     }
 
+    void
+    swapValues ()
+    {
+      Value a{Blob{}};
+      Value b{""};
+
+      using sl3::swap ;
+
+      BOOST_CHECK_NO_THROW (swap (a, b)) ;
+
+      BOOST_CHECK (a.getType() == Type::Text) ;
+      BOOST_CHECK (b.getType() == Type::Blob) ;
+    }
+
     a4TestAdd (a4test::suite ("value")
           .addTest ("compare", compare)
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered )
           .addTest ("changeTypes", changeTypes )
           .addTest ("toStream", toStream )
+          .addTest ("swap", swapValues  )
     );
   }
 }
