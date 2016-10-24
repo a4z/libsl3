@@ -206,9 +206,9 @@ namespace sl3
      {
        Value a(100.0);
 
-       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; })
-       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; })
-       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; })
+       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; });
+       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; });
+       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; });
        BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
        BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
 
