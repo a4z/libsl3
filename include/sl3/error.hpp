@@ -81,7 +81,7 @@ namespace sl3{
    * \param e the Error
    * \return the ostream
    */
-  std::ostream& LIBSL3_API operator<< (std::ostream& os, const Error& e);
+  LIBSL3_API std::ostream& operator<< (std::ostream& os, const Error& e);
 
 
   /**
