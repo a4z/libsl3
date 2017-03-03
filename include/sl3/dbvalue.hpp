@@ -385,6 +385,7 @@ namespace sl3
    * \param v the value to stream
    * \return ostream
    */
+  LIBSL3_API
   std::ostream& operator<< (std::ostream& stm, const sl3::DbValue& v);
 
 
