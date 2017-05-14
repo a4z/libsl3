@@ -14,6 +14,8 @@
 #include <sl3/config.hpp>
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
+#include <sl3/value.hpp>
+#include <boost/operators.hpp>
 
 namespace sl3
 {
@@ -34,7 +36,15 @@ namespace sl3
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class LIBSL3_API DbValue
+  class LIBSL3_API DbValue :
+    boost::totally_ordered<DbValue> ,
+    boost::equality_comparable<DbValue, Value> ,
+    boost::equality_comparable<DbValue, int> ,
+    boost::equality_comparable<DbValue, int64_t> ,
+    boost::equality_comparable<DbValue, double> ,
+    boost::equality_comparable<DbValue, std::string>,
+    boost::equality_comparable<DbValue, const char*>,
+    boost::equality_comparable<DbValue, Blob>
   {
   public:
     /**
@@ -47,6 +57,13 @@ namespace sl3
      */
     DbValue (Type type) noexcept;
 
+    // TODO constructor Value, Value - Type,
+    // would this maybe make the other value c'tors obsolete?
+    // this would be fine
+    // don't like the ctors below anyway, they should take a flag,
+    // variant or not, but not the type
+
+
     /** \brief Constructor
      *
      *  This constructor takes a initialization value, and optionally a type
@@ -58,6 +75,7 @@ namespace sl3
      *  be set to DbValue::Variant if waned
      */
     DbValue (int val, Type type = Type::Int);
+
 
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
@@ -82,17 +100,17 @@ namespace sl3
     /**
      * \brief Destructor
      */
-    ~DbValue () noexcept;
+    ~DbValue () noexcept = default;
 
     /**
      * \brief Copy constructor
      */
-    DbValue (const DbValue&) noexcept;
+    DbValue (const DbValue&) noexcept = default;
 
     /**
      * \brief Move constructor
      */
-    DbValue (DbValue&&) noexcept;
+    DbValue (DbValue&&) noexcept = default;
 
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
@@ -130,10 +148,20 @@ namespace sl3
      */
     DbValue& operator= (const std::string& val);
 
+    DbValue& operator= (const char* val)
+    { return *this = std::string{val} ;  }
+
     /**
      * \copydoc operator=(const DbValue& val)
      */
     DbValue& operator= (const Blob& val);
+
+
+    /**
+     * \copydoc operator=(const DbValue& val)
+     */
+    DbValue& operator= (const Value& val);
+
 
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
@@ -164,6 +192,13 @@ namespace sl3
      */
     void set (const Blob& val);
 
+
+    /** \brief Value access
+     *  \return reference to the underlying Value
+     */
+    const Value& getValue() const noexcept;
+
+
     /** \brief Value access
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incorrect
@@ -189,7 +224,7 @@ namespace sl3
     /** \brief Value access with default for a NULL value.
      *
      *  \throw sl3::ErrTypeMisMatch if getType is incorrect
-     *  \param defval default value to return if value is NULL/
+     *  \param defval default value to return if value is NULL
      *  \return the value or the give defval in case value is NULL
      */
     int64_t getInt (int64_t defval) const;
@@ -257,6 +292,9 @@ namespace sl3
      */
     bool operator== (const std::string& val) const;
 
+    bool operator== (const char* val) const
+        { return *this == std::string{val};}
+
     /**
      * \copydoc operator==(const int val) const
      */
@@ -267,31 +305,11 @@ namespace sl3
      */
     bool operator== (const Blob& val) const;
 
-    /** \brief Compare value inequality.
-     * \param val value to compare with
-     * \return if given values are not equal
-     */
-    bool operator!= (const int val) const;
-
     /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const int64_t& val) const;
+      * \copydoc operator==(const int val) const
+      */
+     bool operator== (const Value& val) const;
 
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const std::string& val) const;
-
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const double& val) const;
-
-    /**
-     * \copydoc operator!=(const int val) const
-     */
-    bool operator!= (const Blob& val) const;
 
     /** \brief Moves the current value into the return value
      *
@@ -332,7 +350,7 @@ namespace sl3
     Type getType () const;
 
     /**
-     * \brief Returns the underlying type
+     * \brief Returns the type of the underlying Value
      *
      * If getType() is a Variant this property
      * returns the actual type information, otherwise it will be the same as
@@ -357,22 +375,8 @@ namespace sl3
 
   private:
     Type _type;
-    // type never changes, even == makes just the value, not the type,
-    // except when swapping .....
 
-    Type _storageType;
-    // that's the type for the union and what is applied in the db
-    union Store
-    {
-      Store () {}
-      ~Store () {}
-      int64_t     intval;
-      double      realval;
-      std::string textval;
-      Blob        blobval;
-    };
-
-    Store _store;
+    Value _value ;
 
     friend class DbValues;
 
@@ -399,14 +403,6 @@ namespace sl3
    */
   bool operator== (const DbValue& a, const DbValue& b) noexcept;
 
-  /**
-   * \brief global unequal
-   *
-   * Check if 2 DbValue instances are not equal.
-   *
-   * \return true if given DbValue instances are not equal
-   */
-  bool operator!= (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief global less operator for DbValue

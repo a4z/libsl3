@@ -105,11 +105,11 @@ namespace sl3
       Type type;
     };
 
-    // not in coverage, only used in never reachable case/if branches
-    void raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
-    {
-      throw ErrUnexpected (msg); // LCOV_EXCL_LINE
-    }
+//    // not in coverage, only used in never reachable case/if branches
+//    void raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
+//    {
+//      throw ErrUnexpected (msg); // LCOV_EXCL_LINE
+//    }
 
   } //--------------------------------------------------------------------------
 
@@ -127,161 +127,32 @@ namespace sl3
            || std::abs (x - y) < numeric_limits<T>::min ();
   }
 
-  bool
-  sameValue (const DbValue& a, const DbValue& b)
-  {
-    bool retVal = false;
-
-    switch (a.getStorageType ())
-      {
-      case Type::Null:
-        retVal = b.getStorageType () == Type::Null;
-        break;
-
-      case Type::Int:
-        if (b.getStorageType () == Type::Int)
-          retVal = a.getInt () == b.getInt ();
-        else if (b.getStorageType () == Type::Real)
-          retVal = almost_equal (
-              static_cast<double> (a.getInt ()), b.getReal (), 2);
-        break;
-
-      case Type::Real:
-        if (b.getStorageType () == Type::Real)
-          retVal = almost_equal (a.getReal (), b.getReal (), 2);
-        else if (b.getStorageType () == Type::Int)
-          retVal = almost_equal (
-              a.getReal (), static_cast<double> (b.getInt ()), 2);
-        break;
-
-      case Type::Text:
-        if (b.getStorageType () == Type::Text)
-          retVal = a.getText () == b.getText ();
-        break;
-
-      case Type::Blob:
-        if (b.getStorageType () == Type::Blob)
-          retVal = a.getBlob () == b.getBlob ();
-        break;
-
-      default:
-        break; // never reached?
-      }
-
-    return retVal;
-  }
 
   bool
   operator== (const DbValue& a, const DbValue& b) noexcept
   {
-    if (check (a.getType ()).sameAs (b.getType ()))
+    if (a.getType () == b.getType ())
       {
-        return sameValue (a, b);
+        return a.getValue () == b.getValue ();
       }
 
     return false;
   }
 
-  bool
-  operator!= (const DbValue& a, const DbValue& b) noexcept
-  {
-    return !(a == b);
-  }
 
   bool
   operator< (const DbValue& a, const DbValue& b) noexcept
   {
-    // todo if we have the same storage type, but different type,
-    // than a variant should be NOT less a concrete type
-
-    if (a.getStorageType () == Type::Null)
+    if (a.getValue() == b.getValue())
       {
-        if (b.getStorageType () == Type::Null)
-          return a.getType () < b.getType ();
-        else
-          return true;
+        return a.getType() < b.getType() ;
       }
 
-    if (b.getStorageType () == Type::Null)
-      return false; // a not null handled above
-
-    if (a.getStorageType () == Type::Blob)
-      {
-        if (b.getStorageType () == Type::Blob)
-          {
-            if (a.getBlob () < b.getBlob ())
-              {
-                return true;
-              }
-            else if (a.getBlob () == b.getBlob ())
-              return a.getType () < b.getType ();
-            else
-              return false;
-          }
-        else
-          return false; // blob always bigger than other types
-      }
-
-    if (b.getStorageType () == Type::Blob)
-      return true;
-
-    if (a.getStorageType () == Type::Text)
-      {
-        if (b.getStorageType () == Type::Text)
-          {
-            if (a.getText () < b.getText ())
-              return true;
-            else if (a.getText () == b.getText ())
-              return a.getType () < b.getType ();
-            else
-              return false;
-          }
-        else
-          return false; // blob already handled, text > than numbers
-      }
-
-    if (b.getStorageType () == Type::Text)
-      return true; // we are a number, therefore smaller
-
-    if (a.getStorageType () == Type::Int)
-      {
-        if (b.getStorageType () == Type::Int)
-          {
-            if (a.getInt () < b.getInt ())
-              return true;
-            else if (a.getInt () == b.getInt ())
-              return a.getType () < b.getType ();
-            else
-              return false;
-          }
-        else // b is real
-          {
-            if (a.getInt () < b.getReal ())
-              return true;
-            else if (sameValue (a, b))
-              return a.getType () < b.getType ();
-            else
-              return false;
-          }
-      }
-
-    // we are real :-)
-    if (b.getStorageType () == Type::Int)
-      return a.getReal () < b.getInt ();
-    else if (b.getStorageType () == Type::Real)
-      return a.getReal () < b.getReal ();
-
-    if (sameValue (a, b))
-      {
-        return a.getType () < b.getType ();
-      }
-
-    return false;
+    return a.getValue() < b.getValue() ;
   }
 
   DbValue::DbValue (Type type) noexcept
   : _type (type == Type::Null ? Type::Variant : type)
-  , _storageType (Type::Null)
   {
   }
 
@@ -289,128 +160,45 @@ namespace sl3
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Int, Type::Variant);
-
-    _store.intval = val;
-    _storageType  = Type::Int;
+    _value = val ;
   }
 
   DbValue::DbValue (int64_t val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Int, Type::Variant);
-
-    _store.intval = val;
-    _storageType  = Type::Int;
+    _value = val ;
   }
 
   DbValue::DbValue (std::string val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Text, Type::Variant);
-
-    new (&_store.textval) std::string (std::move (val));
-    _storageType = Type::Text;
+    _value = val ;
   }
 
   DbValue::DbValue (double val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Real, Type::Variant);
-
-    _store.realval = val;
-    _storageType   = Type::Real;
+    _value = val ;
   }
 
   DbValue::DbValue (Blob val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Blob, Type::Variant);
-
-    new (&_store.blobval) Blob (std::move (val));
-    _storageType = Type::Blob;
+    _value = val ;
   }
 
-  DbValue::~DbValue () noexcept { clearValue (); }
+
+
   void
   DbValue::clearValue ()
   {
-    if (_storageType == Type::Text)
-      {
-        _store.textval.~basic_string<std::string::value_type> ();
-      }
-    else if (_storageType == Type::Blob)
-      {
-        _store.blobval.~vector<Blob::value_type> ();
-      }
-    _storageType = Type::Null;
+    _value.setNull() ;
   }
 
-  DbValue::DbValue (const DbValue& other) noexcept
-  : _type (other._type)
-  , _storageType (other._storageType)
-  {
-    switch (_storageType)
-      {
-      case Type::Null:
-        break;
-
-      case Type::Int:
-        _store.intval = other._store.intval;
-        break;
-
-      case Type::Real:
-        _store.realval = other._store.realval;
-        break;
-
-      case Type::Text:
-        new (&_store.textval) std::string (other._store.textval);
-        break;
-
-      case Type::Blob:
-        new (&_store.blobval) Blob (other._store.blobval);
-        break;
-
-      default:
-        raiseErrUnexpected ("never reach"); // LCOV_EXCL_LINE
-        return;                             // LCOV_EXCL_LINE
-      }
-  }
-
-  DbValue::DbValue (DbValue&& other) noexcept
-  : _type (other._type)
-  , _storageType (other._storageType)
-  {
-    switch (_storageType)
-      {
-      case Type::Null:
-        break;
-
-      case Type::Int:
-        _store.intval = std::move (other._store.intval);
-        break;
-
-      case Type::Real:
-        _store.realval = std::move (other._store.realval);
-        break;
-
-      case Type::Text:
-        new (&_store.textval) std::string (std::move (other._store.textval));
-        other._store.textval.~basic_string ();
-        break;
-
-      case Type::Blob:
-        new (&_store.blobval) Blob (std::move (other._store.blobval));
-        other._store.blobval.~vector ();
-        break;
-
-      case Type::Variant:
-        raiseErrUnexpected ("never reach"); // LCOV_EXCL_LINE
-        break;                              // LCOV_EXCL_LINE
-      }
-
-    // important, set other to null so that clear does not trial to clear
-    other._storageType = Type::Null;
-  }
 
   DbValue&
   DbValue::operator= (const DbValue& other)
@@ -421,7 +209,7 @@ namespace sl3
                                + (other._type == Type::Variant
                                       ? typeName (other._type)
                                             + " with storage type"
-                                            + typeName (other._storageType)
+                                            + typeName (other.getStorageType())
                                       : typeName (other._type)));
       }
 
@@ -438,44 +226,10 @@ namespace sl3
                                + (other._type == Type::Variant
                                       ? typeName (other._type)
                                             + " with storage type"
-                                            + typeName (other._storageType)
+                                            + typeName (other.getStorageType())
                                       : typeName (other._type)));
       }   
-    if (_storageType != Type::Null)
-      clearValue ();
-
-    //_type = std::move (other._type);
-   // NOTE do not change the type,
-    // if type is incompatible this line should not be reached!
-    _storageType = std::move (other._storageType);
-
-    switch (_storageType)
-      {
-      case Type::Null:
-        break;
-
-      case Type::Int:
-        _store.intval = std::move (other._store.intval);
-        break;
-
-      case Type::Real:
-        _store.realval = std::move (other._store.realval);
-        break;
-
-      case Type::Text:
-        new (&_store.textval) std::string (std::move (other._store.textval));
-        break;
-
-      case Type::Blob:
-        new (&_store.blobval) Blob (std::move (other._store.blobval));
-        break;
-
-      default:
-        throw ErrUnexpected ("should never reach"); // LCOV_EXCL_LINE
-      }
-
-    // important, set other to null
-    other.clearValue ();
+    _value = std::move(other._value) ;
 
     return *this;
   }
@@ -504,16 +258,25 @@ namespace sl3
   DbValue&
   DbValue::operator= (const std::string& val)
   {
-    set (std::move (val));
+    set (val);
     return *this;
   }
 
   DbValue&
   DbValue::operator= (const Blob& val)
   {
-    set (std::move (val));
+    set (val);
     return *this;
   }
+
+  DbValue&
+  DbValue::operator= (const Value& val)
+  {
+    ensure (_type).oneOf (_value.getType(), Type::Variant);
+    _value = val ;
+    return *this;
+  }
+
 
   void
   DbValue::set (int val)
@@ -530,318 +293,195 @@ namespace sl3
   DbValue::set (int64_t val)
   {
     ensure (_type).oneOf (Type::Int, Type::Variant);
-
-    if (_storageType != Type::Int)
-      {
-        clearValue ();
-        _storageType = Type::Int;
-      }
-
-    _store.intval = val;
+    _value = val;
   }
 
   void
   DbValue::set (double val)
   {
     ensure (_type).oneOf (Type::Real, Type::Variant);
-
-    if (_storageType != Type::Real)
-      {
-        clearValue ();
-        _storageType = Type::Real;
-      }
-
-    _store.realval = val;
+    _value = val;
   }
 
   void
   DbValue::set (const std::string& val)
   {
     ensure (_type).oneOf (Type::Text, Type::Variant);
+    _value = val;
+  }
 
-    if (_storageType != Type::Text)
-      {
-        clearValue ();
-        new (&_store.textval) std::string (val);
-        _storageType = Type::Text;
-      }
-    else
-      {
-        _store.textval = val;
-      }
+
+  const Value&
+  DbValue::getValue() const noexcept
+  {
+    return _value ;
   }
 
   void
   DbValue::set (const Blob& val)
   {
     ensure (_type).oneOf (Type::Blob, Type::Variant);
-
-    if (_storageType != Type::Blob)
-      {
-        clearValue ();
-        new (&_store.blobval) Blob (val);
-        _storageType = Type::Blob;
-      }
-    else
-      {
-        _store.blobval = val;
-      }
+    _value = val;
   }
 
   const int64_t&
   DbValue::getInt () const
   {
-    ensure (_storageType).notNull ().sameAs (Type::Int);
-
-    return _store.intval;
+    return _value.int64();
   }
 
   int64_t
   DbValue::getInt (int64_t defval) const
   {
-    ensure (_type).oneOf (Type::Int, Type::Variant);
-
-    if (isNull ())
+     if (isNull ())
       return defval;
 
-    ensure (_storageType).sameAs (Type::Int);
-
-    return _store.intval;
+    return _value.int64();
   }
 
   const double&
   DbValue::getReal () const
   {
-    ensure (_storageType).notNull ().sameAs (Type::Real);
-
-    return _store.realval;
+    return _value.real();
   }
 
   double
   DbValue::getReal (double defval) const
   {
-    ensure (_type).oneOf (Type::Real, Type::Variant);
-
     if (isNull ())
       return defval;
 
-    ensure (_storageType).sameAs (Type::Real);
-
-    return _store.realval;
+    return _value.real();
   }
 
   const std::string&
   DbValue::getText () const
   {
-    ensure (_storageType).notNull ().sameAs (Type::Text);
-
-    return _store.textval;
+    return _value.text();
   }
 
   std::string
   DbValue::getText (const std::string& defval) const
   {
-    ensure (_type).oneOf (Type::Text, Type::Variant);
-
     if (isNull ())
       return defval;
 
-    ensure (_storageType).sameAs (Type::Text);
-
-    return _store.textval;
+    return _value.text();
   }
 
   const Blob&
   DbValue::getBlob () const
   {
-    ensure (_storageType).notNull ().sameAs (Type::Blob);
-
-    return _store.blobval;
+    return _value.blob();
   }
 
   Blob
   DbValue::getBlob (const Blob& defval) const
   {
-    ensure (_type).oneOf (Type::Blob, Type::Variant);
-
     if (isNull ())
       return defval;
 
-    ensure (_storageType).sameAs (Type::Blob);
-
-    return _store.blobval;
+    return _value.blob();
   }
 
   int64_t
   DbValue::get (int64_t defval) const
   {
-    if (_storageType != Type::Int)
+    if (_value.getType() != Type::Int)
       return defval;
 
-    return _store.intval;
+    return _value.int64();
   }
 
   int64_t
   DbValue::get (int defval) const
   {
-    if (_storageType != Type::Int)
+    if (_value.getType() != Type::Int)
       return defval;
 
-    return _store.intval;
+    return _value.int64();
   }
 
   double
   DbValue::get (double defval) const
   {
-    if (_storageType != Type::Real)
+    if (_value.getType() != Type::Real)
       return defval;
 
-    return _store.realval;
+    return _value.real();
   }
 
-  std::string
+  std::string // TODO consider change to reference, with warning in the doc
   DbValue::get (const std::string& defval) const
   {
-    if (_storageType != Type::Text)
+    if (_value.getType() != Type::Text)
       return defval;
 
-    return _store.textval;
+    return _value.text();
   }
 
-  Blob
+  Blob // TODO consider change to reference, with warning in the doc
   DbValue::get (const Blob& defval) const
   {
-    if (_storageType != Type::Blob)
+    if (_value.getType() != Type::Blob)
       return defval;
 
-    return _store.blobval;
+    return _value.blob();
   }
 
   bool
   DbValue::operator== (const int val) const
   {
-    if (_storageType == Type::Int)
-      return _store.intval == val;
-
-    return false;
+    return _value == val;
   }
 
   bool
   DbValue::operator== (const int64_t& val) const
   {
-    if (_storageType == Type::Int)
-      return _store.intval == val;
-
-    return false;
+    return _value == val;
   }
 
   bool
   DbValue::operator== (const std::string& val) const
   {
-    if (_storageType == Type::Text)
-      return _store.textval == val;
-
-    return false;
+    return _value == val;
   }
 
   bool
   DbValue::operator== (const double& val) const
   {
-    if (_storageType == Type::Real)
-      return almost_equal (_store.realval, val, 2);
-
-    return false;
+    return _value == val;
   }
 
   bool
   DbValue::operator== (const Blob& val) const
   {
-    if (_storageType == Type::Blob)
-      return _store.blobval == val;
-
-    return false;
+    return _value == val;
   }
 
   bool
-  DbValue::operator!= (const int val) const
+  DbValue::operator== (const Value& val) const
   {
-    return !(*this == val);
+    return _value == val;
   }
 
-  bool
-  DbValue::operator!= (const int64_t& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  DbValue::operator!= (const std::string& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  DbValue::operator!= (const double& val) const
-  {
-    return !(*this == val);
-  }
-
-  bool
-  DbValue::operator!= (const Blob& val) const
-  {
-    return !(*this == val);
-  }
 
   std::string
   DbValue::ejectText ()
   {
-    ensure (_storageType).notNull ().sameAs (Type::Text);
-
-    auto tmp = std::move (_store.textval);
-    setNull ();
-    return tmp;
+    return _value.ejectText() ;
   }
 
   Blob
   DbValue::ejectBlob ()
   {
-    ensure (_storageType).notNull ().sameAs (Type::Blob);
-
-    auto tmp = std::move (_store.blobval);
-    setNull ();
-    return tmp;
+    return _value.ejectBlob() ;
   }
 
   std::ostream&
   operator<< (std::ostream& stm, const sl3::DbValue& v)
   {
-    switch (v.getStorageType ())
-      {
-      case Type::Null:
-        stm << "<NULL>";
-        break;
-
-      case Type::Int:
-        stm << v.getInt ();
-        break;
-
-      case Type::Real:
-        stm << v.getReal ();
-        break;
-
-      case Type::Text:
-        stm << v.getText ();
-        break;
-
-      case Type::Blob:
-        stm << "<BLOB>";
-        break;
-
-      default:
-        stm << "unknown storage type !!"; // LCOV_EXCL_LINE
-        break;                            // LCOV_EXCL_LINE
-      }
-
+    stm << v.getValue() ;
     return stm;
   }
 
@@ -854,7 +494,7 @@ namespace sl3
   bool
   DbValue::isNull () const
   {
-    return _storageType == Type::Null;
+    return _value.isNull();
   }
 
   Type
@@ -866,7 +506,7 @@ namespace sl3
   Type
   DbValue::getStorageType () const
   {
-    return _storageType;
+    return _value.getType();
   }
 
   bool
@@ -876,7 +516,7 @@ namespace sl3
       {
         if (other.getType () == Type::Variant)
           {
-            return check (other._storageType).oneOf (_type, Type::Null);
+            return check (other.getStorageType()).oneOf (_type, Type::Null);
           }
         else
           {
@@ -890,37 +530,7 @@ namespace sl3
   void
   DbValue::assign (const DbValue& other)
   {
-    clearValue ();
-    // _type = other._type ;
-    // NOTE do not change the type,
-    // if type is incompatible this line should not be reached!
-
-    _storageType = other._storageType;
-
-    switch (_storageType)
-      {
-      case Type::Null:
-        break;
-
-      case Type::Int:
-        _store.intval = other._store.intval;
-        break;
-
-      case Type::Real:
-        _store.realval = other._store.realval;
-        break;
-
-      case Type::Text:
-        new (&_store.textval) std::string (other._store.textval);
-        break;
-
-      case Type::Blob:
-        new (&_store.blobval) Blob (other._store.blobval);
-        break;
-
-      default:
-        throw ErrUnexpected ("should never reach"); // LCOV_EXCL_LINE
-      }
+    _value = other._value ;
   }
 
 
