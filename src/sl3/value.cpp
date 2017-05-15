@@ -775,7 +775,8 @@ namespace sl3
   void
   swap (Value& a, Value& b) noexcept
   {
-    auto t{std::move (a)};
+    Value t{std::move (a)};
+    // should be auto t{...} but 4.8.2 does not like it
     a = std::move (b);
     b = std::move (t);
   }
