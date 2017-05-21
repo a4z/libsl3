@@ -28,5 +28,6 @@ add_library(test_main OBJECT a4testing.cpp a4testing.hpp )
 
 
 add_subdirectory(basics)
-add_subdirectory(dbval)
+#add_subdirectory(dbval)
 add_subdirectory(val)
+#add_subdirectory(failures)

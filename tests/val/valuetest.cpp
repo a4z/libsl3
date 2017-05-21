@@ -29,19 +29,20 @@ namespace sl3
       Value blobval {Blob()} ;
 
 
-      BOOST_CHECK (ival == 1);
-      BOOST_CHECK (ival == 1.0);
-      BOOST_CHECK (ival != std::string("foo"));
-
-      BOOST_CHECK (rval == 1);
-      BOOST_CHECK (rval == 1.0);
-      BOOST_CHECK (rval != std::string("foo"));
+      BOOST_CHECK (ival.int64() == 1);
+      BOOST_CHECK (static_cast<double>(ival) == 1.0);
 
 
-      BOOST_CHECK (txtval == std::string("foo"));
+      BOOST_CHECK (rval == rval);
+      BOOST_CHECK (rval == Value{1.0});
+      BOOST_CHECK (rval != ival);
+
+
+      BOOST_CHECK (txtval == Value{std::string("foo")});
    
-      BOOST_CHECK (blobval != std::string("foo"));
-      BOOST_CHECK (blobval == Blob());
+      BOOST_CHECK (blobval != txtval);
+      BOOST_CHECK (blobval == Value {Blob()} );
+      BOOST_CHECK (blobval != Value {Blob({1,2,3})} );
 
 
       Value nullval {} ;

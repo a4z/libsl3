@@ -19,30 +19,28 @@ namespace sl3
     VauleRelation weak_eq = sl3::weak_eq;
     VauleRelation weak_lt = sl3::weak_lt ;
   
+    using _v = Value ;
+
     void
     create ()
     {
-      Value a(100.0);
-      Value b(a);
-      Value c = a ;
-      Value d = 100.0 ;
+      Value a(12.34);
+      Value b = _v(12.34) ;
 
-      BOOST_CHECK_EQUAL (a, 100.00) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (b, 100.00) ;
-      BOOST_CHECK_EQUAL (b.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (c, 100.00) ;
-      BOOST_CHECK_EQUAL (c.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (d, 100.00) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Real) ;
+      BOOST_CHECK (a.real() == 12.34) ;
+      BOOST_CHECK (a.getType()== Type::Real) ;
+      BOOST_CHECK  (not a.isNull()) ;
+      BOOST_CHECK (b.getType()== Type::Real) ;
+      BOOST_CHECK  (not b.isNull()) ;
 
-      Value e;
-      BOOST_CHECK (e.isNull()) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = 100.00 ;
-      BOOST_CHECK_EQUAL (e, 100.00) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Real) ;
-      BOOST_CHECK (!e.isNull()) ;
+      Value c ;
+      BOOST_CHECK (c.getType() == Type::Null) ;
+      BOOST_CHECK  (c.isNull()) ;
+
+      Value d{std::move(b)};
+      BOOST_CHECK (d.getType()== Type::Real) ;
+      BOOST_CHECK (not d.isNull()) ;
+
 
     }
 
@@ -56,13 +54,13 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
       double real = 100.0 ;
       a = real ;
-      BOOST_CHECK_EQUAL (a , real) ;
+      BOOST_CHECK_EQUAL (a.real() , real) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Real) ;
       BOOST_CHECK (!a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK_EQUAL (b , real) ;
+      BOOST_CHECK_EQUAL (b.real() , real) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
       b = Value{} ;
@@ -84,20 +82,20 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
       BOOST_CHECK_EQUAL (b.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (b, 1.0) ;
+      BOOST_CHECK_EQUAL (b.real(), 1.0) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
       BOOST_CHECK_EQUAL (c.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (c, 1.0) ;
+      BOOST_CHECK_EQUAL (c.real(), 1.0) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
       BOOST_CHECK_EQUAL (d.getType(), Type::Real) ;
-      BOOST_CHECK_EQUAL (d, 1.0) ;
+      BOOST_CHECK_EQUAL (d.real(), 1.0) ;
 
 
     }
@@ -192,53 +190,29 @@ namespace sl3
        BOOST_CHECK (realVal != blobVal);
        BOOST_CHECK (realVal < blobVal);
 
-       BOOST_CHECK (realVal != std::string("foo"));
-       BOOST_CHECK (!(realVal == Blob{}));
 
-       int64_t i = 1;
-       BOOST_CHECK (realVal == i);
-       BOOST_CHECK (Value{2.0} != i);
      }
 
 
      void
-     implicitConvert ()
+     convert ()
      {
-       Value a(100.0);
+       int val=100;
+       Value a(val);
 
-       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; });
-       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; });
-       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; });
-       BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
-       BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
+       BOOST_CHECK_NO_THROW( static_cast<int>(a)  );
+       BOOST_CHECK_NO_THROW( static_cast<int64_t>(a)  );
+       BOOST_CHECK_NO_THROW( static_cast<double>(a)  );
 
-       {
-         int x = a ;
-         BOOST_CHECK_EQUAL(x , 100) ;
-       }
-       {
-         int64_t x = a ;
-         BOOST_CHECK_EQUAL(x , 100) ;
-       }
-       {
-         double x = a ;
-         BOOST_CHECK_EQUAL(x , 100.0) ;
-       }
+       BOOST_CHECK_THROW( static_cast<std::string>(a), ErrTypeMisMatch);
+       BOOST_CHECK_THROW(static_cast<Blob>(a), ErrTypeMisMatch);
 
 
-       Value b(100.001);
-       BOOST_CHECK_THROW ({int x = b; (void)x;}, ErrTypeMisMatch);
-       BOOST_CHECK_THROW({int64_t x = b; (void)x;}, ErrTypeMisMatch);
+       BOOST_CHECK_THROW(static_cast<int>(Value{}),
+                         ErrNullValueAccess);
 
-
-       BOOST_CHECK_THROW({double x = Value{}; (void)x;}, ErrNullValueAccess);
-       BOOST_CHECK_THROW({double x = Value{"foo"}; (void)x;}, ErrTypeMisMatch);
-
-       {
-           int64_t tobig = std::numeric_limits<int64_t>::min ();
-           BOOST_CHECK_THROW ({double x = Value{tobig}; (void)x;},
-                              ErrOutOfRange);
-         }
+       BOOST_CHECK_THROW(static_cast<int64_t>(Value{}),
+                         ErrNullValueAccess);
 
 
 
@@ -264,7 +238,7 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-          .addTest ("implicitConvert", implicitConvert)
+          .addTest ("convert", convert)
           .addTest ("getValue", getValue)
     );
   }

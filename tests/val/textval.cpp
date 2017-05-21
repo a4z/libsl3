@@ -23,26 +23,21 @@ namespace sl3
     create ()
     {
       Value a(std::string("foo"));
-      Value b(a);
-      Value c = a ;
-      Value d = std::string("foo") ;
+      Value b {std::string("foo")} ;
 
-      BOOST_CHECK_EQUAL (a, std::string("foo")) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (b, std::string("foo")) ;
-      BOOST_CHECK_EQUAL (b.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (c, std::string("foo")) ;
-      BOOST_CHECK_EQUAL (c.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (d, std::string("foo")) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Text) ;
+       BOOST_CHECK (a.text() == "foo") ;
+       BOOST_CHECK (a.getType()== Type::Text) ;
+       BOOST_CHECK  (not a.isNull()) ;
+       BOOST_CHECK (b.getType()== Type::Text) ;
+       BOOST_CHECK  (not b.isNull()) ;
 
-      Value e;
-      BOOST_CHECK (e.isNull()) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = std::string("foo") ;
-      BOOST_CHECK_EQUAL (e, std::string("foo")) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Text) ;
-      BOOST_CHECK (!e.isNull()) ;
+       Value c ;
+       BOOST_CHECK (c.getType() == Type::Null) ;
+       BOOST_CHECK  (c.isNull()) ;
+
+       Value d{std::move(b)};
+       BOOST_CHECK (d.getType()== Type::Text) ;
+       BOOST_CHECK (not d.isNull()) ;
 
     }
 
@@ -56,13 +51,13 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
       std::string text = std::string("foo") ;
       a = text ;
-      BOOST_CHECK_EQUAL (a , text) ;
+      BOOST_CHECK_EQUAL (a.text() , text) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Text) ;
       BOOST_CHECK (!a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK_EQUAL (b , text) ;
+      BOOST_CHECK_EQUAL (b.text() , text) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
       Value c{"bar"} ;
@@ -102,20 +97,20 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
       BOOST_CHECK_EQUAL (b.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (b, std::string("foo")) ;
+      BOOST_CHECK_EQUAL (b.text(), std::string("foo")) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
       BOOST_CHECK_EQUAL (c.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (c, std::string("foo")) ;
+      BOOST_CHECK_EQUAL (c.text(), std::string("foo")) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
       BOOST_CHECK_EQUAL (d.getType(), Type::Text) ;
-      BOOST_CHECK_EQUAL (d, std::string("foo")) ;
+      BOOST_CHECK_EQUAL (d.text(), std::string("foo")) ;
 
 
     }
@@ -218,13 +213,6 @@ namespace sl3
        BOOST_CHECK (textVal != blobVal);
        BOOST_CHECK (textVal < blobVal);
 
-       BOOST_CHECK (textVal != std::string());
-       BOOST_CHECK (textVal == std::string("a"));
-
-       BOOST_CHECK (textVal != 1);
-       BOOST_CHECK (textVal != int64_t{1});
-       BOOST_CHECK (textVal != 1.1);
-
        BOOST_CHECK (! (Value{""} < Value{2}) );
 
 
@@ -234,21 +222,22 @@ namespace sl3
      void
      implicitConvert ()
      {
-        Value a("foo");
+       std::string txt{"foo"};
+       Value a(txt);
 
-        BOOST_CHECK_NO_THROW({ std::string x = a  ; (void)x; });
-        BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ int x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ int64_t x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ double x = a  ; (void)x; }, ErrTypeMisMatch);
+       BOOST_CHECK_NO_THROW(static_cast<std::string>(a));
+        BOOST_CHECK_THROW(static_cast<Blob>(a) , ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<int>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<int64_t>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<double>(a), ErrTypeMisMatch);
 
         {
-          std::string x = a ;
-          BOOST_CHECK_EQUAL(x , "foo") ;
+          auto x = static_cast<std::string>(a) ;
+          BOOST_CHECK(x == txt) ;
         }
 
 
-        BOOST_CHECK_THROW({ std::string x = Value{}; (void)x; },
+        BOOST_CHECK_THROW(static_cast<std::string>(Value{}),
                           ErrNullValueAccess);
 
 
@@ -257,6 +246,7 @@ namespace sl3
 
         BOOST_CHECK_THROW( Value{1}.text () ,
                           ErrTypeMisMatch);
+
 
 
       }

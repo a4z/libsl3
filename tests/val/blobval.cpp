@@ -29,32 +29,30 @@ namespace sl3
 
     VauleRelation weak_eq = sl3::weak_eq;
     VauleRelation weak_lt = sl3::weak_lt ;
+ 
+    auto _v =[](const auto& v){ return Value{v}; };
+ 
   
     void
     create ()
     {
       Value a(Blob({0,0,0}));
-      Value b(a);
-      Value c = a ;
-      Value d = Blob({0,0,0}) ;
+      Value b = _v(Blob({0,0,0})) ;
 
-      BOOST_CHECK (a == Blob({0,0,0})) ;
-      BOOST_CHECK  (a.getType()== Type::Blob) ;
-      BOOST_CHECK  (b== Blob({0,0,0})) ;
-      BOOST_CHECK  (b.getType()== Type::Blob) ;
-      BOOST_CHECK  (c== Blob({0,0,0})) ;
-      BOOST_CHECK  (c.getType()== Type::Blob) ;
-      BOOST_CHECK  (d== Blob({0,0,0})) ;
-      BOOST_CHECK  (d.getType()== Type::Blob) ;
+      BOOST_CHECK (a.blob() == Blob({0,0,0})) ;
+      BOOST_CHECK (a.getType()== Type::Blob) ;
+      BOOST_CHECK  (not a.isNull()) ;
+      BOOST_CHECK (b.getType()== Type::Blob) ;
+      BOOST_CHECK  (not b.isNull()) ;
 
-      Value e;
-      BOOST_CHECK (e.isNull()) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = Blob({0,0,0}) ;
-      BOOST_CHECK (e == Blob({0,0,0})) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Blob) ;
-      BOOST_CHECK (!e.isNull()) ;
-
+      Value c ;
+      BOOST_CHECK (c.getType() == Type::Null) ;
+      BOOST_CHECK  (c.isNull()) ;
+      
+      Value d{std::move(b)};
+      BOOST_CHECK (d.getType()== Type::Blob) ;
+      BOOST_CHECK (not d.isNull()) ;
+      
     }
 
 
@@ -67,19 +65,18 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
       Blob blob = {1,2,3};
       a = blob ;
-      BOOST_CHECK (a == blob) ;
+      BOOST_CHECK (a.blob() == blob) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Blob) ;
-      BOOST_CHECK (!a.isNull()) ;
+      BOOST_CHECK (not a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK (b == blob) ;
+      BOOST_CHECK (b.blob() == blob) ;
       BOOST_CHECK (b == a) ;
 
       Value null{} ;
       b = null ;
       BOOST_CHECK (b.isNull()) ;
-
 
       Value c{Blob{}};
       c = a ;
@@ -90,10 +87,7 @@ namespace sl3
       b =  blob;
       BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
       BOOST_CHECK ( b.blob() == blob ) ;
-      c = std::move (b);
-      BOOST_CHECK (b.isNull()) ;
-      c = std::move (b);
-      BOOST_CHECK (c.isNull()) ;
+
     }
 
     void
@@ -108,20 +102,20 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
       BOOST_CHECK_EQUAL (b.getType(), Type::Blob) ;
-      BOOST_CHECK (b == Blob({0,1,0})) ;
+      BOOST_CHECK (b.blob() == Blob({0,1,0})) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
       BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
-      BOOST_CHECK  (c == Blob({0,1,0})) ;
+      BOOST_CHECK  (c.blob() == Blob({0,1,0})) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
       BOOST_CHECK_EQUAL (d.getType(), Type::Blob) ;
-      BOOST_CHECK (d == Blob({0,1,0})) ;
+      BOOST_CHECK (d.blob() == Blob({0,1,0})) ;
 
 
     }
@@ -183,10 +177,7 @@ namespace sl3
      void
      eject ()
      {
-       // makes no sense with blob
-
-       // but I use this for the eject test
-
+ 
        Blob blob = Blob{0,1};
        Value val (blob);
 
@@ -226,36 +217,29 @@ namespace sl3
        BOOST_CHECK (blobVal > textVal);
 
        Blob blob{1,2} ;
-       BOOST_CHECK (blobVal != blob);
-       BOOST_CHECK (blobVal == Blob{});
-
-       BOOST_CHECK (blobVal != 1);
-       BOOST_CHECK (blobVal != int64_t{1});
-       BOOST_CHECK (blobVal != 1.1);
-
-       BOOST_CHECK (! (Value{blob} < Value{2}) );
+        BOOST_CHECK (! (Value{blob} < Value{2}) );
      }
 
 
      void
-     implicitConvert ()
+     convert ()
      {
        Blob blob{1,2,3};
         Value a(blob);
 
-        BOOST_CHECK_NO_THROW({ Blob x = a  ; (void)x; });
-        BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ int x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ int64_t x = a  ; (void)x; }, ErrTypeMisMatch);
-        BOOST_CHECK_THROW({ double x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_NO_THROW({ Blob x = static_cast<Blob>(a)  ; (void)x; });
+        BOOST_CHECK_THROW( static_cast<std::string>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<int>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<int64_t>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<double>(a), ErrTypeMisMatch);
 
         {
-          Blob x = a ;
+          Blob x = static_cast<Blob>(a) ;
           BOOST_CHECK(x == blob) ;
         }
 
 
-        BOOST_CHECK_THROW({ Blob x = Value{}; (void)x; },
+        BOOST_CHECK_THROW(static_cast<Blob>(Value{}),
                           ErrNullValueAccess);
 
 
@@ -268,18 +252,17 @@ namespace sl3
 
       }
 
-
     a4TestAdd (a4test::suite ("blobval")
-          .addTest ("create", create)
-          .addTest ("assing", assing)
-          .addTest ("move", move)
-          .addTest ("equality", equality)
-          .addTest ("strictTotalOrdered", strictTotalOrdered)
-          .addTest ("weakTotalOrdered", weakTotalOrdered)
-          .addTest ("compareWithOthers", compareWithOthers)
-          .addTest ("eject", eject)
-          .addTest ("implicitConvert", implicitConvert)
-          );
+        .addTest ("create", create)
+        .addTest ("assing", assing)
+        .addTest ("move", move)
+        .addTest ("equality", equality)
+        .addTest ("strictTotalOrdered", strictTotalOrdered)
+        .addTest ("weakTotalOrdered", weakTotalOrdered)
+        .addTest ("compareWithOthers", compareWithOthers)
+        .addTest ("eject", eject)
+        .addTest ("convert", convert)
+    );
   }
 }
 

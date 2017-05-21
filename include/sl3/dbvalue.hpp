@@ -37,14 +37,7 @@ namespace sl3
    *
    */
   class LIBSL3_API DbValue :
-    boost::totally_ordered<DbValue> ,
-    boost::equality_comparable<DbValue, Value> ,
-    boost::equality_comparable<DbValue, int> ,
-    boost::equality_comparable<DbValue, int64_t> ,
-    boost::equality_comparable<DbValue, double> ,
-    boost::equality_comparable<DbValue, std::string>,
-    boost::equality_comparable<DbValue, const char*>,
-    boost::equality_comparable<DbValue, Blob>
+    boost::totally_ordered<DbValue>
   {
   public:
     /**
@@ -80,22 +73,22 @@ namespace sl3
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
      */
-    DbValue (int64_t val, Type type = Type::Int);
+    explicit DbValue (int64_t val, Type type = Type::Int);
 
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
      */
-    DbValue (std::string val, Type type = Type::Text);
+    explicit DbValue (std::string val, Type type = Type::Text);
 
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
      */
-    DbValue (double val, Type type = Type::Real);
+    explicit DbValue (double val, Type type = Type::Real);
 
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
      */
-    DbValue (Blob val, Type type = Type::Blob);
+    explicit DbValue (Blob val, Type type = Type::Blob);
 
     /**
      * \brief Destructor
@@ -197,7 +190,7 @@ namespace sl3
      *  \return reference to the underlying Value
      */
     const Value& getValue() const noexcept;
-
+    const Value& value() const noexcept {return getValue(); };
 
     /** \brief Value access
      *  \throw sl3::ErrNullValueAccess if value is null.
@@ -274,41 +267,6 @@ namespace sl3
      * \copydoc get(int64_t defval) const;
      */
     Blob get (const Blob& defval) const;
-
-    /**
-     * \brief Compare value for equality
-     * \param val value to compare with
-     * \return if given values is equal
-     */
-    bool operator== (const int val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const int64_t& val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const std::string& val) const;
-
-    bool operator== (const char* val) const
-        { return *this == std::string{val};}
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const double& val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const Blob& val) const;
-
-    /**
-      * \copydoc operator==(const int val) const
-      */
-     bool operator== (const Value& val) const;
 
 
     /** \brief Moves the current value into the return value
@@ -422,14 +380,17 @@ namespace sl3
    */
   bool operator< (const DbValue& a, const DbValue& b) noexcept;
 
-  /*  disable for now, sorting does not always call swap, ..  
-   * \brief DbValue specialised swap function
-   *
-   *  Independend of the type, a DbValue is always swapable.
-   *  This can be theroretical be abused to bypass the tye checking,
-   *  but is up to the user to do so or not.
+
+  /**
+   * \brief weak order equality
    */
-  //void swap (DbValue& a, DbValue& b) noexcept;
+  bool weak_eq (const DbValue& a, const DbValue& b) noexcept;
+
+  /**
+   * \brief weak order less than
+   */
+  bool weak_lt (const DbValue& a, const DbValue& b) noexcept;
+
 
   // variant like access
   template <typename T> struct always_false

@@ -77,7 +77,10 @@ namespace sl3
       return static_cast<OutT> (converted);
     }
 
+
+
   } //--------------------------------------------------------------------------
+
 
   Value::Value () noexcept
   : _type (Type::Null)
@@ -525,60 +528,6 @@ namespace sl3
   }
 
 
-
-  bool
-  Value::operator== (const int val) const
-  {
-    if (_type == Type::Int)
-      return _store.intval == val;
-    else if (_type == Type::Real)
-      return _store.realval == val;
-
-    return false;
-  }
-
-  bool
-  Value::operator== (const int64_t& val) const
-  {
-    if (_type == Type::Int)
-      return _store.intval == val;
-    else if (_type == Type::Real)
-      return _store.realval == val;
-
-    return false;
-  }
-
-  bool
-  Value::operator== (const std::string& val) const
-  {
-    if (_type == Type::Text)
-      return _store.textval == val;
-
-    return false;
-  }
-
-  bool
-  Value::operator== (const double& val) const
-  {
-    if (_type == Type::Real)
-      return almost_equal (_store.realval, val, 2);
-    else if (_type == Type::Int)
-      return val == _store.intval; // good enought?
-
-    return false;
-  }
-
-  bool
-  Value::operator== (const Blob& val) const
-  {
-    if (_type == Type::Blob)
-      return _store.blobval == val;
-
-    return false;
-  }
-
-
-
   std::string
   Value::ejectText ()
   {
@@ -689,8 +638,8 @@ namespace sl3
 
       case Type::Real:
   //      if (b._type == Type::Real)
-          retval = a._store.realval == b._store.realval;
-
+          //retval = a._store.realval == b._store.realval;
+          retval = almost_equal(a._store.realval, b._store.realval, 2);
         break;
 
       case Type::Text:

@@ -30,13 +30,7 @@ namespace sl3
    *
    */
   class LIBSL3_API Value :
-      boost::totally_ordered<Value> ,
-      boost::equality_comparable<Value, int> ,
-      boost::equality_comparable<Value, int64_t> ,
-      boost::equality_comparable<Value, double> ,
-      boost::equality_comparable<Value, std::string>,
-      boost::equality_comparable<Value, Blob>
-  {
+      boost::totally_ordered<Value>  {
   public:
     /**
      * \brief Constructor
@@ -50,32 +44,32 @@ namespace sl3
      *  This constructor wiht an initialization value
      *  \param val initial value
      */
-    Value (int val) noexcept;
+    explicit Value (int val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    Value (int64_t val) noexcept;
+    explicit Value (int64_t val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    Value (std::string val) noexcept;
+    explicit Value (std::string val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    Value (const char* val) ;
+    explicit Value (const char* val) ;
 
     /**
      * \copydoc Value(int val)
      */
-    Value (double val) noexcept;
+    explicit Value (double val) noexcept;
 
     /**
      * \copydoc Value(int val)
      */
-    Value (Blob val) noexcept;
+    explicit Value (Blob val) noexcept;
 
     /**
      * \brief Destructor
@@ -139,14 +133,14 @@ namespace sl3
      *  \throw sl3::ErrOutOfRange is the stored value is an int64_t
      *  \return  the value
      */
-    operator int () const;
+    explicit operator int () const;
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \return  the value
      */
-    operator int64_t () const;
+    explicit operator int64_t () const;
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
@@ -155,21 +149,21 @@ namespace sl3
      *    the min or max double range.
      *  \return  the value
      */
-    operator double () const;
+    explicit operator double () const;
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \return  the value
      */
-    operator const std::string& () const; // TODO ref or val
+    explicit operator const std::string& () const; // TODO ref or val
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \return  the value
      */
-    operator const Blob& () const; // TODO ref or val
+    explicit operator const Blob& () const; // TODO ref or val
 
 
     /** \brief Access the value
@@ -200,34 +194,6 @@ namespace sl3
      */
     const Blob& blob () const;
 
-
-
-    /**
-     * \brief Compare value for equality
-     * \param val value to compare with
-     * \return if given values is equal
-     */
-    bool operator== (const int val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const int64_t& val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const std::string& val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const double& val) const;
-
-    /**
-     * \copydoc operator==(const int val) const
-     */
-    bool operator== (const Blob& val) const;
 
 
 

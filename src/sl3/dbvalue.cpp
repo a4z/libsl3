@@ -16,6 +16,8 @@
 #include <ostream>
 #include <type_traits>
 
+#include <iostream>
+
 namespace sl3
 {
   namespace
@@ -105,34 +107,16 @@ namespace sl3
       Type type;
     };
 
-//    // not in coverage, only used in never reachable case/if branches
-//    void raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
-//    {
-//      throw ErrUnexpected (msg); // LCOV_EXCL_LINE
-//    }
 
   } //--------------------------------------------------------------------------
 
-  template <class T>
-  typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
-  almost_equal (T x, T y, int ulp)
-  {
-    using std::numeric_limits;
-    // the machine epsilon has to be scaled to the magnitude of the values used
-    // and multiplied by the desired precision in ULPs (units in the last
-    // place)
-    return std::abs (x - y)
-               < numeric_limits<T>::epsilon () * std::abs (x + y) * ulp
-           // unless the result is subnormal
-           || std::abs (x - y) < numeric_limits<T>::min ();
-  }
 
 
   bool
   operator== (const DbValue& a, const DbValue& b) noexcept
   {
     if (a.getType () == b.getType ())
-      {
+      { std::cerr << "HERE\n" ;
         return a.getValue () == b.getValue ();
       }
 
@@ -143,13 +127,39 @@ namespace sl3
   bool
   operator< (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.getValue() == b.getValue())
+    if (a.getValue() < b.getValue())
       {
+        return true ;
+      }
+
+    if (a.getValue() == b.getValue())
+      { // a variant is bigger
         return a.getType() < b.getType() ;
       }
 
-    return a.getValue() < b.getValue() ;
+    return false ;
   }
+
+
+  // how, and does this makesense ?
+
+  bool
+  weak_eq (const DbValue& a, const DbValue& b) noexcept
+  {
+    return weak_eq(a.getValue(), b.getValue()) ;
+  }
+
+
+  bool
+  weak_lt (const DbValue& a, const DbValue& b) noexcept
+  {
+    if(weak_eq(a.getValue(), b.getValue()))
+      return a.getType() < b.getType() ;
+
+    return weak_lt(a.getValue(), b.getValue()) ;
+  }
+
+
 
   DbValue::DbValue (Type type) noexcept
   : _type (type == Type::Null ? Type::Variant : type)
@@ -427,42 +437,6 @@ namespace sl3
       return defval;
 
     return _value.blob();
-  }
-
-  bool
-  DbValue::operator== (const int val) const
-  {
-    return _value == val;
-  }
-
-  bool
-  DbValue::operator== (const int64_t& val) const
-  {
-    return _value == val;
-  }
-
-  bool
-  DbValue::operator== (const std::string& val) const
-  {
-    return _value == val;
-  }
-
-  bool
-  DbValue::operator== (const double& val) const
-  {
-    return _value == val;
-  }
-
-  bool
-  DbValue::operator== (const Blob& val) const
-  {
-    return _value == val;
-  }
-
-  bool
-  DbValue::operator== (const Value& val) const
-  {
-    return _value == val;
   }
 
 

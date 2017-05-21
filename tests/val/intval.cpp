@@ -22,38 +22,28 @@ namespace sl3
     VauleRelation weak_eq = sl3::weak_eq;
     VauleRelation weak_lt = sl3::weak_lt ;
   
+    auto _v =[](const auto& v){ return Value{v}; };
     void
     create ()
     {
 
       Value a(100);
-      Value b(a);
-      Value c = a ;
-      Value d = 100 ;
+      Value b = _v(100) ;
 
-      BOOST_CHECK_EQUAL (a, 100) ;
-      BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 100) ;
-      BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 100) ;
-      BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 100) ;
-      BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
+      BOOST_CHECK (static_cast<int>(a) == 100) ;
+      BOOST_CHECK (a.int64() == 100) ;
+      BOOST_CHECK (a.getType()== Type::Int) ;
+      BOOST_CHECK  (not a.isNull()) ;
+      BOOST_CHECK (b.getType()== Type::Int) ;
+      BOOST_CHECK  (not b.isNull()) ;
 
-      Value e;
-      BOOST_CHECK (e.isNull()) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Null) ;
-      e = 100 ;
-      BOOST_CHECK_EQUAL (e, 100) ;
-      BOOST_CHECK_EQUAL (e.getType(), Type::Int) ;
-      BOOST_CHECK (!e.isNull()) ;
+      Value c ;
+      BOOST_CHECK (c.getType() == Type::Null) ;
+      BOOST_CHECK  (c.isNull()) ;
 
-
-      int64_t i64 = 100 ;
-      Value f{i64};
-      BOOST_CHECK_EQUAL (f, i64) ;
-      BOOST_CHECK_EQUAL (f.getType(), Type::Int) ;
-      BOOST_CHECK (!f.isNull()) ;
+      Value d{std::move(b)};
+      BOOST_CHECK (d.getType()== Type::Int) ;
+      BOOST_CHECK (not d.isNull()) ;
 
     }
 
@@ -67,13 +57,13 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
       int64_t intval = 100 ;
       a = intval ;
-      BOOST_CHECK_EQUAL (a , intval) ;
+      BOOST_CHECK_EQUAL (a.int64() , intval) ;
       BOOST_CHECK_EQUAL (a.getType(), Type::Int) ;
       BOOST_CHECK (!a.isNull()) ;
 
       Value b;
       b = a ;
-      BOOST_CHECK_EQUAL (b , intval) ;
+      BOOST_CHECK_EQUAL (b.int64() , intval) ;
       BOOST_CHECK_EQUAL (b , a) ;
 
       b = Value{} ;
@@ -95,20 +85,20 @@ namespace sl3
       BOOST_CHECK_EQUAL (a.getType(), Type::Null) ;
 
       BOOST_CHECK_EQUAL (b.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (b, 1) ;
+      BOOST_CHECK_EQUAL (b.int64(), 1) ;
 
       Value c = std::move(b);
       BOOST_CHECK (b.isNull()) ;
 
       BOOST_CHECK_EQUAL (c.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (c, 1) ;
+      BOOST_CHECK_EQUAL (c.int64(), 1) ;
 
       Value d;
       d = std::move(c);
 
       BOOST_CHECK (c.isNull()) ;
       BOOST_CHECK_EQUAL (d.getType(), Type::Int) ;
-      BOOST_CHECK_EQUAL (d, 1) ;
+      BOOST_CHECK_EQUAL (d.int64(), 1) ;
 
 
     }
@@ -193,6 +183,9 @@ namespace sl3
 
        BOOST_CHECK (intVal != realVal);
        BOOST_CHECK (intVal < realVal);
+       //are we consistent?
+       BOOST_CHECK (static_cast<double>(intVal) == realVal.real());
+
 
        BOOST_CHECK (!(Value{2} < Value{1.1}));
        BOOST_CHECK (!(Value{3} < Value{2}));
@@ -204,72 +197,32 @@ namespace sl3
        BOOST_CHECK (intVal != blobVal);
        BOOST_CHECK (intVal < blobVal);
 
-
-       BOOST_CHECK (intVal != std::string("foo"));
-       BOOST_CHECK (!(intVal == Blob{}));
-
      }
 
 
      void
-     implicitConvert ()
+     convert ()
      {
-       Value a(100);
+        int val=100;
+        Value a(val);
 
-       BOOST_CHECK_NO_THROW({ int x = a  ; (void)x; });
-       BOOST_CHECK_NO_THROW({ int64_t x = a  ; (void)x; });
-       BOOST_CHECK_NO_THROW({ double x = a  ; (void)x; });
-       BOOST_CHECK_THROW({ std::string x = a  ; (void)x; }, ErrTypeMisMatch);
-       BOOST_CHECK_THROW({ Blob x = a  ; (void)x; }, ErrTypeMisMatch);
+        BOOST_CHECK_NO_THROW( static_cast<int>(a)  );
+        BOOST_CHECK_NO_THROW( static_cast<int64_t>(a)  );
+        BOOST_CHECK_NO_THROW( static_cast<double>(a)  );
 
-       {
-         int x = a ;
-         BOOST_CHECK_EQUAL(x , 100) ;
-       }
-       {
-         int64_t x = a ;
-         BOOST_CHECK_EQUAL(x , 100) ;
-       }
-       {
-         double x = a ;
-         BOOST_CHECK_EQUAL(x , 100.0) ;
-       }
-
-       BOOST_CHECK_THROW({ int x = Value{}; (void)x; }, ErrNullValueAccess);
-       BOOST_CHECK_THROW({ int64_t x = Value{}; (void)x; }, ErrNullValueAccess);
-
-       BOOST_CHECK_THROW ({int x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
-       BOOST_CHECK_THROW({int x = Value{Blob{}}; (void)x;}, ErrTypeMisMatch);
-
-       BOOST_CHECK_THROW({int64_t x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
-       BOOST_CHECK_THROW({int64_t x = Value{Blob{}}; (void)x;}, ErrTypeMisMatch);
+        BOOST_CHECK_THROW( static_cast<std::string>(a), ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<Blob>(a), ErrTypeMisMatch);
 
 
-       BOOST_CHECK_THROW ({int x = Value{"x"}; (void)x;}, ErrTypeMisMatch);
+        BOOST_CHECK_THROW(static_cast<int>(Value{}),
+                          ErrNullValueAccess);
+
+        BOOST_CHECK_THROW(static_cast<int64_t>(Value{}),
+                          ErrNullValueAccess);
 
 
-       {
-         int64_t tobig = std::numeric_limits<int64_t>::max ();
-         BOOST_CHECK_THROW ({int x = Value{tobig}; (void)x;}, ErrOutOfRange);
-       }
 
-       {
-         int64_t toless = std::numeric_limits<int64_t>::min ();
-         BOOST_CHECK_THROW ({int x = Value{toless}; (void)x;}, ErrOutOfRange);
-       }
-
-       {
-         double tobig = std::numeric_limits<double>::max ();
-         BOOST_CHECK_THROW ({int x = Value{tobig}; (void)x;}, ErrOutOfRange);
-       }
-
-       {
-         double tobig = std::numeric_limits<double>::max ();
-         BOOST_CHECK_THROW ({int64_t x = Value{tobig}; (void)x;},
-                            ErrOutOfRange);
-       }
-
-     }
+      }
 
      void
      getValue ()
@@ -289,7 +242,7 @@ namespace sl3
           .addTest ("strictTotalOrdered", strictTotalOrdered)
           .addTest ("weakTotalOrdered", weakTotalOrdered)
           .addTest ("compareWithOthers", compareWithOthers)
-          .addTest ("implicitConvert", implicitConvert)
+          .addTest ("convert", convert)
           .addTest ("getValue", getValue)
     );
   }
