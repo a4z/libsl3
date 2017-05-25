@@ -28,7 +28,7 @@ namespace sl3
     {
 
       Value a(100);
-      Value b = _v(100) ;
+      Value b = _v(int64_t{100}) ;
 
       BOOST_CHECK (static_cast<int>(a) == 100) ;
       BOOST_CHECK (a.int64() == 100) ;
@@ -220,7 +220,17 @@ namespace sl3
         BOOST_CHECK_THROW(static_cast<int64_t>(Value{}),
                           ErrNullValueAccess);
 
+        auto maxi64 = std::numeric_limits<int64_t>::max() ;
+        BOOST_CHECK_THROW(static_cast<int>(Value{maxi64}),
+                          ErrOutOfRange);
 
+
+        auto maxd = std::numeric_limits<double>::max() ;
+        BOOST_CHECK_THROW(static_cast<int>(Value{maxd}),
+                          ErrOutOfRange);
+
+        BOOST_CHECK_THROW(static_cast<int64_t>(Value{maxd}),
+                          ErrOutOfRange);
 
       }
 

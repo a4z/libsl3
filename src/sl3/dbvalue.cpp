@@ -154,9 +154,6 @@ namespace sl3
   bool
   weak_lt (const DbValue& a, const DbValue& b) noexcept
   {
-    if(weak_eq(a.getValue(), b.getValue()))
-      return a.getType() < b.getType() ;
-
     return weak_lt(a.getValue(), b.getValue()) ;
   }
 
@@ -283,7 +280,7 @@ namespace sl3
   DbValue&
   DbValue::operator= (const Value& val)
   {
-    ensure (_type).oneOf (_value.getType(), Type::Variant);
+    ensure (_type).oneOf (val.getType(), Type::Variant);
     _value = val ;
     return *this;
   }

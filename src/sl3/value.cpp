@@ -437,10 +437,11 @@ namespace sl3
       }
     else if (_type == Type::Int)
       {
-        using limit = std::numeric_limits<double>;
-
-        if (_store.intval < limit::min () || _store.intval > limit::max ())
-          throw ErrOutOfRange ();
+//        using limit = std::numeric_limits<double>;
+//
+//        if (_store.intval < limit::min () || _store.intval > limit::max ())
+//          throw ErrOutOfRange ();
+//        not possible
 
         return _store.intval;
       }

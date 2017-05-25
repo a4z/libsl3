@@ -406,6 +406,9 @@ namespace sl3
 
       // these have different types so that needs to be like that
       BOOST_CHECK ( (DbValue (1) < DbValue (1.0)));
+      BOOST_CHECK ( !weak_lt(DbValue (1) , DbValue (1.0)));
+      BOOST_CHECK ( weak_eq(DbValue (1) , DbValue (1.0)));
+
       BOOST_CHECK ( !(DbValue (2) < DbValue (1.0)));
       BOOST_CHECK ( !(DbValue (1) == DbValue (1.0)) );
       BOOST_CHECK ( !(DbValue (1.0) < DbValue (1)));
@@ -525,6 +528,17 @@ namespace sl3
 
         dvb = DbValue (Blob{1, 2});
         BOOST_CHECK (dvb.getBlob () == Blob ({1, 2}));
+
+
+
+        BOOST_CHECK_NO_THROW (intval  = Value{2});
+        BOOST_CHECK (intval.getInt() == 2);
+
+        BOOST_CHECK_THROW (strval = Value{2}, ErrTypeMisMatch);
+
+        DbValue var{"foo", Type::Variant} ;
+        BOOST_CHECK_NO_THROW (var  = Value{2});
+        BOOST_CHECK (var.getInt() == 2);
       }
     }
 

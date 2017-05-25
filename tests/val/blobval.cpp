@@ -88,6 +88,8 @@ namespace sl3
       BOOST_CHECK_EQUAL (c.getType(), Type::Blob) ;
       BOOST_CHECK ( b.blob() == blob ) ;
 
+
+
     }
 
     void
@@ -117,6 +119,14 @@ namespace sl3
       BOOST_CHECK_EQUAL (d.getType(), Type::Blob) ;
       BOOST_CHECK (d.blob() == Blob({0,1,0})) ;
 
+
+      Value e{Blob{}};
+      e = std::move(d) ;
+      BOOST_CHECK (e.blob() == Blob({0,1,0})) ;
+
+      Value ival{1} ;
+      e = std::move(ival) ;
+      BOOST_CHECK_EQUAL (e.getType(), Type::Int) ;
 
     }
 
@@ -249,7 +259,14 @@ namespace sl3
         BOOST_CHECK_THROW( Value{1}.blob () ,
                           ErrTypeMisMatch);
 
+        BOOST_CHECK_NO_THROW( static_cast<int>(Value{1.00}) );
+        BOOST_CHECK_THROW(static_cast<int>(Value{1.1}), ErrTypeMisMatch);
+        BOOST_CHECK_NO_THROW( static_cast<int64_t>(Value{1.00}) );
+        BOOST_CHECK_THROW(static_cast<int64_t>(Value{1.1}), ErrTypeMisMatch);
 
+        BOOST_CHECK_THROW(static_cast<double>(Value{}), ErrNullValueAccess);
+        BOOST_CHECK_NO_THROW( static_cast<double>(Value{123}) );
+        BOOST_CHECK_NO_THROW( static_cast<double>(Value{1.23}) );
       }
 
     a4TestAdd (a4test::suite ("blobval")
