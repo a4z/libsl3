@@ -115,8 +115,9 @@ namespace sl3
   bool
   operator== (const DbValue& a, const DbValue& b) noexcept
   {
+
     if (a.getType () == b.getType ())
-      { std::cerr << "HERE\n" ;
+      {
         return a.getValue () == b.getValue ();
       }
 

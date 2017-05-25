@@ -68,9 +68,11 @@ RunTestCommands ()
   auto& cmd2 = db.getCommand (name2) ;
   auto& cmd3 = db.getCommand (name3) ;
 
-  BOOST_REQUIRE_NO_THROW( cmd1.select( { 1,2,3 } ) );
-  BOOST_REQUIRE_NO_THROW( cmd2.select( { 1,2,3 } ) );
-  BOOST_REQUIRE_NO_THROW( cmd3.select( { 1,2,3 } ) );
+  using v = DbValue ;   
+
+  BOOST_REQUIRE_NO_THROW( cmd1.select( { v{1},v{2},v{3} } ) );
+  BOOST_REQUIRE_NO_THROW( cmd2.select( { v{1},v{2},v{3} } ) );
+  BOOST_REQUIRE_NO_THROW( cmd3.select( { v{1},v{2},v{3} } ) );
 
   BOOST_REQUIRE(db.selectValue("SELECT COUNT(*) FROM tbl;").getInt() == 3);
 }//-----------------------------------------------------------------------------
@@ -138,13 +140,14 @@ CreateWithParameters()
 }//-----------------------------------------------------------------------------
 
 
+
 void
 RebindParameters()
 {
   auto db = testdb();
 
   auto& cmd1 = db.getCommand (name1) ;
-  BOOST_REQUIRE_NO_THROW( cmd1.select( { 1,2,3 } ) );
+  BOOST_REQUIRE_NO_THROW( cmd1.select( dbvalues( 1,2,3 ) ) );
 
   BOOST_REQUIRE_NO_THROW( cmd1.execute() );
 
@@ -194,11 +197,12 @@ UseQueryCallback()
 {
   auto db = testdb();
 
+  using namespace sl3 ;  
 
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( { 1,2,3 } ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( { 1,2,3 } ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( { 1,2,3 } ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( { 1,2,3 } ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( dbvalues(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( dbvalues(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( dbvalues(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( dbvalues(1,2,3) ) );
 
   {
     DbValues::container_type vals;

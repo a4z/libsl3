@@ -67,7 +67,7 @@ namespace sl3
      *  \param type wanted type, default set to type but can
      *  be set to DbValue::Variant if waned
      */
-    DbValue (int val, Type type = Type::Int);
+    explicit DbValue (int val, Type type = Type::Int);
 
 
     /**
