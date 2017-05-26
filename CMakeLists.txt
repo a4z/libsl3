@@ -4,11 +4,11 @@ project(libsl3 C CXX)
 
 
 set(sl3_MAJOR_VERSION 1)
-set(sl3_MINOR_VERSION 0)
+set(sl3_MINOR_VERSION 1)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 14)
+set(internal_SQLITE_MINOR_V 19)
 set(internal_SQLITE_PATCH_V  2)
 
 # sqlite uses (X*1000000 + Y*1000 + Z),
