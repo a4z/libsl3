@@ -150,25 +150,12 @@ namespace sl3
     return weak_eq(a.getValue(), b.getValue()) ;
   }
 
-    if (a.getStorageType () == Type::Null)
-      {
-        if (b.getStorageType () == Type::Null)
-          return a.getType () < b.getType ();
-        else
-          return true;
-      }
-
   bool
   weak_lt (const DbValue& a, const DbValue& b) noexcept
   {
     return weak_lt(a.getValue(), b.getValue()) ;
   }
 
-  DbValue::DbValue (Type type) noexcept
-  : _type (type == Type::Null ? Type::Variant : type)
-  , _storageType (Type::Null)
-  {
-  }
 
 
   DbValue::DbValue (Type type) noexcept

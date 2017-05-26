@@ -350,22 +350,6 @@ namespace sl3
         BOOST_CHECK (blob != a) ;
       }
     
-      {
-        DbValue a{1, Type::Variant} ;
-        DbValue b{1.0, Type::Variant} ;
-        BOOST_CHECK (a == b) ;
-        BOOST_CHECK (b == a) ;
-
-        DbValue blob{Blob {1,2}} ;
-
-        BOOST_CHECK (a != blob) ;
-        BOOST_CHECK (b != blob) ;
-        BOOST_CHECK (blob != a) ;
-        BOOST_CHECK (blob != a) ;
-      }
-
-
-
 
 
       {

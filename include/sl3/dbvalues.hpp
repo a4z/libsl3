@@ -96,12 +96,8 @@ namespace sl3
       return { DbValue{vals}... } ;
   }
 
-    DbValues (conatiner_type) noexcept (
-        std::is_nothrow_move_constructible<DbValue>::value);
+
 
 }
 
 #endif
-
-
-#endif /* DbValue_HPP_ */
