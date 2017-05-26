@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -61,8 +61,8 @@ namespace sl3
 
     /** \brief Move constructor
      */
-    DbValues (DbValues&&)
-      noexcept(std::is_nothrow_move_constructible<DbValue>::value) ;
+    DbValues (DbValues&&) noexcept (
+        std::is_nothrow_move_constructible<DbValue>::value);
 
     /** \brief Assigment
      *  \throw sl3::ErrTypeMisMatch if size() is different
@@ -89,6 +89,13 @@ namespace sl3
   };
 
   void swap (DbValues& a, DbValues& b) noexcept;
+
+  template <typename... VALS>
+  DbValues
+  dbvalues (VALS&&... vals)
+  {
+    return {DbValue{vals}...};
+  }
 }
 
-#endif /* DbValue_HPP_ */
+#endif

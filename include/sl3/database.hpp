@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -9,15 +9,13 @@
 #ifndef SL3_DATABASE_HPP_
 #define SL3_DATABASE_HPP_
 
-
-#include <string>
 #include <memory>
+#include <string>
 
 #include <sl3/command.hpp>
 #include <sl3/config.hpp>
 #include <sl3/dataset.hpp>
 #include <sl3/dbvalue.hpp>
-
 
 struct sqlite3;
 
@@ -28,14 +26,14 @@ namespace sl3
     class Connection;
   }
 
-
   /**
    * \brief represents a SQLite3 Database
    *
    *
    * Encapsulate some/the most - useful methods for a SQLite3 database object.
    *
-   * A Database is opened when a instance is created and close when the instance
+   * A Database is opened when a instance is created and close when the
+   * instance
    * goes out of scope.
    *
    * \note for valgrind: http://www.sqlite.org/cvstrac/tktview?tn=3428 \n
@@ -43,12 +41,11 @@ namespace sl3
    */
   class LIBSL3_API Database
   {
-    Database(const Database&) = delete ;
-    Database& operator=(const Database&) = delete ;
-    Database& operator=( Database&&) = delete ;
+    Database (const Database&) = delete;
+    Database& operator= (const Database&) = delete;
+    Database& operator= (Database&&) = delete;
 
   public:
-
     /**
      * \brief Constructor
      *
@@ -56,7 +53,8 @@ namespace sl3
      * The exact behavior can be fine tuned using the openFlags parameter.
      *
      * \param name database name.
-     * \n If name is ":memory:" than the database will be an in memory database.
+     * \n If name is ":memory:" than the database will be an in memory
+     * database.
      * \n If name has a size of 0 than the database will be private on disk
      * database.
      * \n Otherwise name will be interpreted as a file.
@@ -73,15 +71,14 @@ namespace sl3
     /**
      * \brief Destructor.
      */
-    virtual ~Database () noexcept ;
-
+    virtual ~Database () noexcept;
 
     /**
      * \brief Move constructor
      *
      * A Database is moveable
      */
-    Database (Database&&) noexcept  ;
+    Database (Database&&) noexcept;
 
     /**
      * \brief create a SqlCommand instance.
@@ -128,7 +125,6 @@ namespace sl3
      */
     void execute (const char* sql);
 
-
     /**
      * \brief Execute one SQL statements and apply a SqlQueryHandler.
      *
@@ -139,10 +135,8 @@ namespace sl3
      */
     void execute (const std::string& sql, RowCallback& cb);
 
-
     /// shortcut for Command::Callback
-    using Callback = Command::Callback ;
-
+    using Callback = Command::Callback;
 
     /**
      * \brief Execute one SQL statements and apply a QueryCallback.
@@ -153,7 +147,6 @@ namespace sl3
      * \param cb Callback to handle query result
      */
     void execute (const std::string& sql, Callback cb);
-
 
     /**
      * \brief Execute a SQL query and return the result.
@@ -196,7 +189,6 @@ namespace sl3
      */
     DbValue selectValue (const std::string& sql);
 
-
     /**
      * \brief select a single typed value form the database.
      *
@@ -230,7 +222,6 @@ namespace sl3
      */
     int getMostRecentErrCode ();
 
-
     /**
      * \brief Returns most recent error message.
      *
@@ -238,7 +229,6 @@ namespace sl3
      * \return SQLite3 error message.
      */
     std::string getMostRecentErrMsg ();
-
 
     /**
       * \brief Wraps sqlite3_errstr() function
@@ -284,7 +274,6 @@ namespace sl3
      */
     int64_t getLastInsertRowid ();
 
-
     /**
      * \brief Transaction Guard
      *
@@ -295,45 +284,41 @@ namespace sl3
     class Transaction
     {
       sl3::Database& _db;
-      bool _commit;
+      bool           _commit;
 
-      Transaction(Database& );
+      Transaction (Database&);
       friend class Database;
 
-
-      Transaction(const Transaction&) = delete;
-      Transaction& operator=(const Transaction&) = delete;
-      Transaction& operator=(Transaction&&) = delete;
+      Transaction (const Transaction&) = delete;
+      Transaction& operator= (const Transaction&) = delete;
+      Transaction& operator= (Transaction&&) = delete;
 
     public:
       /** \brief Move constructor
        *  A Transaction is movalble.
        */
-      Transaction(Transaction&&) ;
+      Transaction (Transaction&&);
 
       /** \brief Destructor
        *
        * Calls ROLLBACK if the Transaction commit has not been called.
        */
-      ~Transaction();
-
+      ~Transaction ();
 
       /** \brief Commit the transaction
        *
        * Calls commit transaction.
        */
-      void commit();
-
+      void commit ();
     };
 
     /**
      * \brief Create a TransactionGuard
      * \return Transaction instance
      */
-    Transaction beginTransaction();
+    Transaction beginTransaction ();
 
   protected:
-
     /**
      * \brief Access the underlying sqlite3 database.
      *
@@ -344,7 +329,7 @@ namespace sl3
      *
      * \return a handle to the underlying sqlite3 database;
      */
-    sqlite3* db () ;
+    sqlite3* db ();
 
   private:
     /**
@@ -364,9 +349,7 @@ namespace sl3
      * after closing the database.
      */
     ConnectionPtr _connection;
-
   };
-
 }
 
 #endif /* ...DATABASE_HPP_ */

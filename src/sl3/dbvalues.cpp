@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -8,8 +8,6 @@
 
 #include <sl3/dbvalues.hpp>
 #include <sl3/error.hpp>
-
-
 
 namespace sl3
 {
@@ -28,18 +26,14 @@ namespace sl3
   }
 #endif
 
-  DbValues::DbValues () noexcept
-  : Container ()
-  {
-  }
-
+  DbValues::DbValues () noexcept : Container () {}
   DbValues::DbValues (const DbValues& row)
   : Container (row)
   {
   }
 
-  DbValues::DbValues (DbValues&& row) 
-    noexcept(std::is_nothrow_move_constructible<DbValue>::value)
+  DbValues::DbValues (DbValues&& row) noexcept (
+      std::is_nothrow_move_constructible<DbValue>::value)
   : Container (std::move (row))
   {
   }
@@ -72,7 +66,7 @@ namespace sl3
     // in case of exception , both needs to stay unchanged
     // first all checks, than assign
     // if there is not size, it is OK, was possible moved
-    if (size () &&  size () != row.size ())
+    if (size () && size () != row.size ())
       throw ErrTypeMisMatch ();
 
     for (size_t i = 0; i < size (); ++i)

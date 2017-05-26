@@ -24,8 +24,8 @@ void assingCheckSize ()
 
   BOOST_CHECK_NO_THROW (r3 = r2);
 
-  BOOST_CHECK_NO_THROW (unused = r3.at(0) == r2.at(0).getInt ());
-  BOOST_CHECK_NO_THROW (unused = r3.at(1) == r2.at(1).getText ());
+  BOOST_CHECK_NO_THROW (unused = r3.at(0) == r2.at(0));
+  BOOST_CHECK_NO_THROW (unused = r3.at(1) == r2.at(1));
 
   (void)(unused) ;
 }
