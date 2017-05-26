@@ -5,6 +5,7 @@
 #include "testdb.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <sl3/command.hpp>
 #include <sl3/database.hpp>
 #include <sl3/dataset.hpp>
@@ -177,6 +178,41 @@ TypeNames ()
   BOOST_CHECK_EQUAL (typeName (Type::Blob),    "Blob") ;
   BOOST_CHECK_EQUAL (typeName (Type::Null),    "Null") ;
   BOOST_CHECK_EQUAL (typeName (Type::Variant), "Variant") ;
+
+  {
+    std::stringstream ss;
+    ss << Type::Int ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Int");
+  } 
+  {
+    std::stringstream ss;
+    ss << Type::Real ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Real");
+  } 
+  {
+    std::stringstream ss;
+    ss << Type::Text ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Text");
+  } 
+  {
+    std::stringstream ss;
+    ss << Type::Blob ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Blob");
+  } 
+  {
+    std::stringstream ss;
+    ss << Type::Variant ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Variant");
+  } 
+  {
+    std::stringstream ss;
+    ss << Type::Null ;
+    BOOST_CHECK_EQUAL (ss.str(),  "Type::Null");
+  } 
+
+
+
+
 }
 
 

@@ -22,6 +22,8 @@ if (NOT have_myCompilerSetup)
       endif(MINGW)
     endif(NOT CMAKE_CXX_FLAGS)
     
+    # TODO for the debug build, set -Og -ggdb
+    
     SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING 
       "Flags used by the compiler during all build types." 
       FORCE )  
@@ -52,7 +54,9 @@ if (NOT have_myCompilerSetup)
         FORCE )
       
       if (NOT CMAKE_CXX_FLAGS)
-        SET (CMAKE_CXX_FLAGS "-std=c++0x -pipe -pthread ${MYCLANGWARNINGS}")
+        SET (CMAKE_CXX_FLAGS "-std=c++1z -pipe -pthread -stdlib=libc++  ${MYCLANGWARNINGS}")
+        SET (CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi")
+        #use also the libc++  library, TODO might want to make this configurable
       endif(NOT CMAKE_CXX_FLAGS)
       
       SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING 

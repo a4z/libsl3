@@ -8,3 +8,5 @@ configureCustomFlags
 build*/
 *include/sl3/config.hpp
 *tests/basics/configtest.cpp
+*.pyc
+

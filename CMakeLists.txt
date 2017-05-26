@@ -1,16 +1,15 @@
-
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 
 project(libsl3 C CXX) 
 
 
 set(sl3_MAJOR_VERSION 1)
-set(sl3_MINOR_VERSION 0)
+set(sl3_MINOR_VERSION 1)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 13)
-set(internal_SQLITE_PATCH_V  0)
+set(internal_SQLITE_MINOR_V 19)
+set(internal_SQLITE_PATCH_V  2)
 
 # sqlite uses (X*1000000 + Y*1000 + Z),
 # but minor patch used since major is always 3
@@ -97,6 +96,7 @@ SET ( sl3_HDR
     include/sl3/error.hpp
     include/sl3/rowcallback.hpp
     include/sl3/types.hpp
+    include/sl3/value.hpp
     
 )
 #-------------------------------------------------------------------------------
@@ -117,6 +117,7 @@ SET ( sl3_SRC
     src/sl3/error.cpp
     src/sl3/rowcallback.cpp
     src/sl3/types.cpp
+    src/sl3/value.cpp
 
 )
 ################################################################################

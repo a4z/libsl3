@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -9,17 +9,15 @@
 #ifndef SL3__ERROR_HPP_
 #define SL3__ERROR_HPP_
 
-
-#include <iosfwd>
-#include <string>
 #include <exception>
+#include <iosfwd>
 #include <stdexcept>
+#include <string>
 
 #include <sl3/config.hpp>
 
-namespace sl3{
-
-
+namespace sl3
+{
   /**
    * \brief Error codes
    *
@@ -30,28 +28,31 @@ namespace sl3{
    */
   enum class ErrCode
   {
-    SQL3Error = 1 , ///< sqlite3 error happened
-    NoConnection = 2 , ///< no database
-    OutOfRange = 5 ,///< index op out of range
-    TypeMisMatch = 6 ,///< type cast problem
-    NullValueAccess = 7 , ///< accessing a value that is Null
-    UNEXPECTED = 99 ///< for everything that happens unexpected
+    SQL3Error       = 1, ///< sqlite3 error happened
+    NoConnection    = 2, ///< no database
+    OutOfRange      = 5, ///< index op out of range
+    TypeMisMatch    = 6, ///< type cast problem
+    NullValueAccess = 7, ///< accessing a value that is Null
+    UNEXPECTED      = 99 ///< for everything that happens unexpected
   };
 
   constexpr const char*
-  ErrCodeName(ErrCode ec)
+  ErrCodeName (ErrCode ec)
   {
-    return
-        ec == ErrCode::SQL3Error ? "SQLite3Error" :
-            ec == ErrCode::NoConnection ? "NoConnection" :
-                ec == ErrCode::OutOfRange ? "OutOfRange" :
-                    ec == ErrCode::TypeMisMatch ? "TypeMisMatch" :
-                        ec == ErrCode::NullValueAccess ? "NullValueAccess" :
-                            ec == ErrCode::UNEXPECTED ? "UNEXPECTED" :
-            "NA" ;
+    return ec == ErrCode::SQL3Error
+               ? "SQLite3Error"
+               : ec == ErrCode::NoConnection
+                     ? "NoConnection"
+                     : ec == ErrCode::OutOfRange
+                           ? "OutOfRange"
+                           : ec == ErrCode::TypeMisMatch
+                                 ? "TypeMisMatch"
+                                 : ec == ErrCode::NullValueAccess
+                                       ? "NullValueAccess"
+                                       : ec == ErrCode::UNEXPECTED
+                                             ? "UNEXPECTED"
+                                             : "NA";
   }
-
-
 
   /**
    * \brief Exception base type
@@ -62,17 +63,15 @@ namespace sl3{
   class LIBSL3_API Error : public std::runtime_error
   {
   protected:
-
   public:
     /// Inherit constructors from std::runtime_error
-    using std::runtime_error::runtime_error ;
+    using std::runtime_error::runtime_error;
 
     /**
       * \brief Get ErrCode
       * \return the Errcode of the excetion
       */
-    virtual  ErrCode getId () const = 0  ;
-
+    virtual ErrCode getId () const = 0;
   };
 
   /**
@@ -83,43 +82,46 @@ namespace sl3{
    */
   LIBSL3_API std::ostream& operator<< (std::ostream& os, const Error& e);
 
-
   /**
    * \brief Object class representing an ErrCode
    *
    *  Allows typedef objects using an Errcode.
    *  Each sl3::ErrCode becomes an ErrType object.
    */
-  template<ErrCode ec>
-  class LIBSL3_API ErrType final: public Error
+  template <ErrCode ec> class LIBSL3_API ErrType final : public Error
   {
-
   public:
-    ErrType() : Error("") {}
+    ErrType ()
+    : Error ("")
+    {
+    }
 
-    using Error::Error ;
+    using Error::Error;
 
-    ErrCode getId () const override { return ec ;}
-
+    ErrCode
+    getId () const override
+    {
+      return ec;
+    }
   };
 
   /// error that will be thrown if no open database was available but needed
-  using ErrNoConnection = ErrType<ErrCode::NoConnection> ;
+  using ErrNoConnection = ErrType<ErrCode::NoConnection>;
 
-  ///thrown if an index op is out of range
-  using ErrOutOfRange = ErrType<ErrCode::OutOfRange> ;
+  /// thrown if an index op is out of range
+  using ErrOutOfRange = ErrType<ErrCode::OutOfRange>;
 
   /**
    * \brief thrown in case of an incorrect type usage
    */
   using ErrTypeMisMatch = ErrType<ErrCode::TypeMisMatch>;
 
-  ///thrown in case of accessing a Null value field/parameter
-  using ErrNullValueAccess = ErrType<ErrCode::NullValueAccess> ;
+  /// thrown in case of accessing a Null value field/parameter
+  using ErrNullValueAccess = ErrType<ErrCode::NullValueAccess>;
 
-  ///thrown if something unexpected happened, mostly used by test tools and in debug mode
-  using ErrUnexpected =  ErrType<ErrCode::UNEXPECTED>;
-
+  /// thrown if something unexpected happened, mostly used by test tools and in
+  /// debug mode
+  using ErrUnexpected = ErrType<ErrCode::UNEXPECTED>;
 
   /**
    * \brief packaging an error from sqlite3.
@@ -134,10 +136,8 @@ namespace sl3{
    * \see Database::enableExtendedResultCodes
    *
    */
-  template<>
-  class LIBSL3_API  ErrType<ErrCode::SQL3Error> final : public Error
+  template <> class LIBSL3_API ErrType<ErrCode::SQL3Error> final : public Error
   {
-
   public:
     /**
      * \brief c'tor
@@ -145,9 +145,8 @@ namespace sl3{
      * \param sl3msg sqite error code
      */
     ErrType<ErrCode::SQL3Error> (int sl3ec, const char* sl3msg)
-    : ErrType<ErrCode::SQL3Error>(sl3ec, sl3msg, "")
+    : ErrType<ErrCode::SQL3Error> (sl3ec, sl3msg, "")
     {
-
     }
 
     /**
@@ -156,24 +155,30 @@ namespace sl3{
      * \param sl3msg sqite error code
      * \param msg additional message
      */
-    ErrType<ErrCode::SQL3Error> (int sl3ec,
-                                 const char* sl3msg,
+    ErrType<ErrCode::SQL3Error> (int                sl3ec,
+                                 const char*        sl3msg,
                                  const std::string& msg)
-        : Error ("(" + std::to_string(sl3ec) + ":" +  sl3msg + "):" + msg)
-         ,_sqlite_ec(sl3ec)
-         , _sqlite_msg(sl3msg)
-         {
+    : Error ("(" + std::to_string (sl3ec) + ":" + sl3msg + "):" + msg)
+    , _sqlite_ec (sl3ec)
+    , _sqlite_msg (sl3msg)
+    {
+    }
 
-         }
-
-
-    ErrCode getId () const override { return ErrCode::SQL3Error ;}
+    ErrCode
+    getId () const override
+    {
+      return ErrCode::SQL3Error;
+    }
 
     /**
      * \brief  Get the sqlite3 error code
      * \return the sqlite3 error code
      */
-    int SQLiteErrorCode () const {return _sqlite_ec; }
+    int
+    SQLiteErrorCode () const
+    {
+      return _sqlite_ec;
+    }
 
     /**
      * \brief  Get the sqlite3 error message.
@@ -183,23 +188,23 @@ namespace sl3{
      *
      * \return the sqlite3 error message
      */
-    const std::string& SQLiteErrorMessage() const {return _sqlite_msg; } ;
+    const std::string&
+    SQLiteErrorMessage () const
+    {
+      return _sqlite_msg;
+    };
 
   private:
-
-    int _sqlite_ec;
+    int         _sqlite_ec;
     std::string _sqlite_msg;
   };
 
-
   using SQLite3Error = ErrType<ErrCode::SQL3Error>;
 
-
-#define  ASSERT_EXCEPT( exp , except ) if ( !( exp ) ) \
-  throw  except( std::string(__FUNCTION__) + ": " + #exp )
-
+#define ASSERT_EXCEPT(exp, except) \
+  if (!(exp))                      \
+  throw except (std::string (__FUNCTION__) + ": " + #exp)
 
 } // ns
-
 
 #endif /* ...ERROR_HPP_ */

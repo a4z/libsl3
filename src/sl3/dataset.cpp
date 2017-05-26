@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -10,56 +10,38 @@
 
 #include <sqlite3.h>
 
-#include  <stdexcept>
-#include  <iterator>
-#include  <algorithm>
+#include <algorithm>
+#include <iterator>
 #include <sl3/error.hpp>
+#include <stdexcept>
 
 namespace sl3
 {
-
-
-
-
-
-  Dataset::Dataset () noexcept
-  : _fieldtypes()
-  , _names()
-    {
-    }
-
-
-  Dataset::Dataset (Types types) :
-      _fieldtypes (std::move (types)),
-      _names ()
+  Dataset::Dataset () noexcept : _fieldtypes (), _names () {}
+  Dataset::Dataset (Types types)
+  : _fieldtypes (std::move (types))
+  , _names ()
   {
   }
 
   using namespace std;
 
-
-
-  Dataset::Dataset (Dataset&& other) noexcept(
-      std::is_nothrow_move_constructible<Container<DbValues>>::value &&
-      std::is_nothrow_move_constructible<Types>::value &&
-      std::is_nothrow_move_constructible<std::vector<std::string>>::value) :
-      Container<std::vector<DbValues>> (std::move (other)),
-      _fieldtypes (move (other._fieldtypes)),
-      _names (move (other._names))
+  Dataset::Dataset (Dataset&& other) noexcept (
+      std::is_nothrow_move_constructible<Container<DbValues>>::value&&
+          std::is_nothrow_move_constructible<Types>::value&& std::
+              is_nothrow_move_constructible<std::vector<std::string>>::value)
+  : Container<std::vector<DbValues>> (std::move (other))
+  , _fieldtypes (move (other._fieldtypes))
+  , _names (move (other._names))
   {
-
   }
-
-
 
   void
   Dataset::reset ()
   {
     _names.clear ();
     _cont.clear ();
-
   }
-
 
   void
   Dataset::reset (const Types& types)
@@ -68,15 +50,12 @@ namespace sl3
     reset ();
   }
 
-
-
   void
   Dataset::merge (const Dataset& other)
   {
-
-    if (! other._names.empty ())
+    if (!other._names.empty ())
       {
-        if (! _names.empty () && _names != other._names)
+        if (!_names.empty () && _names != other._names)
           throw ErrTypeMisMatch ();
       }
 
@@ -85,23 +64,19 @@ namespace sl3
 
     for (std::size_t i = 0; i < _fieldtypes.size (); ++i)
       {
-        if (_fieldtypes [i] != Type::Variant)
+        if (_fieldtypes[i] != Type::Variant)
           {
-            if (_fieldtypes [i] != other._fieldtypes [i])
+            if (_fieldtypes[i] != other._fieldtypes[i])
               throw ErrTypeMisMatch ();
           }
-
       }
 
     _cont.insert (_cont.end (), other._cont.begin (), other._cont.end ());
-
   }
-
 
   void
   Dataset::merge (const DbValues& row)
   {
-
     if (_fieldtypes.size () > 0 && _fieldtypes.size () != row.size ())
       {
         throw ErrTypeMisMatch ();
@@ -109,9 +84,9 @@ namespace sl3
 
     for (std::size_t i = 0; i < _fieldtypes.size (); ++i)
       {
-        if (_fieldtypes [i] != Type::Variant)
+        if (_fieldtypes[i] != Type::Variant)
           {
-            if (_fieldtypes [i] != row [i].getType ())
+            if (_fieldtypes[i] != row[i].getType ())
               {
                 throw ErrTypeMisMatch ();
               }
@@ -119,9 +94,7 @@ namespace sl3
       }
 
     _cont.push_back (DbValues (row));
-
   }
-
 
   size_t
   Dataset::getIndex (const string& name) const
@@ -134,8 +107,20 @@ namespace sl3
     return distance (_names.begin (), pos);
   }
 
+  void
+  Dataset::sort (const std::vector<size_t>& idxs)
+  {
+    auto lessValues = [&idxs](const DbValues& a, const DbValues& b) -> bool {
+      for (auto cur : idxs)
+        {
+          if (a.at (cur) < b.at (cur))
+            return true;
+          else if (b.at (cur) < a.at (cur))
+            return false;
+        }
+      return false;
+    };
 
-
-
+    std::sort (begin (), end (), lessValues);
+  }
 }
-

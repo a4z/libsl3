@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -12,26 +12,22 @@
 
 #include <sqlite3.h>
 
+#include "../sl3/connection.hpp"
 #include <sl3/columns.hpp>
 #include <sl3/database.hpp>
 #include <sl3/error.hpp>
-#include "../sl3/connection.hpp"
 
 namespace sl3
 {
-
   namespace
   {
-
     sqlite3_stmt*
     createStmt (sqlite3* db, const std::string& sql)
     {
-      sqlite3_stmt*  stmt = nullptr;
+      sqlite3_stmt* stmt       = nullptr;
       const char*   unussedSQL = nullptr;
 
-      int rc = sqlite3_prepare_v2 (db, sql.c_str (), -1,
-                                    &stmt,
-                                    &unussedSQL);
+      int rc = sqlite3_prepare_v2 (db, sql.c_str (), -1, &stmt, &unussedSQL);
 
       if (rc != SQLITE_OK)
         {
@@ -43,18 +39,15 @@ namespace sl3
     }
 
     DbValues
-    createParameters (sqlite3_stmt*  stmt)
+    createParameters (sqlite3_stmt* stmt)
     {
       const size_t paracount = sqlite3_bind_parameter_count (stmt);
 
-      using container = DbValues::container_type ;
+      using container = DbValues::container_type;
 
-      return paracount > 0 ?
-          DbValues(container (paracount, Type::Variant)) : DbValues ();
+      return paracount > 0 ? DbValues (container (paracount, Type::Variant))
+                           : DbValues ();
     }
-
-
-
 
     void
     bind (sqlite3_stmt* stmt, DbValues& parameters)
@@ -68,98 +61,81 @@ namespace sl3
 
           switch (val.getStorageType ())
             {
-            case Type::Int :
+            case Type::Int:
               rc = sqlite3_bind_int64 (stmt, curParaNr, val.getInt ());
               break;
 
-            case Type::Real :
+            case Type::Real:
               rc = sqlite3_bind_double (stmt, curParaNr, val.getReal ());
               break;
 
-            case Type::Text :
+            case Type::Text:
               // note, i do not want \0 in the db so take size
               // SQLITE_TRANSIENT would copy the string , is unwanted here
-              rc = sqlite3_bind_text (stmt, curParaNr,
+              rc = sqlite3_bind_text (stmt,
+                                      curParaNr,
                                       val.getText ().c_str (),
                                       val.getText ().size (),
                                       SQLITE_STATIC);
 
               break;
 
-            case Type::Blob :
-              rc = sqlite3_bind_blob (stmt, curParaNr,
-                                      &(val.getBlob () [0]),
+            case Type::Blob:
+              rc = sqlite3_bind_blob (stmt,
+                                      curParaNr,
+                                      &(val.getBlob ()[0]),
                                       val.getBlob ().size (),
                                       SQLITE_STATIC);
 
               break;
 
-            case Type::Null :
+            case Type::Null:
               rc = sqlite3_bind_null (stmt, curParaNr);
               break;
 
-            default :
+            default:
               throw ErrUnexpected (); // LCOV_EXCL_LINE
             }
 
           if (rc != SQLITE_OK)
             throw sl3::SQLite3Error (rc, ""); // LCOV_EXCL_LINE TODO ho to test
-
         }
-
-
-
     }
 
   } // ns
 
-
-
-  Command::Command (Connection connection,  const std::string& sql) :
-      _connection (std::move (connection)),
-      _stmt (createStmt(_connection->db (), sql)),
-      _parameters (createParameters (_stmt))
+  Command::Command (Connection connection, const std::string& sql)
+  : _connection (std::move (connection))
+  , _stmt (createStmt (_connection->db (), sql))
+  , _parameters (createParameters (_stmt))
   {
-
-
-
   }
 
-
-
-  Command::Command (Connection connection,
-                      const std::string& sql,
-                      DbValues parameters) :
-      _connection (std::move (connection)),
-      _stmt (createStmt(_connection->db (), sql)),
-      _parameters (std::move (parameters))
+  Command::Command (Connection         connection,
+                    const std::string& sql,
+                    DbValues           parameters)
+  : _connection (std::move (connection))
+  , _stmt (createStmt (_connection->db (), sql))
+  , _parameters (std::move (parameters))
   {
-
     const size_t paracount = sqlite3_bind_parameter_count (_stmt);
 
     if (paracount != _parameters.size ())
       {
         throw ErrTypeMisMatch ("Incorrect parameter count");
       }
-
   }
 
-
-
-
-  Command::Command (Command&& other) :
-      _connection (std::move (other._connection)),
-      _stmt (other._stmt),
-      _parameters (std::move (other._parameters))
+  Command::Command (Command&& other)
+  : _connection (std::move (other._connection))
+  , _stmt (other._stmt)
+  , _parameters (std::move (other._parameters))
   { // clear stm so that d'tor ot other does no action
     other._stmt = nullptr;
   }
 
-
-
   Command::~Command ()
   {
-
     if (_stmt) // its not a moved from zombi
       {
         if (_connection->isValid ()) // otherwise database will have done this
@@ -167,94 +143,80 @@ namespace sl3
             sqlite3_finalize (_stmt);
           }
       }
-
   }
-
-
 
   Dataset
   Command::select ()
   {
-    return select (DbValues(), Types()) ;
+    return select (DbValues (), Types ());
   }
-
 
   Dataset
   Command::select (const Types& types, const DbValues& parameters)
   {
-    return select (parameters, types) ;
+    return select (parameters, types);
   }
-
 
   Dataset
   Command::select (const DbValues& parameters, const Types& types)
   {
+    Dataset  ds{std::move (types)};
+    Callback fillds = [&ds](Columns columns) -> bool {
+      if (ds._names.size () == 0)
+        {
+          const int typeCount = static_cast<int> (ds._fieldtypes.size ());
 
-    Dataset ds { std::move (types) };
-    Callback fillds = [&ds](Columns columns)->bool
-      {
-        if (ds._names.size () == 0)
-          {
-            const int typeCount = static_cast<int>(ds._fieldtypes.size ());
+          if (typeCount == 0)
+            {
+              using container_type = Types::container_type;
+              container_type c (columns.count (), Type::Variant);
+              Types          fieldtypes{c};
+              ds._fieldtypes.swap (fieldtypes);
+            }
+          else if (typeCount != columns.count ())
+            {
+              throw ErrTypeMisMatch (
+                  "DbValuesTypeList.size != queryrow.getColumnCount()");
+            }
+          ds._names = columns.getNames ();
+        }
 
-            if (typeCount == 0)
-              {
-                using container_type = Types::container_type;
-                container_type c(columns.count(), Type::Variant);
-                Types fieldtypes{ c };
-                ds._fieldtypes.swap (fieldtypes);
-              }
-            else if (typeCount != columns.count ())
-              {
-                throw ErrTypeMisMatch (
-                    "DbValuesTypeList.size != queryrow.getColumnCount()");
-              }
-            ds._names = columns.getNames ();
-          }
+      // this will throw if a type does not match.
+      ds._cont.emplace_back (columns.getRow (ds._fieldtypes));
 
-        // this will throw if a type does not match.
-        ds._cont.emplace_back (columns.getRow (ds._fieldtypes));
-
-        return true;
-      };
+      return true;
+    };
 
     execute (fillds, parameters);
     return ds;
   }
 
-
   void
   Command::execute ()
   {
-    execute (DbValues());
+    execute (DbValues ());
   }
-
 
   void
   Command::execute (const DbValues& parameters)
   {
-    execute ([](Columns)->bool{return true;}, parameters);
+    execute ([](Columns) -> bool { return true; }, parameters);
   }
-
 
   void
   Command::execute (RowCallback& cb, const DbValues& parameters)
   {
     cb.onStart ();
 
-    auto cbf = [&cb](Columns cols)->bool
-      {
-        return cb.onRow (cols);
-      };
+    auto cbf = [&cb](Columns cols) -> bool { return cb.onRow (cols); };
 
-    execute (cbf, parameters) ;
+    execute (cbf, parameters);
 
     cb.onEnd ();
   }
 
-
   void
-  Command::execute (Callback cb, const DbValues& parameters)
+  Command::execute (Callback callback, const DbValues& parameters)
   {
     _connection->ensureValid ();
 
@@ -262,6 +224,11 @@ namespace sl3
       setParameters (parameters);
 
     bind (_stmt, _parameters);
+
+    // use this to ensure a reset of _stmt
+    using ResetGuard
+        = std::unique_ptr<sqlite3_stmt, decltype (&sqlite3_reset)>;
+    ResetGuard resetGuard (_stmt, &sqlite3_reset);
 
     bool loop = true;
     while (loop)
@@ -273,30 +240,24 @@ namespace sl3
           case SQLITE_OK:
           case SQLITE_DONE:
             {
-              sqlite3_reset (_stmt);
               loop = false;
               break;
             }
           case SQLITE_ROW:
             {
-              Columns c(_stmt);
-              loop = cb (c);
+              loop = callback (Columns{_stmt});
               break;
             }
 
           default:
             {
-              auto db = sqlite3_db_handle (_stmt);
+              auto         db = sqlite3_db_handle (_stmt);
               SQLite3Error sl3error (rc, sqlite3_errmsg (db));
-              sqlite3_reset (_stmt);
               throw sl3error;
             }
-
           }
-
       }
   }
-
 
   DbValues&
   Command::getParameters ()
@@ -304,13 +265,11 @@ namespace sl3
     return _parameters;
   }
 
-
   const DbValues&
   Command::getParameters () const
   {
     return _parameters;
   }
-
 
   DbValue&
   Command::getParameter (int idx)
@@ -318,13 +277,11 @@ namespace sl3
     return _parameters.at (idx);
   }
 
-
   const DbValue&
   Command::getParameter (int idx) const
   {
     return _parameters.at (idx);
   }
-
 
   void
   Command::setParameters (const DbValues& values)
@@ -336,35 +293,30 @@ namespace sl3
 
     for (size_t i = 0; i < values.size (); ++i)
       {
-        _parameters [i] = values [i];
+        _parameters[i] = values[i];
       }
-
   }
-
 
   void
   Command::resetParameters (const DbValues& values)
   {
-    ASSERT_EXCEPT (values.size () == _parameters.size (), ErrTypeMisMatch) ;
+    ASSERT_EXCEPT (values.size () == _parameters.size (), ErrTypeMisMatch);
     auto tmp = values;
     _parameters.swap (tmp);
-
   }
 
   std::vector<std::string>
   Command::getParameterNames () const
   {
-    std::vector<std::string> names ;
+    std::vector<std::string> names;
     names.resize (_parameters.size ());
 
     for (unsigned int i = 0; i < _parameters.size (); ++i)
       {
         const char* chrname = sqlite3_bind_parameter_name (_stmt, i + 1);
-        names [i] = chrname ? chrname : "";
+        names[i]            = chrname ? chrname : "";
       }
-    return names ;
+    return names;
   }
 
-
 } // ns
-

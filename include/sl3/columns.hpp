@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2016 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -12,11 +12,10 @@
 #include <sl3/config.hpp>
 #include <sl3/dbvalues.hpp>
 
-
 struct sqlite3_stmt;
 
-namespace sl3 {
-
+namespace sl3
+{
   /**
    * \brief Class to access data of query results.
    *
@@ -29,32 +28,30 @@ namespace sl3 {
    */
   class LIBSL3_API Columns
   {
+    friend class Command;
 
-    friend class Command ;
-
-    Columns (sqlite3_stmt* stmt) ;
-
-    // not be needed, even if they would not harm ..
-    Columns& operator= (const Columns&) = delete ;
+    Columns (sqlite3_stmt* stmt);
 
     // not be needed, even if they would not harm ..
-    Columns& operator= (Columns&&) = delete ;
+    Columns& operator= (const Columns&) = delete;
 
-    Columns (const Columns&) = default ;
+    // not be needed, even if they would not harm ..
+    Columns& operator= (Columns&&) = delete;
+
+    Columns (const Columns&) = default;
+
   public:
-
     /**
      * \brief Move constructor
      * A column is movable
      */
-    Columns (Columns&&) = default ;
+    Columns (Columns&&) = default;
 
     /**
      * \brief Destructor
      *
      */
-    ~Columns () = default ;
-
+    ~Columns () = default;
 
     /**
      * \brief Number of columns in the statement.
@@ -71,7 +68,7 @@ namespace sl3 {
      * \param idx wanted column index
      * \return column name or an empty string if index is invalid
      */
-    std::string getName (int idx) const ;
+    std::string getName (int idx) const;
 
     /**
      * \brief Get columns names
@@ -93,7 +90,7 @@ namespace sl3 {
      * \throw sl3::ErrOutOfRange if idx is invalid,
      * \return DbValue of requested column
      */
-    DbValue at (int idx) const ;
+    DbValue at (int idx) const;
 
     /**
      * \brief Get the value at a given index
@@ -107,7 +104,7 @@ namespace sl3 {
      * \throw sl3::ErrOutOfRange if idx is invalid,
      * \return DbValue of requested column
      */
-    DbValue at (int idx, Type type) const ;
+    DbValue at (int idx, Type type) const;
 
     /**
      * \brief Unchecked index access
@@ -118,7 +115,7 @@ namespace sl3 {
      * \param idx wanted index, will behave undefined if index is invalid.
      * \return DbValue of requested column
      */
-    DbValue operator ()(int idx) const;
+    DbValue operator() (int idx) const;
 
     /**
      * \brief Unchecked index access
@@ -131,15 +128,15 @@ namespace sl3 {
      * \param type wanted type
      * \return DbValue of requested column
      */
-    DbValue operator ()(int idx, Type type) const;
+    DbValue operator() (int idx, Type type) const;
 
-     /**
-      * \brief Get all columns at once
-      *
-      * All DbValue object will be of Type::Variant
-      *
-      * \return DbValues of the column values
-      */
+    /**
+     * \brief Get all columns at once
+     *
+     * All DbValue object will be of Type::Variant
+     *
+     * \return DbValues of the column values
+     */
     DbValues getRow () const;
 
     /**
@@ -177,7 +174,6 @@ namespace sl3 {
      */
     size_t getSize (int idx) const;
 
-
     /**
      *  \brief Get the value of a column.
      *
@@ -211,7 +207,7 @@ namespace sl3 {
      *  \throw sl3::ErrOutOfRange if idx is invalid
      *  \return column value
      */
-    int64_t getInt64 (int idx) const ;
+    int64_t getInt64 (int idx) const;
 
     /**
      *  \brief Get the value of a column.
@@ -235,9 +231,7 @@ namespace sl3 {
      *  \throw sl3::ErrOutOfRange if idx is invalid
      *  \return column value
      */
-    Blob  getBlob (int idx) const;
-
-
+    Blob getBlob (int idx) const;
 
     /**
      * \brief Get the underlying sqlite3_stmt
@@ -247,22 +241,15 @@ namespace sl3 {
      *
      * \return underlying sqlite3_stmt
      */
-    sqlite3_stmt* get_stmt () const { return _stmt; }
-
+    sqlite3_stmt*
+    get_stmt () const
+    {
+      return _stmt;
+    }
 
   private:
-    sqlite3_stmt* _stmt ;
-
-
+    sqlite3_stmt* _stmt;
   };
-
-
-
-
-
-
 }
-
-
 
 #endif

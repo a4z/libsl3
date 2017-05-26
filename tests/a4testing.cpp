@@ -1,5 +1,5 @@
 /*
---------------Copyright (c) 2009-2016 H a r a l d  A c h i t z---------------
+--------------Copyright (c) 2009-2017 H a r a l d  A c h i t z---------------
 -----------< h a r a l d dot a c h i t z at g m a i l dot c o m >------------
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -289,6 +289,9 @@ main ( int argc, char* argv[] )
   bool show_help_long =  false ;
   bool show_help_short =  false ;
 
+  std::vector<char*> butargs ;
+  butargs.push_back(argv[0]);
+
   for( int i = 1; i < argc; ++i ) // move this to a setup function thtat includes all required stuff...
     {
       bool haveopt ;
@@ -351,6 +354,7 @@ main ( int argc, char* argv[] )
 
           continue ; 
         }
+      butargs.push_back (argv[i]) ;
 
     }
 
@@ -389,8 +393,10 @@ main ( int argc, char* argv[] )
   
   //for( auto& s : xArgs() ) std::cerr << "xa " << s.first << " = " << s.second << "\n" ;
 
-  int result = ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv );;
-
+  //int result = ::boost::unit_test::unit_test_main( &init_unit_test, argc, argv);
+  
+  int  result = ::boost::unit_test::unit_test_main( &init_unit_test, butargs.size (), &butargs[0]);
+  
   if( show_help_long ) //append my help to boost help ..
     printHelp();
 
