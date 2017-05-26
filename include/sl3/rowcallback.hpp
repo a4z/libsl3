@@ -9,14 +9,13 @@
 #ifndef SL3_RowCallback_HPP
 #define SL3_RowCallback_HPP
 
-
 #include <functional>
 
 #include <sl3/config.hpp>
 
-namespace sl3 {
-
-  class Columns ;
+namespace sl3
+{
+  class Columns;
 
   /**
    * \brief Callback for SQL Select statements
@@ -28,55 +27,43 @@ namespace sl3 {
    */
   class LIBSL3_API RowCallback
   {
+    friend class Command;
 
-      friend class Command;
+  protected:
+    /**
+     * \brief Constructor
+     */
+    RowCallback () noexcept = default;
 
-    protected:
+    /**
+     * \brief Constructor
+     */
+    virtual ~RowCallback () noexcept = default;
 
-      /**
-       * \brief Constructor
-       */
-      RowCallback () noexcept = default ;
+    /**
+     * \brief Process one row of the result from  a SELECT statement
+     *
+     * @param columns Columns object for accessing values.
+     *
+     * @return false if processing the query result shall stop
+     *       \n true otherwise
+     */
+    virtual bool onRow (Columns columns) = 0;
 
-      /**
-       * \brief Constructor
-       */
-      virtual ~RowCallback () noexcept = default ;
+    /**
+     * \brief Called before a query result will be processed
+     *
+     * The default implementation does nothing.
+     */
+    virtual void onStart ();
 
-      /**
-       * \brief Process one row of the result from  a SELECT statement
-       *
-       * @param columns Columns object for accessing values.
-       *
-       * @return false if processing the query result shall stop
-       *       \n true otherwise
-       */
-      virtual bool onRow (Columns columns) = 0;
-
-      /**
-       * \brief Called before a query result will be processed
-       *
-       * The default implementation does nothing.
-       */
-      virtual void onStart ();
-
-      /**
-      * \brief Called after a query result has been processed
-      *
-      * The default implementation does nothing.
-      */
-      virtual void onEnd ();
-
-
+    /**
+    * \brief Called after a query result has been processed
+    *
+    * The default implementation does nothing.
+    */
+    virtual void onEnd ();
   };
-
-
-
-
-
-
 }
-
-
 
 #endif

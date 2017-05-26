@@ -11,11 +11,11 @@
 
 #include <string>
 
+#include <boost/operators.hpp>
 #include <sl3/config.hpp>
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 #include <sl3/value.hpp>
-#include <boost/operators.hpp>
 
 namespace sl3
 {
@@ -36,8 +36,7 @@ namespace sl3
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class LIBSL3_API DbValue :
-    boost::totally_ordered<DbValue>
+  class LIBSL3_API DbValue : boost::totally_ordered<DbValue>
   {
   public:
     /**
@@ -56,7 +55,6 @@ namespace sl3
     // don't like the ctors below anyway, they should take a flag,
     // variant or not, but not the type
 
-
     /** \brief Constructor
      *
      *  This constructor takes a initialization value, and optionally a type
@@ -68,7 +66,6 @@ namespace sl3
      *  be set to DbValue::Variant if waned
      */
     explicit DbValue (int val, Type type = Type::Int);
-
 
     /**
      * \copydoc DbValue(int val, Type type = Type::Int)
@@ -141,20 +138,21 @@ namespace sl3
      */
     DbValue& operator= (const std::string& val);
 
-    DbValue& operator= (const char* val)
-    { return *this = std::string{val} ;  }
+    DbValue&
+    operator= (const char* val)
+    {
+      return *this = std::string{val};
+    }
 
     /**
      * \copydoc operator=(const DbValue& val)
      */
     DbValue& operator= (const Blob& val);
 
-
     /**
      * \copydoc operator=(const DbValue& val)
      */
     DbValue& operator= (const Value& val);
-
 
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
@@ -185,12 +183,15 @@ namespace sl3
      */
     void set (const Blob& val);
 
-
     /** \brief Value access
      *  \return reference to the underlying Value
      */
-    const Value& getValue() const noexcept;
-    const Value& value() const noexcept {return getValue(); };
+    const Value& getValue () const noexcept;
+    const Value&
+    value () const noexcept
+    {
+      return getValue ();
+    };
 
     /** \brief Value access
      *  \throw sl3::ErrNullValueAccess if value is null.
@@ -268,7 +269,6 @@ namespace sl3
      */
     Blob get (const Blob& defval) const;
 
-
     /** \brief Moves the current value into the return value
      *
      *  After calling this function the value will be Null.
@@ -334,7 +334,7 @@ namespace sl3
   private:
     Type _type;
 
-    Value _value ;
+    Value _value;
 
     friend class DbValues;
 
@@ -350,7 +350,8 @@ namespace sl3
    * \param v the value to stream
    * \return ostream
    */
-  LIBSL3_API std::ostream& operator<< (std::ostream& stm, const sl3::DbValue& v);
+  LIBSL3_API std::ostream& operator<< (std::ostream&       stm,
+                                       const sl3::DbValue& v);
 
   /**
    * \brief global equality
@@ -360,7 +361,6 @@ namespace sl3
    * \return true if the type and the current value are equal, false otherwise
    */
   bool operator== (const DbValue& a, const DbValue& b) noexcept;
-
 
   /**
    * \brief global less operator for DbValue
@@ -380,7 +380,6 @@ namespace sl3
    */
   bool operator< (const DbValue& a, const DbValue& b) noexcept;
 
-
   /**
    * \brief weak order equality
    */
@@ -390,7 +389,6 @@ namespace sl3
    * \brief weak order less than
    */
   bool weak_lt (const DbValue& a, const DbValue& b) noexcept;
-
 
   // variant like access
   template <typename T> struct always_false

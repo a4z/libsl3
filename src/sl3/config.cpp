@@ -8,15 +8,14 @@
 
 #include <sl3/config.hpp>
 
-#include <sqlite3.h>
 #include <sl3/database.hpp>
 #include <sl3/error.hpp>
+#include <sqlite3.h>
 
 namespace sl3
 {
-
-//----------------------------------------------------------------------------
-// implement functions from config.h
+  //----------------------------------------------------------------------------
+  // implement functions from config.h
   const char*
   sqliteCompiledVersion ()
   {
@@ -45,9 +44,6 @@ namespace sl3
   {
     return sqlite3_threadsafe ();
   }
-//----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-
-
-
-}// ns
+} // ns

@@ -10,9 +10,9 @@
 #include <sl3/value.hpp>
 
 #include <algorithm>
+#include <climits>
 #include <cmath>
 #include <iomanip>
-#include <climits>
 #include <ostream>
 #include <type_traits>
 
@@ -77,30 +77,16 @@ namespace sl3
       return static_cast<OutT> (converted);
     }
 
-
-
   } //--------------------------------------------------------------------------
 
-
-  Value::Value () noexcept
-  : _type (Type::Null)
-  {
-  }
-
-  Value::Value (int val) noexcept
-  : _type (Type::Int)
+  Value::Value () noexcept : _type (Type::Null) {}
+  Value::Value (int val) noexcept : _type (Type::Int) { _store.intval = val; }
+  Value::Value (int64_t val) noexcept : _type (Type::Int)
   {
     _store.intval = val;
   }
 
-  Value::Value (int64_t val) noexcept
-  : _type (Type::Int)
-  {
-    _store.intval = val;
-  }
-
-  Value::Value (std::string val) noexcept
-  : _type (Type::Text)
+  Value::Value (std::string val) noexcept : _type (Type::Text)
   {
     new (&_store.textval) std::string (std::move (val));
   }
@@ -111,14 +97,12 @@ namespace sl3
     new (&_store.textval) std::string (val);
   }
 
-  Value::Value (double val) noexcept
-  : _type (Type::Real)
+  Value::Value (double val) noexcept : _type (Type::Real)
   {
     _store.realval = val;
   }
 
-  Value::Value (Blob val) noexcept
-  : _type (Type::Blob)
+  Value::Value (Blob val) noexcept : _type (Type::Blob)
   {
     new (&_store.blobval) Blob (std::move (val));
   }
@@ -135,8 +119,7 @@ namespace sl3
       }
   }
 
-  Value::Value (const Value& other) noexcept
-  : _type (other._type)
+  Value::Value (const Value& other) noexcept : _type (other._type)
   {
     switch (_type)
       {
@@ -164,8 +147,7 @@ namespace sl3
       }
   }
 
-  Value::Value (Value&& other) noexcept
-  : _type (other._type)
+  Value::Value (Value&& other) noexcept : _type (other._type)
   {
     switch (_type)
       {
@@ -437,11 +419,12 @@ namespace sl3
       }
     else if (_type == Type::Int)
       {
-//        using limit = std::numeric_limits<double>;
-//
-//        if (_store.intval < limit::min () || _store.intval > limit::max ())
-//          throw ErrOutOfRange ();
-//        not possible
+        //        using limit = std::numeric_limits<double>;
+        //
+        //        if (_store.intval < limit::min () || _store.intval >
+        //        limit::max ())
+        //          throw ErrOutOfRange ();
+        //        not possible
 
         return _store.intval;
       }
@@ -527,7 +510,6 @@ namespace sl3
 
     return _store.blobval;
   }
-
 
   std::string
   Value::ejectText ()
@@ -619,9 +601,8 @@ namespace sl3
   bool
   operator== (const Value& a, const Value& b) noexcept
   {
-
-    if (a.getType () != b.getType())
-      return false ;
+    if (a.getType () != b.getType ())
+      return false;
 
     bool retval = false;
 
@@ -632,25 +613,25 @@ namespace sl3
         break;
 
       case Type::Int:
-//        if (b._type == Type::Int)
-          retval = a._store.intval == b._store.intval;
+        //        if (b._type == Type::Int)
+        retval = a._store.intval == b._store.intval;
 
         break;
 
       case Type::Real:
-  //      if (b._type == Type::Real)
-          //retval = a._store.realval == b._store.realval;
-          retval = almost_equal(a._store.realval, b._store.realval, 2);
+        //      if (b._type == Type::Real)
+        // retval = a._store.realval == b._store.realval;
+        retval = almost_equal (a._store.realval, b._store.realval, 2);
         break;
 
       case Type::Text:
-    //    if (b._type == Type::Text)
-          retval = a._store.textval == b._store.textval;
+        //    if (b._type == Type::Text)
+        retval = a._store.textval == b._store.textval;
         break;
 
       case Type::Blob:
-      //  if (b._type == Type::Blob)
-          retval = a._store.blobval == b._store.blobval;
+        //  if (b._type == Type::Blob)
+        retval = a._store.blobval == b._store.blobval;
         break;
 
       default:
@@ -675,12 +656,12 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-        {
-          if (a._store.intval <= b._store.realval)
-            return true;
-          else 
-            return false ; 
-         }
+          {
+            if (a._store.intval <= b._store.realval)
+              return true;
+            else
+              return false;
+          }
 
         return true;
       }
@@ -688,12 +669,12 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-        {
-          if (a._store.realval < b._store.intval)
-            return true ;
-          else 
-            return false;
-        }
+          {
+            if (a._store.realval < b._store.intval)
+              return true;
+            else
+              return false;
+          }
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;
@@ -730,7 +711,6 @@ namespace sl3
     a = std::move (b);
     b = std::move (t);
   }
-
 
   bool
   weak_eq (const Value& a, const Value& b) noexcept
@@ -775,7 +755,6 @@ namespace sl3
 
     return retval;
   }
-
 
   bool
   weak_lt (const Value& a, const Value& b) noexcept
@@ -828,7 +807,5 @@ namespace sl3
     // we are both bolb
     return a._store.blobval < b._store.blobval;
   }
-
-
 
 } // ns

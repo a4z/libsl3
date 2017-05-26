@@ -61,8 +61,8 @@ namespace sl3
 
     /** \brief Move constructor
      */
-    DbValues (DbValues&&)
-      noexcept(std::is_nothrow_move_constructible<DbValue>::value) ;
+    DbValues (DbValues&&) noexcept (
+        std::is_nothrow_move_constructible<DbValue>::value);
 
     /** \brief Assigment
      *  \throw sl3::ErrTypeMisMatch if size() is different
@@ -90,14 +90,12 @@ namespace sl3
 
   void swap (DbValues& a, DbValues& b) noexcept;
 
-  template<typename... VALS>
-  DbValues dbvalues(VALS&&... vals)
+  template <typename... VALS>
+  DbValues
+  dbvalues (VALS&&... vals)
   {
-      return { DbValue{vals}... } ;
+    return {DbValue{vals}...};
   }
-
-
-
 }
 
 #endif

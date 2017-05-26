@@ -6,62 +6,51 @@
  ---------- file, You can obtain one at http://mozilla.org/MPL/2.0/. ----------
  ******************************************************************************/
 
-
-
 #include <sl3/types.hpp>
 
 #include <ostream>
 
-
-
 namespace sl3
 {
-
   std::string
   typeName (Type type)
   {
-
     switch (type)
-    {
-     case Type::Null    :
-       return "Null" ;
-       break ;
-     case Type::Int     :
-       return "Int" ;
-       break ;
-     case Type::Real    :
-       return "Real" ;
-       break ;
-     case Type::Text    :
-       return "Text" ;
-       break ;
-     case Type::Blob    :
-       return "Blob" ;
-       break ;
-     case Type::Variant :
-       return "Variant" ;
-       break ;
-    }
+      {
+      case Type::Null:
+        return "Null";
+        break;
+      case Type::Int:
+        return "Int";
+        break;
+      case Type::Real:
+        return "Real";
+        break;
+      case Type::Text:
+        return "Text";
+        break;
+      case Type::Blob:
+        return "Blob";
+        break;
+      case Type::Variant:
+        return "Variant";
+        break;
+      }
 
-    return "unknown" ;                         // LCOV_EXCL_LINE
+    return "unknown"; // LCOV_EXCL_LINE
   }
-
 
   std::ostream&
   operator<< (std::ostream& os, const Type& t)
   {
-    os << "Type::" << typeName (t) ;
+    os << "Type::" << typeName (t);
     return os;
   }
-
-
 
   void
   Types::swap (Types& other) noexcept
   {
-     using std::swap;
-     swap (_cont, other._cont);
+    using std::swap;
+    swap (_cont, other._cont);
   }
-
 }
-

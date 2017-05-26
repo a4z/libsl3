@@ -13,11 +13,9 @@
 
 namespace sl3
 {
-
-  Columns::Columns( sqlite3_stmt* stmt  )
-  : _stmt(stmt)
+  Columns::Columns (sqlite3_stmt* stmt)
+  : _stmt (stmt)
   {
-
   }
 
   int
@@ -25,7 +23,6 @@ namespace sl3
   {
     return sqlite3_column_count (_stmt);
   }
-
 
   std::string
   Columns::getName (int idx) const
@@ -37,16 +34,14 @@ namespace sl3
     return name ? std::string (name) : std::string ();
   }
 
-
   DbValue
   Columns::at (int idx) const
   {
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return operator()(idx, Type::Variant);
+    return operator() (idx, Type::Variant);
   }
-
 
   DbValue
   Columns::at (int idx, Type type) const
@@ -54,51 +49,47 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return operator()(idx, type);
+    return operator() (idx, type);
   }
-
 
   DbValue
   Columns::operator() (int idx) const
   {
-    return operator()(idx, Type::Variant);
+    return operator() (idx, Type::Variant);
   }
-
 
   DbValue
   Columns::operator() (int idx, Type type) const
   {
     switch (sqlite3_column_type (_stmt, idx))
       {
-      case SQLITE_INTEGER :
+      case SQLITE_INTEGER:
         return DbValue (getInt64 (idx), type);
         break;
 
-      case SQLITE_FLOAT :
+      case SQLITE_FLOAT:
         return DbValue (getReal (idx), type);
         break;
 
-      case SQLITE_TEXT :
+      case SQLITE_TEXT:
         return DbValue (getText (idx), type);
         break;
 
-      case SQLITE_BLOB :
+      case SQLITE_BLOB:
         return DbValue (getBlob (idx), type);
         break;
 
-      case SQLITE_NULL :
+      case SQLITE_NULL:
         return DbValue (type);
         break;
 
-      default :   // LCOV_EXCL_START
+      default: // LCOV_EXCL_START
         throw ErrUnexpected ("should never reach this line");
         break;
       }
 
-
-    return DbValue (type); //for the lexer  LCOV_EXCL_STOP
+    return DbValue (type); // for the lexer  LCOV_EXCL_STOP
   }
-
 
   std::vector<std::string>
   Columns::getNames () const
@@ -106,12 +97,11 @@ namespace sl3
     std::vector<std::string> names (count ());
     for (int i = 0; i < count (); ++i)
       {
-        names [i] = getName (i);
+        names[i] = getName (i);
       }
 
     return names;
   }
-
 
   DbValues
   Columns::getRow () const
@@ -119,12 +109,10 @@ namespace sl3
     DbValues::container_type v;
     for (int i = 0; i < count (); ++i)
       {
-        v.push_back (operator()(i));
+        v.push_back (operator() (i));
       }
     return DbValues (std::move (v));
-
   }
-
 
   DbValues
   Columns::getRow (const Types& types) const
@@ -137,12 +125,10 @@ namespace sl3
     DbValues::container_type v;
     for (int i = 0; i < count (); ++i)
       {
-        v.push_back ((*this)(i, types [i]));
+        v.push_back ((*this) (i, types[i]));
       }
     return DbValues (std::move (v));
-
   }
-
 
   Type
   Columns::getType (int idx) const
@@ -150,39 +136,37 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    auto type = Type::Variant ;
+    auto type = Type::Variant;
 
     switch (sqlite3_column_type (_stmt, idx))
       {
-      case SQLITE_INTEGER :
-        type = Type::Int ;
+      case SQLITE_INTEGER:
+        type = Type::Int;
         break;
 
-      case SQLITE_FLOAT :
+      case SQLITE_FLOAT:
         type = Type::Real;
         break;
 
-      case SQLITE_TEXT :
+      case SQLITE_TEXT:
         type = Type::Text;
         break;
 
-      case SQLITE_BLOB :
-        type = Type::Blob ;
+      case SQLITE_BLOB:
+        type = Type::Blob;
         break;
 
-      case SQLITE_NULL :
-        type = Type::Null ;
+      case SQLITE_NULL:
+        type = Type::Null;
         break;
 
-      default :
+      default:
         throw ErrUnexpected ("never reach"); // LCOV_EXCL_LINE
-        break; //LCOV_EXCL_LINE
+        break;                               // LCOV_EXCL_LINE
       }
 
-    return type ;
-
+    return type;
   }
-
 
   size_t
   Columns::getSize (int idx) const
@@ -193,18 +177,16 @@ namespace sl3
     return sqlite3_column_bytes (_stmt, idx);
   }
 
-
   std::string
   Columns::getText (int idx) const
   {
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    const char* first = (const char*) sqlite3_column_text (_stmt, idx);
-    std::size_t s = sqlite3_column_bytes (_stmt, idx);
+    const char* first = (const char*)sqlite3_column_text (_stmt, idx);
+    std::size_t s     = sqlite3_column_bytes (_stmt, idx);
     return s > 0 ? std::string (first, s) : std::string ();
   }
-
 
   int
   Columns::getInt (int idx) const
@@ -212,9 +194,8 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return sqlite3_column_int(_stmt, idx);
+    return sqlite3_column_int (_stmt, idx);
   }
-
 
   int64_t
   Columns::getInt64 (int idx) const
@@ -222,9 +203,8 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return sqlite3_column_int64 (_stmt, idx) ;
+    return sqlite3_column_int64 (_stmt, idx);
   }
-
 
   double
   Columns::getReal (int idx) const
@@ -235,19 +215,17 @@ namespace sl3
     return sqlite3_column_double (_stmt, idx);
   }
 
-
   Blob
   Columns::getBlob (int idx) const
   {
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    using value_type = Blob::value_type ;
-    const value_type* first =
-        static_cast<const value_type*> (sqlite3_column_blob (_stmt, idx));
+    using value_type = Blob::value_type;
+    const value_type* first
+        = static_cast<const value_type*> (sqlite3_column_blob (_stmt, idx));
     std::size_t s = sqlite3_column_bytes (_stmt, idx);
     return s > 0 ? Blob (first, first + s) : Blob ();
   }
 
-
-}// ns
+} // ns

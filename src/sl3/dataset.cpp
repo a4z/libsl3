@@ -17,12 +17,7 @@
 
 namespace sl3
 {
-  Dataset::Dataset () noexcept
-  : _fieldtypes ()
-  , _names ()
-  {
-  }
-
+  Dataset::Dataset () noexcept : _fieldtypes (), _names () {}
   Dataset::Dataset (Types types)
   : _fieldtypes (std::move (types))
   , _names ()
@@ -128,6 +123,4 @@ namespace sl3
 
     std::sort (begin (), end (), lessValues);
   }
-
 }
-

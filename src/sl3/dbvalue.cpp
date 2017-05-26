@@ -49,9 +49,7 @@ namespace sl3
         return type != Type::Null;
       } //----------------------------------------------------------------------
 
-      template <typename... ARGS>
-      bool
-      oneOf (ARGS... args)
+      template <typename... ARGS> bool oneOf (ARGS... args)
       {
         return oneof (type, args...);
 
@@ -83,9 +81,7 @@ namespace sl3
         return *this;
       } //----------------------------------------------------------------------
 
-      template <typename... ARGS>
-      ensure&
-      oneOf (ARGS... args)
+      template <typename... ARGS> ensure& oneOf (ARGS... args)
       {
         if (!oneof (type, args...))
           throw ErrTypeMisMatch (typeName (type)
@@ -107,15 +103,11 @@ namespace sl3
       Type type;
     };
 
-
   } //--------------------------------------------------------------------------
-
-
 
   bool
   operator== (const DbValue& a, const DbValue& b) noexcept
   {
-
     if (a.getType () == b.getType ())
       {
         return a.getValue () == b.getValue ();
@@ -124,42 +116,38 @@ namespace sl3
     return false;
   }
 
-
   bool
   operator< (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.getValue() < b.getValue())
+    if (a.getValue () < b.getValue ())
       {
-        return true ;
+        return true;
       }
 
-    if (a.getValue() == b.getValue())
+    if (a.getValue () == b.getValue ())
       { // a variant is bigger
-        return a.getType() < b.getType() ;
+        return a.getType () < b.getType ();
       }
 
-    return false ;
+    return false;
   }
-
 
   // how, and does this makesense ?
 
   bool
   weak_eq (const DbValue& a, const DbValue& b) noexcept
   {
-    return weak_eq(a.getValue(), b.getValue()) ;
+    return weak_eq (a.getValue (), b.getValue ());
   }
 
   bool
   weak_lt (const DbValue& a, const DbValue& b) noexcept
   {
-    return weak_lt(a.getValue(), b.getValue()) ;
+    return weak_lt (a.getValue (), b.getValue ());
   }
 
-
-
   DbValue::DbValue (Type type) noexcept
-  : _type (type == Type::Null ? Type::Variant : type)
+      : _type (type == Type::Null ? Type::Variant : type)
   {
   }
 
@@ -167,57 +155,54 @@ namespace sl3
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Int, Type::Variant);
-    _value = val ;
+    _value = val;
   }
 
   DbValue::DbValue (int64_t val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Int, Type::Variant);
-    _value = val ;
+    _value = val;
   }
 
   DbValue::DbValue (std::string val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Text, Type::Variant);
-    _value = val ;
+    _value = val;
   }
 
   DbValue::DbValue (double val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Real, Type::Variant);
-    _value = val ;
+    _value = val;
   }
 
   DbValue::DbValue (Blob val, Type type)
   : DbValue (type)
   {
     ensure (type).oneOf (Type::Blob, Type::Variant);
-    _value = val ;
+    _value = val;
   }
-
-
 
   void
   DbValue::clearValue ()
   {
-    _value.setNull() ;
+    _value.setNull ();
   }
-
 
   DbValue&
   DbValue::operator= (const DbValue& other)
   {
     if (!canAssign (other))
       {
-        throw ErrTypeMisMatch (typeName (_type) + "="
-                               + (other._type == Type::Variant
-                                      ? typeName (other._type)
-                                            + " with storage type"
-                                            + typeName (other.getStorageType())
-                                      : typeName (other._type)));
+        throw ErrTypeMisMatch (
+            typeName (_type) + "="
+            + (other._type == Type::Variant
+                   ? typeName (other._type) + " with storage type"
+                         + typeName (other.getStorageType ())
+                   : typeName (other._type)));
       }
 
     assign (other);
@@ -225,18 +210,18 @@ namespace sl3
   }
 
   DbValue&
-  DbValue::operator= (DbValue&& other) 
+  DbValue::operator= (DbValue&& other)
   {
     if (!canAssign (other))
       {
-        throw ErrTypeMisMatch (typeName (_type) + "="
-                               + (other._type == Type::Variant
-                                      ? typeName (other._type)
-                                            + " with storage type"
-                                            + typeName (other.getStorageType())
-                                      : typeName (other._type)));
-      }   
-    _value = std::move(other._value) ;
+        throw ErrTypeMisMatch (
+            typeName (_type) + "="
+            + (other._type == Type::Variant
+                   ? typeName (other._type) + " with storage type"
+                         + typeName (other.getStorageType ())
+                   : typeName (other._type)));
+      }
+    _value = std::move (other._value);
 
     return *this;
   }
@@ -279,8 +264,8 @@ namespace sl3
   DbValue&
   DbValue::operator= (const Value& val)
   {
-    ensure (_type).oneOf (val.getType(), Type::Variant);
-    _value = val ;
+    ensure (_type).oneOf (val.getType (), Type::Variant);
+    _value = val;
     return *this;
   }
 
@@ -316,11 +301,10 @@ namespace sl3
     _value = val;
   }
 
-
   const Value&
-  DbValue::getValue() const noexcept
+  DbValue::getValue () const noexcept
   {
-    return _value ;
+    return _value;
   }
 
   void
@@ -333,22 +317,22 @@ namespace sl3
   const int64_t&
   DbValue::getInt () const
   {
-    return _value.int64();
+    return _value.int64 ();
   }
 
   int64_t
   DbValue::getInt (int64_t defval) const
   {
-     if (isNull ())
+    if (isNull ())
       return defval;
 
-    return _value.int64();
+    return _value.int64 ();
   }
 
   const double&
   DbValue::getReal () const
   {
-    return _value.real();
+    return _value.real ();
   }
 
   double
@@ -357,13 +341,13 @@ namespace sl3
     if (isNull ())
       return defval;
 
-    return _value.real();
+    return _value.real ();
   }
 
   const std::string&
   DbValue::getText () const
   {
-    return _value.text();
+    return _value.text ();
   }
 
   std::string
@@ -372,13 +356,13 @@ namespace sl3
     if (isNull ())
       return defval;
 
-    return _value.text();
+    return _value.text ();
   }
 
   const Blob&
   DbValue::getBlob () const
   {
-    return _value.blob();
+    return _value.blob ();
   }
 
   Blob
@@ -387,70 +371,70 @@ namespace sl3
     if (isNull ())
       return defval;
 
-    return _value.blob();
+    return _value.blob ();
   }
 
   int64_t
   DbValue::get (int64_t defval) const
   {
-    if (_value.getType() != Type::Int)
+    if (_value.getType () != Type::Int)
       return defval;
 
-    return _value.int64();
+    return _value.int64 ();
   }
 
   int64_t
   DbValue::get (int defval) const
   {
-    if (_value.getType() != Type::Int)
+    if (_value.getType () != Type::Int)
       return defval;
 
-    return _value.int64();
+    return _value.int64 ();
   }
 
   double
   DbValue::get (double defval) const
   {
-    if (_value.getType() != Type::Real)
+    if (_value.getType () != Type::Real)
       return defval;
 
-    return _value.real();
+    return _value.real ();
   }
 
   std::string // TODO consider change to reference, with warning in the doc
-  DbValue::get (const std::string& defval) const
+      DbValue::get (const std::string& defval) const
   {
-    if (_value.getType() != Type::Text)
+    if (_value.getType () != Type::Text)
       return defval;
 
-    return _value.text();
+    return _value.text ();
   }
 
   Blob // TODO consider change to reference, with warning in the doc
-  DbValue::get (const Blob& defval) const
+      DbValue::get (const Blob& defval) const
   {
-    if (_value.getType() != Type::Blob)
+    if (_value.getType () != Type::Blob)
       return defval;
 
-    return _value.blob();
+    return _value.blob ();
   }
 
   std::string
   DbValue::ejectText ()
   {
-    return _value.ejectText() ;
+    return _value.ejectText ();
   }
 
   Blob
   DbValue::ejectBlob ()
   {
-    return _value.ejectBlob() ;
+    return _value.ejectBlob ();
   }
 
   std::ostream&
   operator<< (std::ostream& stm, const sl3::DbValue& v)
   {
-    stm << v.getValue() ;
+    stm << v.getValue ();
     return stm;
   }
 
@@ -463,7 +447,7 @@ namespace sl3
   bool
   DbValue::isNull () const
   {
-    return _value.isNull();
+    return _value.isNull ();
   }
 
   Type
@@ -475,7 +459,7 @@ namespace sl3
   Type
   DbValue::getStorageType () const
   {
-    return _value.getType();
+    return _value.getType ();
   }
 
   bool
@@ -485,7 +469,7 @@ namespace sl3
       {
         if (other.getType () == Type::Variant)
           {
-            return check (other.getStorageType()).oneOf (_type, Type::Null);
+            return check (other.getStorageType ()).oneOf (_type, Type::Null);
           }
         else
           {
@@ -499,8 +483,7 @@ namespace sl3
   void
   DbValue::assign (const DbValue& other)
   {
-    _value = other._value ;
+    _value = other._value;
   }
-
 
 } // ns

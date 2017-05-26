@@ -29,8 +29,8 @@ namespace sl3
    *
    *
    */
-  class LIBSL3_API Value :
-      boost::totally_ordered<Value>  {
+  class LIBSL3_API Value : boost::totally_ordered<Value>
+  {
   public:
     /**
      * \brief Constructor
@@ -59,7 +59,7 @@ namespace sl3
     /**
      * \copydoc Value(int val)
      */
-    explicit Value (const char* val) ;
+    explicit Value (const char* val);
 
     /**
      * \copydoc Value(int val)
@@ -165,7 +165,6 @@ namespace sl3
      */
     explicit operator const Blob& () const; // TODO ref or val
 
-
     /** \brief Access the value
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if the current value has a different type.
@@ -193,9 +192,6 @@ namespace sl3
      *  \return  reference to the value
      */
     const Blob& blob () const;
-
-
-
 
     /** \brief Moves the current value into the return value
      *
@@ -229,16 +225,12 @@ namespace sl3
      */
     Type getType () const noexcept;
 
-
     friend bool operator== (const Value& a, const Value& b) noexcept;
     friend bool operator< (const Value& a, const Value& b) noexcept;
     friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
     friend bool weak_eq (const Value& a, const Value& b) noexcept;
     friend bool weak_lt (const Value& a, const Value& b) noexcept;
-
-
-
 
   private:
     Type _type;
@@ -276,7 +268,6 @@ namespace sl3
    */
   bool operator== (const Value& a, const Value& b) noexcept;
 
-
   /**
    * \brief total order less than Value
    *
@@ -296,7 +287,6 @@ namespace sl3
    */
   bool operator< (const Value& a, const Value& b) noexcept;
 
-
   /**
    * \brief weak order equality
    */
@@ -306,7 +296,6 @@ namespace sl3
    * \brief weak order less than
    */
   bool weak_lt (const Value& a, const Value& b) noexcept;
-
 
   /*
    * \brief Value specialised swap function
@@ -318,14 +307,7 @@ namespace sl3
   void swap (Value& a, Value& b) noexcept;
 
   // TODO do I want this like that?
-  static const Value NullValue{} ;
-
-
-
-
+  static const Value NullValue{};
 }
-
-
-
 
 #endif

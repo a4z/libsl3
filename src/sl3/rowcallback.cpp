@@ -8,22 +8,16 @@
 
 #include <sl3/rowcallback.hpp>
 
-
-
 namespace sl3
 {
-
   void
-  RowCallback::onStart()
+  RowCallback::onStart ()
   {
-
   }
 
   void
-  RowCallback::onEnd()
+  RowCallback::onEnd ()
   {
-
   }
 
-
-}// ns
+} // ns

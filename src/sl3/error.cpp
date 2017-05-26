@@ -8,20 +8,15 @@
 
 #include <sl3/error.hpp>
 
-#include <ostream>
 #include <map>
+#include <ostream>
 
 namespace sl3
 {
-
-
-
   std::ostream&
   operator<< (std::ostream& os, const Error& e)
   {
     os << "sl3::" << ErrCodeName (e.getId ()) << ":" << e.what ();
     return os;
   }
-
-
 }
