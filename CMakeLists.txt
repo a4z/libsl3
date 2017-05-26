@@ -1,5 +1,4 @@
-
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 
 project(libsl3 C CXX) 
 
@@ -97,6 +96,7 @@ SET ( sl3_HDR
     include/sl3/error.hpp
     include/sl3/rowcallback.hpp
     include/sl3/types.hpp
+    include/sl3/value.hpp
     
 )
 #-------------------------------------------------------------------------------
@@ -117,6 +117,7 @@ SET ( sl3_SRC
     src/sl3/error.cpp
     src/sl3/rowcallback.cpp
     src/sl3/types.cpp
+    src/sl3/value.cpp
 
 )
 ################################################################################

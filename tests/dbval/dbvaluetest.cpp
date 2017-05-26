@@ -307,18 +307,17 @@ namespace sl3
     {
       {
         auto intval = DbValue{1};
-        BOOST_CHECK (intval == 1);
+        BOOST_CHECK (intval.getInt() == 1);
         int64_t v64 = 1;
-        BOOST_CHECK (intval == v64);
+        BOOST_CHECK (intval.getInt() == v64);
         BOOST_CHECK (intval == DbValue(v64));      
         DbValue variant {v64, Type::Variant};
         BOOST_CHECK ((intval == variant) == false) ;
         v64 -= 1;
-        BOOST_CHECK (intval != v64);
+        BOOST_CHECK (intval.getInt() != v64);
         BOOST_CHECK (intval != DbValue(v64));
-        BOOST_CHECK (intval != 1.0);
-        BOOST_CHECK (intval != "foo");
-        BOOST_CHECK (intval != Blob{});
+
+        BOOST_CHECK (intval != DbValue(Blob{}));
       }
 
       {
@@ -326,13 +325,29 @@ namespace sl3
         double d2 = 1 / std::sqrt(5) / std::sqrt(5);
         BOOST_CHECK (d1 != d2); 
         auto realval = DbValue{d1};
-        BOOST_CHECK (realval == d2);
+        BOOST_CHECK (realval.getReal() != d2);
         BOOST_CHECK (realval == DbValue(d2));
-        BOOST_CHECK (realval != 0.2000001);
+
         BOOST_CHECK (DbValue (0.20000002) != DbValue (0.20000001));
-        BOOST_CHECK (realval != 1);
-        BOOST_CHECK (realval != "bar");
-        BOOST_CHECK (realval != Blob{});
+        BOOST_CHECK (realval != DbValue(std::string{"bar"}));
+        BOOST_CHECK (realval != DbValue(Blob{}));
+      }
+    
+      {
+        DbValue a{1, Type::Variant} ;
+        DbValue b{1.0, Type::Variant} ;
+        BOOST_CHECK (a != b) ;
+        BOOST_CHECK (weak_eq(a, b)) ;
+
+        BOOST_CHECK (b != a) ;
+        BOOST_CHECK (weak_eq(b, a)) ;
+
+        DbValue blob{Blob {1,2}} ;
+
+        BOOST_CHECK (a != blob) ;
+        BOOST_CHECK (b != blob) ;
+        BOOST_CHECK (blob != a) ;
+        BOOST_CHECK (blob != a) ;
       }
     
       {
@@ -351,26 +366,23 @@ namespace sl3
 
 
 
+
+
       {
         auto txtval = DbValue{"foobar"};
-        BOOST_CHECK (txtval == "foobar");
+        BOOST_CHECK (txtval.getText() == std::string{"foobar"});
         BOOST_CHECK (txtval == DbValue("foobar"));
         BOOST_CHECK (txtval != DbValue("bar"));
 
-        BOOST_CHECK (txtval != int64_t (1));
-        BOOST_CHECK (txtval != 2.0);
-        BOOST_CHECK (txtval != Blob{});
       }
 
       {
         auto blobval = DbValue{Blob{1, 2, 3}};
         std::vector<char> v       = {1, 2, 3};
-        BOOST_CHECK (blobval == v);
+        BOOST_CHECK (blobval.getBlob() == v);
         BOOST_CHECK (blobval == DbValue(v));
         BOOST_CHECK (blobval != DbValue(Blob{1, 2, 3, 4}) );
-        BOOST_CHECK (blobval != 1);
-        BOOST_CHECK (blobval != 2.0);
-        BOOST_CHECK (blobval != Blob{});
+
       }
 
 
@@ -410,12 +422,16 @@ namespace sl3
 
       // these have different types so that needs to be like that
       BOOST_CHECK ( (DbValue (1) < DbValue (1.0)));
+      BOOST_CHECK ( !weak_lt(DbValue (1) , DbValue (1.0)));
+      BOOST_CHECK ( weak_eq(DbValue (1) , DbValue (1.0)));
+
       BOOST_CHECK ( !(DbValue (2) < DbValue (1.0)));
       BOOST_CHECK ( !(DbValue (1) == DbValue (1.0)) );
       BOOST_CHECK ( !(DbValue (1.0) < DbValue (1)));
-      // same values with same type, variant, need to be like that 
-      BOOST_CHECK ( !(DbValue (1, Type::Variant) < DbValue (1.0, Type::Variant)));
-      BOOST_CHECK ( (DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
+      // same values with different type but variant
+      BOOST_CHECK ( (DbValue (1, Type::Variant) < DbValue (1.0, Type::Variant)));
+      BOOST_CHECK ( weak_eq(DbValue (1, Type::Variant), DbValue (1.0, Type::Variant)));
+      BOOST_CHECK ( !(DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
       BOOST_CHECK ( !(DbValue (1.0, Type::Variant) < DbValue (1, Type::Variant)));
       
       BOOST_CHECK ( (DbValue (1.0) < DbValue (1.1)));
@@ -479,7 +495,7 @@ namespace sl3
         std::string s;
         std::string initval{"foobar"};
         auto        dbval = DbValue{initval};
-        BOOST_CHECK (dbval == initval);
+//        BOOST_CHECK (static_cast<std::string>(dbval.value()) == initval);
         BOOST_CHECK_THROW (dbval.ejectBlob (), ErrTypeMisMatch);
         BOOST_CHECK_NO_THROW (s = dbval.ejectText ());
 
@@ -492,7 +508,7 @@ namespace sl3
         Blob b;
         Blob initval{1, 2, 3};
         auto dbval = DbValue{initval};
-        BOOST_CHECK (dbval == initval);
+//        BOOST_CHECK (static_cast<Blob>(dbval) == initval);
         BOOST_CHECK_THROW (dbval.ejectText (), ErrTypeMisMatch);
         BOOST_CHECK_NO_THROW (b = dbval.ejectBlob ());
 
@@ -528,6 +544,17 @@ namespace sl3
 
         dvb = DbValue (Blob{1, 2});
         BOOST_CHECK (dvb.getBlob () == Blob ({1, 2}));
+
+
+
+        BOOST_CHECK_NO_THROW (intval  = Value{2});
+        BOOST_CHECK (intval.getInt() == 2);
+
+        BOOST_CHECK_THROW (strval = Value{2}, ErrTypeMisMatch);
+
+        DbValue var{"foo", Type::Variant} ;
+        BOOST_CHECK_NO_THROW (var  = Value{2});
+        BOOST_CHECK (var.getInt() == 2);
       }
     }
 
