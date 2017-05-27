@@ -8,6 +8,10 @@
 
 #include <ostream>
 
+#ifdef _MSC_VER
+#include <ciso646>
+#endif
+
   std::ostream& operator<< (std::ostream& stm, const sl3::Blob& blob)
   {
     for ( auto b: blob)

@@ -6,6 +6,11 @@
 #include "eqorder.hpp"
 #include <functional>
 
+#ifdef _MSC_VER
+#include <ciso646>
+#endif
+
+
 namespace sl3
 {
   namespace

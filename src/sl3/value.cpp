@@ -385,7 +385,7 @@ namespace sl3
     if (isNull ())
       throw ErrNullValueAccess ();
     else if (_type == Type::Real)
-      return losslessConvert1<double, int64_t> (_store.realval);
+      return losslessConvert1<double, int> (_store.realval);
     else if (_type != Type::Int)
       throw ErrTypeMisMatch ("Implicit conversion: " + typeName (_type)
                              + " to int64_t");
@@ -395,7 +395,7 @@ namespace sl3
     if (_store.intval < limit::min () || _store.intval > limit::max ())
       throw ErrOutOfRange ("Implicit conversion int64_t to int, value to big");
 
-    return _store.intval;
+    return static_cast<int>(_store.intval);
   }
 
   Value::operator int64_t () const
@@ -419,14 +419,12 @@ namespace sl3
       }
     else if (_type == Type::Int)
       {
-        //        using limit = std::numeric_limits<double>;
-        //
-        //        if (_store.intval < limit::min () || _store.intval >
-        //        limit::max ())
-        //          throw ErrOutOfRange ();
-        //        not possible
+        using limit = std::numeric_limits<double>;
 
-        return _store.intval;
+        if (_store.intval < limit::min () || _store.intval > limit::max ())
+          throw ErrOutOfRange ();
+
+        return static_cast<double>(_store.intval);
       }
     else if (_type != Type::Real)
       {
