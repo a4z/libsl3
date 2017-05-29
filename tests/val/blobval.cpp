@@ -30,8 +30,9 @@ namespace sl3
     VauleRelation weak_eq = sl3::weak_eq;
     VauleRelation weak_lt = sl3::weak_lt ;
  
-    auto _v =[](const auto& v){ return Value{v}; };
- 
+//    auto _v =[](const auto& v){ return Value{v}; };
+    
+    template<typename T> Value _v(const T& v) {return Value{v};}
   
     void
     create ()
