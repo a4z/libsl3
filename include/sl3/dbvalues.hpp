@@ -90,12 +90,6 @@ namespace sl3
 
   void swap (DbValues& a, DbValues& b) noexcept;
 
-  template <typename... VALS>
-  DbValues
-  dbvalues (VALS&&... vals)
-  {
-    return {DbValue{vals}...};
-  }
 }
 
 #endif
