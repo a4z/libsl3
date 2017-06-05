@@ -245,8 +245,8 @@ namespace sl3
    * \endcode
    *  Will create DbValues of Type::Int, Type::Text and Type::Real
    *
-   *  \tparam VALS variadic argument types
-   *  \param vals variadic argument values
+   *  \tparam argument list
+   *  \vals arguments
    *
    *  \return DbValues constructed by given arguments
    */
