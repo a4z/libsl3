@@ -131,6 +131,7 @@ namespace sl3
      */
     void execute ();
 
+
     /**
      * \brief Execute the command
      *
@@ -234,6 +235,27 @@ namespace sl3
     sqlite3_stmt* _stmt;
     DbValues      _parameters;
   };
+
+  /**
+   * \brief Syntax sugar to create command parameters
+   *
+   *  Creates DbValues with types based on the given arguments.
+   * \code
+   *  cmd.execute(parameters(1,"foo",3.3))
+   * \endcode
+   *  Will create DbValues of Type::Int, Type::Text and Type::Real
+   *
+   *  \tparam argument list
+   *  \vals arguments
+   *
+   *  \return DbValues constructed by given arguments
+   */
+  template <typename... VALS>
+  DbValues
+  parameters (VALS&&... vals)
+  {
+    return {DbValue{vals}...};
+  }
 }
 
 #endif

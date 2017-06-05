@@ -147,7 +147,7 @@ RebindParameters()
   auto db = testdb();
 
   auto& cmd1 = db.getCommand (name1) ;
-  BOOST_REQUIRE_NO_THROW( cmd1.select( dbvalues( 1,2,3 ) ) );
+  BOOST_REQUIRE_NO_THROW( cmd1.select( parameters( 1,2,3 ) ) );
 
   BOOST_REQUIRE_NO_THROW( cmd1.execute() );
 
@@ -199,10 +199,10 @@ UseQueryCallback()
 
   using namespace sl3 ;  
 
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( dbvalues(1,2,3) ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( dbvalues(1,2,3) ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( dbvalues(1,2,3) ) );
-  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( dbvalues(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( parameters(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name1).select( parameters(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( parameters(1,2,3) ) );
+  BOOST_REQUIRE_NO_THROW( db.getCommand(name2).select( parameters(1,2,3) ) );
 
   {
     DbValues::container_type vals;
@@ -327,6 +327,29 @@ ForCoverage()
 
 
 
+void
+ExecutInterface()
+{
+  auto db = testdb();
+
+  BOOST_REQUIRE(db.selectValue("SELECT COUNT(*) FROM tbl;").getInt() == 0);
+
+  auto& cmd1 = db.getCommand (name1) ;
+  BOOST_REQUIRE_NO_THROW( cmd1.execute(parameters(1,"foo",3.3)) );
+
+  BOOST_REQUIRE(db.selectValue("SELECT COUNT(*) FROM tbl;").getInt() == 1);
+
+  for (auto&& row : db.select ("SELECT * FROM tbl;"))
+    {
+      BOOST_REQUIRE (row.size () == 3);
+      BOOST_REQUIRE (row [0].getInt () == 1);
+      BOOST_REQUIRE (row [1].getText () == "foo");
+      BOOST_REQUIRE (row [2].getReal () == 3.3);
+    }
+
+
+}//-----------------------------------------------------------------------------
+
 
 a4TestAdd(
   a4test::suite("command")
@@ -341,6 +364,7 @@ a4TestAdd(
   .addTest("selects", Selects)
   .addTest("sqliteError", SqliteError)
   .addTest("codecoverage", ForCoverage)
+  .addTest("executInterface", ExecutInterface)
 ) ;
 
 
