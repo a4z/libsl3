@@ -420,50 +420,7 @@ namespace sl3
    */
   bool weak_lt (const DbValue& a, const DbValue& b) noexcept;
 
-  // variant like access
-  template <typename T> struct always_false
-  {
-    enum
-    {
-      value = false
-    };
-  };
 
-  template <typename T>
-  inline const T&
-  get (const DbValue&)
-  {
-    static_assert (always_false<T>::value,
-                   "Invalid type to get from DbValue!");
-  }
-
-  template <>
-  inline const int64_t&
-  get (const DbValue& v)
-  {
-    return v.getInt ();
-  }
-
-  template <>
-  inline const double&
-  get (const DbValue& v)
-  {
-    return v.getReal ();
-  }
-
-  template <>
-  inline const std::string&
-  get (const DbValue& v)
-  {
-    return v.getText ();
-  }
-
-  template <>
-  inline const Blob&
-  get (const DbValue& v)
-  {
-    return v.getBlob ();
-  }
 }
 
 #endif /* DbValue_HPP_ */
