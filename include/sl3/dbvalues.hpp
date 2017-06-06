@@ -88,6 +88,14 @@ namespace sl3
     void swap (DbValues& other) noexcept;
   };
 
+  /**
+   * \brief DbValue specialized swap function
+   *
+   *  \param a first value to swap with second value
+   *  \param b second value to swap with first value
+   *
+   *  This function call a.swap(b). \see DbValues::swap
+   */
   void swap (DbValues& a, DbValues& b) noexcept;
 
 }

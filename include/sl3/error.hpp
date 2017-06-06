@@ -36,6 +36,11 @@ namespace sl3
     UNEXPECTED      = 99 ///< for everything that happens unexpected
   };
 
+  /**
+   * \brief get textual representantion (the name) of an ErrCode
+   * \param ec wanted ErrCode name
+   * \return the ErrCode name
+   */
   constexpr const char*
   ErrCodeName (ErrCode ec)
   {
@@ -199,6 +204,11 @@ namespace sl3
     std::string _sqlite_msg;
   };
 
+  /**
+   * \brief Shortcut
+   *
+   * Assign a name to an ErrType with ErrCode::SQL3Error.
+   */
   using SQLite3Error = ErrType<ErrCode::SQL3Error>;
 
 #define ASSERT_EXCEPT(exp, except) \

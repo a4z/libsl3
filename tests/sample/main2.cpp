@@ -15,12 +15,12 @@ int main()
                         DbValues({Type::Int,Type::Text, Type::Real})) ;
 
   //this will work,
-  cmd.execute({ {1}, {"one"}, {1.1} } );
+  cmd.execute (parameters (1, "one", 1.1));
 
   // this will throw since "2" is a wrong type
   try
   {
-      cmd.execute({ {"2"}, {"two"}, {2.1} } );
+      cmd.execute (parameters ("2", "two", 2.2));
   }
   catch (const Error& e)
   {

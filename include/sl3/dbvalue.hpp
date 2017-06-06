@@ -11,7 +11,6 @@
 
 #include <string>
 
-#include <boost/operators.hpp>
 #include <sl3/config.hpp>
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
@@ -36,7 +35,7 @@ namespace sl3
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class LIBSL3_API DbValue : boost::totally_ordered<DbValue>
+  class LIBSL3_API DbValue : totally_ordered<DbValue>
   {
   public:
     /**
@@ -138,6 +137,9 @@ namespace sl3
      */
     DbValue& operator= (const std::string& val);
 
+    /**
+     * \copydoc operator=(const DbValue& val)
+     */
     DbValue&
     operator= (const char* val)
     {
@@ -187,6 +189,11 @@ namespace sl3
      *  \return reference to the underlying Value
      */
     const Value& getValue () const noexcept;
+
+    /** \brief Value access
+     *  Just s shorter way tan getValue.
+     *  \return reference to the underlying Value
+     */
     const Value&
     value () const noexcept
     {
@@ -329,6 +336,11 @@ namespace sl3
      */
     bool canAssign (const DbValue& other) const;
 
+    /**
+     * \brief Swap 2 DbValues
+     * \param a first value to swap second value
+     * \param b second value to swap with first
+     */
     friend void swap (DbValue& a, DbValue& b) noexcept;
 
   private:
@@ -358,6 +370,9 @@ namespace sl3
    *
    * Check if 2 DbValue instances are of the same type and of the same value.
    *
+   * \param a first value to compare
+   * \param b second value to compare
+   *
    * \return true if the type and the current value are equal, false otherwise
    */
   bool operator== (const DbValue& a, const DbValue& b) noexcept;
@@ -376,64 +391,36 @@ namespace sl3
    *
    *  The comparison of the value itself is implemented via std::less.
    *
+   * \param a first value to compare
+   * \param b second value to compare
+   *
    * \returns true if given DbValue a is less than given DbValue b
    */
   bool operator< (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief weak order equality
+   *
+   * Compares only the stored value for equality and ignores type information.
+   *
+   * \param a first value to compare
+   * \param b second value to compare
+   * \return the comparison result
    */
   bool weak_eq (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief weak order less than
+   *
+   * Compares only the stored value and ignores type information.
+   *
+   * \param a first value to compare
+   * \param b second value to compare
+   * \return the comparison result
    */
   bool weak_lt (const DbValue& a, const DbValue& b) noexcept;
 
-  // variant like access
-  template <typename T> struct always_false
-  {
-    enum
-    {
-      value = false
-    };
-  };
 
-  template <typename T>
-  inline const T&
-  get (const DbValue&)
-  {
-    static_assert (always_false<T>::value,
-                   "Invalid type to get from DbValue!");
-  }
-
-  template <>
-  inline const int64_t&
-  get (const DbValue& v)
-  {
-    return v.getInt ();
-  }
-
-  template <>
-  inline const double&
-  get (const DbValue& v)
-  {
-    return v.getReal ();
-  }
-
-  template <>
-  inline const std::string&
-  get (const DbValue& v)
-  {
-    return v.getText ();
-  }
-
-  template <>
-  inline const Blob&
-  get (const DbValue& v)
-  {
-    return v.getBlob ();
-  }
 }
 
 #endif /* DbValue_HPP_ */

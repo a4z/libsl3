@@ -37,40 +37,7 @@
   
 \subsection overview_example A first example
 
-\code{.cpp}
-
-#include <cassert>
-#include <iostream>
-#include <sl3/database.hpp>
-
-int main()
-{
-  using namespace sl3;
-  // define a db
-  Database db(":memory:");
-  // run commands against the db
-  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
-  // create a command with parameters
-  auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
-  //add some data
-  cmd.execute({{1}, {"one"}, {1.1} } ); // list of DbValue for parameter values
-  cmd.execute({{2}, {"two"}, {2.1} } ); // list of DbValue for parameter values
-
-  // access the data
-  Dataset ds = db.select("SELECT * FROM tbl;");
-  // Dataset is a container
-  assert(ds.size()==2);
-
-  // of course there is iterator access
-  for(auto& row  :ds) {
-      for (auto& field : row) { // list of DbValue for field values
-          std::cout << field << " " ;
-      }
-      std::cout << std::endl;
-  }
-}
-
-\endcode
+\include main1.cpp
 
 since the ostream operator for sl3::DbValue is overloaded, this will print 
 
@@ -189,35 +156,7 @@ returned.
 
 \subsection val_example Example
 
-\code
-#include <cassert>
-#include <iostream>
-#include <sl3/database.hpp>
-int main()
-{
-  using namespace sl3;
-
-  DbValue val (Type::Variant);
-  assert (val.isNull ()) ;
-  assert (val.get(1) ==1) ;
-  val = 2 ;
-  std::cout << val << std::endl;
-
-  try
-  {
-      val.getText() ;
-  }
-  catch (const Error& e)
-  {
-      std::cout << e << std::endl;
-  }
-
-  val = "example";
-  std::cout << val << std::endl;
-
-}
-\endcode
-
+\include main4.cpp
 This example will print
 \code
 2
@@ -246,36 +185,7 @@ In the \ref overview_example overview example all sl3::Command parameters have
 been of type sl3::Typ::Variant since nothing was specified. <BR>
 But it can be ensured that certain types are used.
 
-\code
-#include <iostream>
-#include <sl3/database.hpp>
-
-int main()
-{
-  using namespace sl3;
-  // define a db
-  Database db(":memory:");
-  // run commands against the db
-  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
-  // create a command with parameters
-  auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);",
-                        DbValues ({Type::Int,Type::Text, Type::Real})) ;
-
-  //this will work,
-  cmd.execute({ {1}, {"one"}, {1.1} } );
-
-  // this will throw since "2" is a wrong type
-  try
-  {
-      cmd.execute({ {"2"}, {"two"}, {2.1} } );
-  }
-  catch (const Error& e)
-  {
-      std::cout << e << std::endl;
-  }
-}
-\endcode
-  
+\include main2.cpp  
 The output of this program will be:
 \code
 sl3::TypeMisMatch:Int=Text

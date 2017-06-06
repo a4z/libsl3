@@ -660,48 +660,6 @@ namespace sl3
       }
     }
 
-    void
-    variantLikeGet ()
-    {
-      {
-        int     v = 123;
-        DbValue val{v};
-        BOOST_REQUIRE_NO_THROW ((void)get<int64_t> (val));
-        BOOST_CHECK (v == get<int64_t> (val));
-
-        // may not compile,  ..
-        // sl3::get<char>(val) ;
-      }
-
-      // TODO tolerance not in boost 1.54, Slackware 14.2
-      //      {
-      //        double  v = 123.0;
-      //        DbValue val{v};
-      //        BOOST_REQUIRE_NO_THROW ((void)get<double> (val));
-      //        BOOST_TEST (v == get<double> (val),
-      //                    boost::test_tools::tolerance (0.001));
-      //      }
-
-      {
-        std::string v = "123";
-        DbValue     val{v};
-        BOOST_REQUIRE_NO_THROW ((void)get<std::string> (val));
-        BOOST_CHECK (v == get<std::string> (val));
-      }
-
-      {
-        Blob    v{1, 2, 3};
-        DbValue val{v};
-        BOOST_REQUIRE_NO_THROW ((void)get<Blob> (val));
-        BOOST_CHECK (v == get<Blob> (val));
-      }
-
-      {
-        double  v = 123.0;
-        DbValue val{v};
-        BOOST_CHECK_THROW (get<int64_t> (val), ErrTypeMisMatch);
-      }
-    }
 
     // ./sl3basics --on=dbvalue --log_level=all --run_test=whatever
     // --on=DbValGeneral --run_test=DbValGeneral/compare  --log_level=all
@@ -719,7 +677,6 @@ namespace sl3
                    .addTest ("getWithDefault", getWithDefault)
                    .addTest ("tostream", toStream)
                    .addTest ("default", getDefault)
-                   .addTest ("variantLikeGet", variantLikeGet)
 
                    );
   }
