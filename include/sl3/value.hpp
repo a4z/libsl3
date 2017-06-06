@@ -19,7 +19,6 @@
 namespace sl3
 {
 
-  /// @cond internal_helper
   /**
    * \brief Mixin creating order operations based on defined ones
    *
@@ -68,7 +67,7 @@ namespace sl3
     }
 
   };
-  /// @endcond
+
 
   /**
    *  \brief
