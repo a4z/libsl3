@@ -15,10 +15,60 @@
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 
-#include <boost/operators.hpp>
 
 namespace sl3
 {
+
+  /**
+   * \brief Mixin creating order operations based on defined ones
+   *
+   * \tparam T a type with defined equality and less operator.
+   *
+   * Creates !=, > , <= and >= operators if == and < are defined on T.
+   *
+   * \see Value or DbValue for usage
+   *
+   */
+  template<typename T>
+  struct totally_ordered
+  {
+
+    /**
+     * \brief derived operator
+     * \param a first element to compare
+     * \param b second element to compare
+     * \return comparison result
+     */
+    friend bool
+    operator!= (const T& a, const T& b) noexcept
+    {
+      return !(a==b);
+    }
+
+    /// \copydoc operator!=
+    friend bool
+    operator> (const T& a, const T& b) noexcept
+    {
+      return b < a ;
+    }
+
+    /// \copydoc operator!=
+    friend bool
+    operator<= (const T& a, const T& b) noexcept
+    {
+      return !(a > b) ;
+    }
+
+    /// \copydoc operator!=
+    friend bool
+    operator>= (const T& a, const T& b) noexcept
+    {
+      return !(a < b) ;
+    }
+
+  };
+
+
   /**
    *  \brief
    *
@@ -29,7 +79,7 @@ namespace sl3
    *
    *
    */
-  class LIBSL3_API Value : boost::totally_ordered<Value>
+  class LIBSL3_API Value : totally_ordered<Value>
   {
   public:
     /**
@@ -263,10 +313,14 @@ namespace sl3
    *
    * Check if 2 Value instances are of the same type and of the same value.
    *
+   * \param a first element to compare
+   * \param b second element to compare
    *
    * \return true if the type and the current value are equal, false otherwise
    */
   bool operator== (const Value& a, const Value& b) noexcept;
+
+
 
   /**
    * \brief total order less than Value
@@ -283,30 +337,49 @@ namespace sl3
    *
    *  The comparison of the value itself is implemented via std::less.
    *
+   *  \param a first element to compare
+   *  \param b second element to compare
+   *
    * \returns true if given Value a is less than given Value b
    */
   bool operator< (const Value& a, const Value& b) noexcept;
 
+
   /**
    * \brief weak order equality
+   *
+   * Compares only the stored value and ignores type information.
+   *
+   * \param a first value to compare
+   * \param b second value to compare
+   * \return the comparison result
    */
   bool weak_eq (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief weak order less than
+   *
+   * Compares only the stored value and ignores type information.
+   *
+   * \param a first value to compare
+   * \param b second value to compare
+   * \return the comparison result
    */
   bool weak_lt (const Value& a, const Value& b) noexcept;
 
-  /*
-   * \brief Value specialised swap function
+  /**
+   * \brief Value specialized swap function
    *
-   *  Independend of the type, a Value is always swapable.
-   *  This can be theroretical be abused to bypass the tye checking,
+   *  Independent of the type, a Value is always swapable.
+   *  This can be theoretical be abused to bypass the type checking,
    *  but is up to the user to do so or not.
+   *
+   *  \param a first value to swap with second value
+   *  \param b second value to swap with first value
    */
   void swap (Value& a, Value& b) noexcept;
 
-  // TODO do I want this like that?
+  /// Define a constant for a Value that is null
   static const Value NullValue{};
 }
 

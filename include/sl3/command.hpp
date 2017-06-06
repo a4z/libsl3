@@ -246,7 +246,7 @@ namespace sl3
    *  Will create DbValues of Type::Int, Type::Text and Type::Real
    *
    *  \tparam argument list
-   *  \vals arguments
+   *  \param vals arguments
    *
    *  \return DbValues constructed by given arguments
    */

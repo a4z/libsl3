@@ -639,6 +639,7 @@ namespace sl3
     return retval;
   }
 
+
   bool
   operator< (const Value& a, const Value& b) noexcept
   {
@@ -805,5 +806,7 @@ namespace sl3
     // we are both bolb
     return a._store.blobval < b._store.blobval;
   }
+
+
 
 } // ns
