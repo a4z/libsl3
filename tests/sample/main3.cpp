@@ -14,9 +14,9 @@ int main()
    auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
    // no types so we use variants
    //so this will work
-   cmd.execute(DbValues{ {1}, {"one"}, {1.1} } );
+   cmd.execute (parameters (1, "one", 1.1));
    //and this will also work
-   cmd.execute({ {"some text"}, {"two"}, {2.1} } );
+   cmd.execute (parameters ("some text", "two", 2.1));
 
    // access the data
    Dataset ds = db.select("SELECT * FROM tbl;");

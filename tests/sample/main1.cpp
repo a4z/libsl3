@@ -1,6 +1,5 @@
 #include <cassert>
 #include <iostream>
-
 #include <sl3/database.hpp>
 
 int main()
@@ -14,8 +13,8 @@ int main()
   auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
 
   //add some data
-  cmd.execute({ {1}, {"one"}, {1.1} } );
-  cmd.execute({ {2}, {"two"}, {2.1} } );
+  cmd.execute (parameters (1, "one", 1.1));
+  cmd.execute (parameters (2, "two", 2.1));
 
   // access the data
   Dataset ds = db.select("SELECT * FROM tbl;");
@@ -32,7 +31,6 @@ int main()
 
   // of course there is also iterator access
   for(auto&& row  :ds) {
-
       for (auto&& field : row) {
           std::cout << field << " " ;
       }
