@@ -8,19 +8,17 @@ def DirectoryOfThisScript():
 
 # This is the single most important line in this script. Everything else is just nice to have but
 # not strictly necessary.
-compilation_database_folder = DirectoryOfThisScript() + "/buildLLVMDebug"
+compilation_database_folder = DirectoryOfThisScript() + "/buildDebug"
 
 # This provides a safe fall-back if no compilation commands are available. You could also add a
 # includes relative to your project directory, for example.
 flags = [
-    '-Wall',
-    '-std=c++1z',
-    '-stdlib=libc++',
+    '-Wall -Wextra -petantic',
+    '-std=c++14',
     '-x',
     'c++',
     '-I',
     '.',
-    '-isystem', '/usr/local/include',
     '-isystem', '/usr/include',
     '-I.',
 ]
