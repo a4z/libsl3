@@ -74,6 +74,8 @@ namespace sl3
   void
   Database::execute (const char* sql)
   {
+    ASSERT_EXCEPT(_connection, ErrNoConnection);
+
     char* dbMsg = 0;
 
     int rc = sqlite3_exec (_connection->db (), sql, 0, 0, &dbMsg);

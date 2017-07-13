@@ -69,3 +69,46 @@ SCENARIO("creating some test data")
 }
 
 
+SCENARIO("move construct a database")
+{
+  GIVEN("a db with a table")
+  {
+    sl3::Database db{":memory:"};
+
+    db.execute ("CREATE TABLE tbltest (f INTEGER);"
+                  "INSERT INTO tbltest VALUES (1) ;");
+
+    CHECK_NOTHROW (db.execute ("SELECT COUNT(*) FROM tbltest;")) ;
+
+    WHEN ("Moveconstruct a new db from an existing one")
+    {
+      sl3::Database db1{std::move(db)} ;
+      THEN("the new constructed db has data")
+      {
+        CHECK_NOTHROW (db1.execute ("SELECT COUNT(*) FROM tbltest;")) ;
+      }
+
+      AND_THEN("the moved db is disconnected")
+      {
+        CHECK_THROWS_AS (db.execute ("SELECT COUNT(*) FROM tbltest;"),
+                          sl3::ErrNoConnection) ;
+
+      }
+    }
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
