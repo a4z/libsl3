@@ -24,6 +24,9 @@ namespace sl3
     sqlite3_stmt*
     createStmt (sqlite3* db, const std::string& sql)
     {
+      if(db == nullptr)
+        throw ErrNoConnection{} ;
+
       sqlite3_stmt* stmt       = nullptr;
       const char*   unussedSQL = nullptr;
 
