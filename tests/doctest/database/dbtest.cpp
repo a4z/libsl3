@@ -6,7 +6,7 @@
 
 SCENARIO("creating a database")
 {
-  GIVEN ("a valaid and an invalid database name/path")
+  GIVEN ("a valid and an invalid database name/path")
   {
     auto good = ":memory:" ;
     auto bad = "/this/does/not/exist/123" ;
@@ -95,11 +95,67 @@ SCENARIO("move construct a database")
 
       }
     }
-
   }
-
 }
 
+
+SCENARIO("prepare commands")
+{
+  GIVEN("a db with a table")
+  {
+    sl3::Database db{":memory:"};
+
+    db.execute ("CREATE TABLE tbltest (f INTEGER);"
+                  "INSERT INTO tbltest VALUES (1) ;");
+
+    REQUIRE_NOTHROW (db.execute ("SELECT COUNT(*) FROM tbltest;")) ;
+
+    WHEN ("compiling a valid sql statement")
+    {
+
+      THEN("a new command is created")
+      {
+
+      }
+    }
+
+    WHEN ("compiling an invalid sql statement")
+    {
+
+      THEN("creating a command throws")
+      {
+
+      }
+    }
+
+    WHEN ("compiling on a disconnected db")
+    {
+
+      THEN("creating a command throws")
+      {
+
+      }
+    }
+
+    WHEN ("compiling sql with a wrong number of parameters")
+    {
+
+      THEN("creating a command throws")
+      {
+
+      }
+    }
+
+    WHEN ("compiling sql with the correct number of parameters")
+    {
+
+      THEN("creating a command succeeds")
+      {
+
+      }
+    }
+  }
+}
 
 
 
