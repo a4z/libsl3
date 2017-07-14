@@ -5,7 +5,7 @@ set -e
 ME=`basename "$0"`
 
 function printHelp {
-cat <<EOF 
+cat <<EOF
 
 Code coverage generation script.
 
@@ -17,7 +17,7 @@ Options:
     List of files or file patter to ignore
     For example:
       $ME -i "test/* proto/* include/gepard/zmq.hpp"
-      or 
+      or
       $ME --ignore="test/* proto/* include/gepard/zmq.hpp"
 
     Patterns are relative to the soure directory
@@ -30,21 +30,21 @@ Options:
       $ME --append="bin/tests/example_first bin/tests/example_second"
 
     Paths are relative to the current build directory
-    
+
   --branch
-    Enable branch coverage. 
-    Since this can be time intensive for running and generating the report, 
+    Enable branch coverage.
+    Since this can be time intensive for running and generating the report,
     this option is disabled per default.
-    
-    
+
+
   --html
-    only produce local html report, no Jenkins xml report   
+    only produce local html report, no Jenkins xml report
 
   --xml
-    only produce Jenkins xml report, no local html report    
+    only produce Jenkins xml report, no local html report
 
   -h or --help
-    Show this help, obviously, and exit  
+    Show this help, obviously, and exit
 EOF
 }
 
@@ -61,26 +61,26 @@ for i in "$@" ; do
   case $i in
       -i=*|--ignore=*)
       IGNORE="${i#*=}"
-      shift 
+      shift
       ;;
 
       -i|--ignore)
-      shift 
-      IGNORE="$1" 
       shift
-      SKIP=1 
+      IGNORE="$1"
+      shift
+      SKIP=1
       ;;
 
       -a=*|--append=*)
       APPEND="${i#*=}"
-      shift 
+      shift
       ;;
 
       -a|--append)
-      shift 
+      shift
       APPEND="$1"
       shift
-      SKIP=1 
+      SKIP=1
       ;;
 
       --branch)
@@ -102,10 +102,10 @@ for i in "$@" ; do
       printHelp
       exit 0
       ;;
-      
-      
+
+
       *)
-      echo "unkonow option $i"        
+      echo "unkonow option $i"
       ;;
   esac
 done
@@ -126,7 +126,7 @@ make $NUMJOBS VERBOSE=1
 make test
 
 for app in ${APPEND[@]} ; do
-  $app 
+  $app
 done
 
 # Make empty .gcda files for each existing .gcno file.
@@ -147,7 +147,7 @@ rm -f *.lcov
 if [ ${BRANCH_COVERAGE:+1} ] ; then
   BRANCHCOV="--rc lcov_branch_coverage=1"
   echo "enable branch coverage"
-else  
+else
   BRANCHCOV=""
 fi
 
@@ -156,7 +156,7 @@ merge_stack=""
 counter=0
 for gcno_dir in $(find tests CMakeFiles -name "*.gcno" | xargs -n1 dirname  | sort -u);
 do
-  
+
     # ignore Qt moc shit, if you name your stuff with *_autogen, bad luck
     if [[ "$gcno_dir" == *_autogen ]] ;then
       continue
@@ -166,6 +166,15 @@ do
     if [[ "$gcno_dir" == *sqlite ]] ;then
       continue
     fi
+
+    #avoid repetitive -i="*/sl3_sample*"
+    # todo, maybe samples need  to go else where
+    if [[ "$gcno_dir" == */sl3_sample* ]] ;then
+      continue
+    fi
+
+  echo "HERE $gcno_dir"
+
     counter=$((counter+1))
 
     lcov \
@@ -179,7 +188,7 @@ do
 
 done
 
-lcov $merge_stack --ignore-errors 'source' -o all.lcov  
+lcov $merge_stack --ignore-errors 'source' -o all.lcov
 
 
 # don't glob
@@ -188,7 +197,7 @@ set -f
 
 counter=0
 cur_file="all.lcov"
-nextfile=$cur_file # initialize for the case that ignore is empty 
+nextfile=$cur_file # initialize for the case that ignore is empty
 for exclude in ${IGNORE[@]} ;
 do
   echo "HERE AND EXLUDE $exclude"
