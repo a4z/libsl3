@@ -112,46 +112,62 @@ SCENARIO("prepare commands")
 
     WHEN ("compiling a valid sql statement")
     {
+      auto sql = "SELECT * FROM tbltest;" ;
 
       THEN("a new command is created")
       {
-
+        CHECK_NOTHROW(
+          auto cmd = db.prepare (sql) ;
+          (void)cmd;
+        );
       }
     }
 
     WHEN ("compiling an invalid sql statement")
     {
+      auto sql = "SELECT_X * X_FROM tbltest;" ;
 
       THEN("creating a command throws")
       {
-
+        CHECK_THROWS_AS((void)db.prepare (sql), sl3::SQLite3Error);
       }
     }
 
     WHEN ("compiling on a disconnected db")
     {
+      auto db1 = std::move (db) ;
+      auto sql = "SELECT * FROM tbltest;" ;
+      auto sql1 = "INSERT INTO tbltest VALUES (?);" ;
 
       THEN("creating a command throws")
       {
+        CHECK_THROWS_AS((void)db.prepare (sql), sl3::ErrNoConnection);
 
-      }
-    }
-
-    WHEN ("compiling sql with a wrong number of parameters")
-    {
-
-      THEN("creating a command throws")
-      {
-
+        sl3::DbValues vals{ sl3::DbValue{1} } ;
+        CHECK_THROWS_AS((void)db.prepare (sql1, vals), sl3::ErrNoConnection);
       }
     }
 
     WHEN ("compiling sql with the correct number of parameters")
     {
-
+      auto sql = "INSERT INTO tbltest VALUES (?);" ;
       THEN("creating a command succeeds")
       {
+        sl3::DbValues vals{ sl3::DbValue{1} } ;
+        CHECK_NOTHROW((void)db.prepare (sql,vals));
+      }
+    }
 
+    WHEN ("compiling sql with a wrong number of parameters")
+    {
+      auto sql = "INSERT INTO tbltest VALUES (?);" ;
+
+      THEN("creating a command throws")
+      {
+        sl3::DbValues vals{ sl3::DbValue{1}, sl3::DbValue{2} } ;
+        CHECK_THROWS((void)db.prepare (sql,sl3::DbValues{}));
+        CHECK_THROWS((void)db.prepare (sql,vals));
+        // Details about the exception in the command tests
       }
     }
   }
