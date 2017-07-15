@@ -42,6 +42,13 @@ namespace
 namespace sl3
 {
 
+  std::string
+  getErrStr (int errcode)
+  {
+    return std::string (sqlite3_errstr (errcode));
+  }
+
+
   Database::Database (const std::string& name, int flags)
   : _connection {new internal::Connection{opendb(name, flags)}}
   {
@@ -169,11 +176,6 @@ namespace sl3
     return std::string (sqlite3_errmsg (_connection->db ()));
   }
 
-  std::string
-  Database::getErrStr (int errcode)
-  {
-    return std::string (sqlite3_errstr (errcode));
-  }
 
   std::size_t
   Database::getTotalChanges ()
@@ -209,30 +211,31 @@ namespace sl3
   }
 
   Database::Transaction::Transaction (Database& db)
-  : _db (db)
-  , _commit (false)
+  : _db (&db)
   {
-    _db.execute ("BEGIN TRANSACTION");
+    _db->execute ("BEGIN TRANSACTION");
   }
 
   Database::Transaction::Transaction (Transaction&& other)
   : _db (other._db)
-  , _commit (other._commit)
   {
-    other._commit = true; // ensure other does not commit in d'tor
+    other._db = nullptr; // ensure other does not commit in d'tor
   }
 
   Database::Transaction::~Transaction ()
   {
-    if (!_commit)
-      _db.execute ("ROLLBACK TRANSACTION");
+    if (_db)
+      _db->execute ("ROLLBACK TRANSACTION");
   }
 
   void
   Database::Transaction::commit ()
   {
-    _db.execute ("COMMIT TRANSACTION");
-    _commit = true;
+    if(_db)
+      {
+        _db->execute ("COMMIT TRANSACTION");
+        _db = nullptr;
+      }
   }
 
 } // ns

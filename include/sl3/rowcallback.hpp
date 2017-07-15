@@ -11,6 +11,7 @@
 
 #include <functional>
 
+#include <sl3/columns.hpp>
 #include <sl3/config.hpp>
 
 namespace sl3

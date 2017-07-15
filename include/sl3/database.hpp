@@ -76,7 +76,7 @@ namespace sl3
     /**
      * \brief Move constructor
      *
-     * A Database is moveable
+     * A Database is movable
      */
     Database (Database&&) noexcept;
 
@@ -230,15 +230,6 @@ namespace sl3
      */
     std::string getMostRecentErrMsg ();
 
-    /**
-      * \brief Wraps sqlite3_errstr() function
-      *
-      * The sqlite3_errstr() interface returns the English-language text
-      * that describes the result code, as UTF
-      * \param errcode err number
-      * \return Count of changed rows
-      */
-    std::string getErrStr (int errcode);
 
     /**
      * \brief Returns number of row that have changed since database opening.
@@ -283,8 +274,8 @@ namespace sl3
      */
     class Transaction
     {
-      sl3::Database& _db;
-      bool           _commit;
+
+      sl3::Database* _db;
 
       Transaction (Database&);
       friend class Database;
@@ -350,6 +341,18 @@ namespace sl3
      */
     ConnectionPtr _connection;
   };
+
+  /**
+    * \brief Wraps sqlite3_errstr() function
+    *
+    * The sqlite3_errstr() interface returns the English-language text
+    * that describes the result code, as UTF
+    * \param errcode err number
+    * \return Count of changed rows
+    */
+  std::string getErrStr (int errcode);
+
+
 }
 
 #endif /* ...DATABASE_HPP_ */
