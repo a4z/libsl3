@@ -1,8 +1,8 @@
-SET (TESTNAME database)
+SET (TESTNAME rowcallback)
 SET (TESTPREFIX sl3test)
 
 SET( test_SRC
-  dbtest.cpp
+  rowcallbacktest.cpp
 )
 
 

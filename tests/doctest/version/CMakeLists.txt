@@ -1,5 +1,5 @@
 SET (TESTNAME version)
-SET (TESTPREFIX sl3)
+SET (TESTPREFIX sl3test)
 
 SET( test_SRC
   version.cpp

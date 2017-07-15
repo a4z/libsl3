@@ -15,13 +15,13 @@
 #include <sl3/config.hpp>
 #include <sl3/dataset.hpp>
 #include <sl3/dbvalue.hpp>
+#include <sl3/rowcallback.hpp>
 
 struct sqlite3;
 struct sqlite3_stmt;
 
 namespace sl3
 {
-  class RowCallback;
 
   namespace internal
   {
