@@ -30,6 +30,9 @@ Options:
       $ME --append="bin/tests/example_first bin/tests/example_second"
 
     Paths are relative to the current build directory
+    
+  --noclean
+      do not run make clean and rebuild everything  
 
   --branch
     Enable branch coverage.
@@ -87,6 +90,11 @@ for i in "$@" ; do
       BRANCH_COVERAGE="true"
       shift
       ;;
+      
+      --noclean)
+	  NO_CLEAN="true"
+      shift
+      ;;
 
       --html)
       HTML_ONLY="true"
@@ -114,12 +122,17 @@ done
 set +f
 
 # to avoid Merge mismatch for summaries run total clean and  rebuild
-find . -name '*.gcda' | xargs rm -f
-find . -name '*.gcno' | xargs rm -f
+
+if ! [ ${NO_CLEAN:+1} ] ; then
+  find . -name '*.gcda' | xargs rm -f
+  find . -name '*.gcno' | xargs rm -f
+
+  make clean
+fi
 
 # I think we do not want this on jenkings, but deffinitely on my host, so...
 NUMJOBS=${NUMJOBS:--j$(nproc)}
-make clean
+
 make $NUMJOBS VERBOSE=1
 
 # Run the code so the gcov data files (.gcda) are generated. For example:
@@ -173,7 +186,6 @@ do
       continue
     fi
 
-  echo "HERE $gcno_dir"
 
     counter=$((counter+1))
 
