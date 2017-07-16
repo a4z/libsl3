@@ -16,6 +16,14 @@ struct sqlite3_stmt;
 
 namespace sl3
 {
+
+  // TODO add to docu
+  // index access always checked, since docu says
+  // 'if the column index is out of range, the result is undefined'
+  // but if you fell lke preoptimization is requiresd,
+  // feel free to access  the underlying sqlite3_stmt via
+  // and adopt the index access!
+
   /**
    * \brief Class to access data of query results.
    *
