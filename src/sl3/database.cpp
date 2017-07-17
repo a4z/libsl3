@@ -136,7 +136,7 @@ namespace sl3
     DbValue retVal (Type::Variant);
 
     auto cb = [&retVal](Columns cols) -> bool {
-      retVal = cols.at (0);
+      retVal = cols.getValue (0);
       return false; // exit after first row
     };
 
@@ -152,7 +152,7 @@ namespace sl3
     DbValue retVal{type};
 
     auto cb = [&retVal, type](Columns cols) -> bool {
-      retVal = cols.at (0, type);
+      retVal = cols.getValue (0, type);
       return false; // exit after first row
     };
 

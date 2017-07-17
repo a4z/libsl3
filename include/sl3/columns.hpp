@@ -98,7 +98,7 @@ namespace sl3
      * \throw sl3::ErrOutOfRange if idx is invalid,
      * \return DbValue of requested column
      */
-    DbValue at (int idx) const;
+    DbValue getValue (int idx) const;
 
     /**
      * \brief Get the value at a given index
@@ -112,31 +112,8 @@ namespace sl3
      * \throw sl3::ErrOutOfRange if idx is invalid,
      * \return DbValue of requested column
      */
-    DbValue at (int idx, Type type) const;
+    DbValue getValue (int idx, Type type) const;
 
-    /**
-     * \brief Unchecked index access
-     *
-     *  The return DbValue will always be a Type::Variant and
-     *  DbValue::getStorageType() will be set to the sqlite3 storage type.
-     *
-     * \param idx wanted index, will behave undefined if index is invalid.
-     * \return DbValue of requested column
-     */
-    DbValue operator() (int idx) const;
-
-    /**
-     * \brief Unchecked index access
-     *
-     *  The returned DbValue::getType() and DbValue::getStorageType()
-     *  will be set to the given type.
-     *
-     * \throw sl3::ErrTypeMisMatch if type is not the sqlite type
-     * \param idx wanted index, will behave undefined if index is invalid.
-     * \param type wanted type
-     * \return DbValue of requested column
-     */
-    DbValue operator() (int idx, Type type) const;
 
     /**
      * \brief Get all columns at once
@@ -174,7 +151,8 @@ namespace sl3
 
     /**
      * \brief Get the size of a column
-     *
+     * 
+     * The size sqlite3 uses to store the value of the given field.
      *
      * \param idx wanted index
      * \throw sl3::ErrOutOfRange if idx is invalid

@@ -171,10 +171,10 @@ SCENARIO("testing column names and index properties")
       {
         db.execute(sql, [](sl3::Columns cols){
           REQUIRE(cols.count () == 2) ;
-          CHECK_NOTHROW((void)cols.at (0)) ;
-          CHECK_NOTHROW((void)cols.at (0, sl3::Type::Int)) ;
-          CHECK_NOTHROW((void)cols.at (1)) ;
-          CHECK_NOTHROW((void)cols.at (1, sl3::Type::Text)) ;
+          CHECK_NOTHROW((void)cols.getValue (0)) ;
+          CHECK_NOTHROW((void)cols.getValue (0, sl3::Type::Int)) ;
+          CHECK_NOTHROW((void)cols.getValue (1)) ;
+          CHECK_NOTHROW((void)cols.getValue (1, sl3::Type::Text)) ;
           return false;
         });
       }
@@ -183,28 +183,12 @@ SCENARIO("testing column names and index properties")
       {
         db.execute(sql, [](sl3::Columns cols){
           REQUIRE(cols.count () == 2) ;
-          CHECK_THROWS_AS(cols.at (2), sl3::ErrOutOfRange) ;
-          CHECK_THROWS_AS(cols.at (2, sl3::Type::Variant), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS(cols.getValue (2), sl3::ErrOutOfRange) ;
+          CHECK_THROWS_AS(cols.getValue (2, sl3::Type::Variant), sl3::ErrOutOfRange);
           return false;
         });
       }
     }
-
-    WHEN ("accessing columns via index")
-    {
-      THEN("accessing out of range will not throw")
-      {
-        db.execute(sql, [](sl3::Columns cols){
-          REQUIRE(cols.count () == 2) ;
-          CHECK_NOTHROW((void)cols (100)) ;
-          CHECK_NOTHROW((void)cols (1000)) ;
-
-          return true;
-        });
-      }
-
-    }
-
 
     WHEN("accessing the names via index")
     {
@@ -215,8 +199,8 @@ SCENARIO("testing column names and index properties")
           CHECK(cols.getName (0) == "first") ;
           CHECK(cols.getName (1) == "second") ;
           auto names = cols.getNames();
-          CHECK(cols.getName (0) == names.at(0)) ;
-          CHECK(cols.getName (1) == names.at(1)) ;
+          CHECK(cols.getName (0) == names.at (0)) ;
+          CHECK(cols.getName (1) == names.at (1)) ;
           return false;
         });
       }
@@ -232,6 +216,50 @@ SCENARIO("testing column names and index properties")
     }
   }
 }
+
+
+
+SCENARIO ("all index accesses throw out of range for an invalud index")
+{
+
+  GIVEN("a record with some fields")
+  {
+    sl3::Database db{":memory:"};
+    auto sql = "SELECT 1 as int, "
+        " 2.3 as real, "
+        " 'hello' as text, "
+        " x'1F' as blob, "
+        " NULL as noval; ";
+
+    REQUIRE_NOTHROW(db.execute(sql)) ;
+    WHEN("access any property with an invalid index")
+    {
+      THEN ("an ErrOutOfRange exception is thrown")
+      {
+        using namespace sl3 ;
+        db.execute(sql, [](Columns cols){
+          auto badIdx = cols.count ();// or bigge
+
+          CHECK_THROWS_AS((void)cols.getType (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getValue (badIdx), ErrOutOfRange) ;
+          CHECK_THROWS_AS((void)cols.getValue (badIdx, Type::Variant), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getName (badIdx), ErrOutOfRange) ;
+          CHECK_THROWS_AS((void)cols.getSize (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getInt (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getInt64 (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getReal (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getText (badIdx), ErrOutOfRange);
+          CHECK_THROWS_AS((void)cols.getBlob (badIdx), ErrOutOfRange);
+          return false;
+        });
+      }
+
+    }
+  }
+}
+
+
+
 
 SCENARIO("getting automatic type info")
 {
@@ -344,54 +372,188 @@ SCENARIO("getting DbValues from columns")
     {
       THEN ("value type properties are set correct")
       {
-          db.execute(sql, [](sl3::Columns cols){
-            CHECK(cols(0).getType () == sl3::Type::Variant) ;
-            CHECK(cols(0).getStorageType () == sl3::Type::Int) ;
-            CHECK(cols(1).getType () == sl3::Type::Variant) ;
-            CHECK(cols(1).getStorageType () == sl3::Type::Real) ;
-            CHECK(cols(2).getType () == sl3::Type::Variant) ;
-            CHECK(cols(2).getStorageType () == sl3::Type::Text) ;
-            CHECK(cols(3).getType () == sl3::Type::Variant) ;
-            CHECK(cols(3).getStorageType () == sl3::Type::Blob) ;
-            CHECK(cols(4).getType () == sl3::Type::Variant) ;
-            CHECK(cols(4).getStorageType () == sl3::Type::Null) ;
-            return true;
-          });
+        db.execute(sql, [](sl3::Columns cols){
+          CHECK(cols.getValue (0).getType () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (0).getStorageType () == sl3::Type::Int) ;
+          CHECK(cols.getValue (1).getType () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (1).getStorageType () == sl3::Type::Real) ;
+          CHECK(cols.getValue (2).getType () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (2).getStorageType () == sl3::Type::Text) ;
+          CHECK(cols.getValue (3).getType () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (3).getStorageType () == sl3::Type::Blob) ;
+          CHECK(cols.getValue (4).getType () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (4).getStorageType () == sl3::Type::Null) ;
+          return true;
+        });
       }
     }
-
-    WHEN ("accessing values unchecked out of range")
-    {
-      THEN ("values are always null")
-      {   // unsure if this is not undefined
-        // TODO , remove the unchecked access,
-        // from SQLite docu or
-        // 'if the column index is out of range, the result is undefined'
-
-          db.execute(sql, [](sl3::Columns cols){
-            CHECK(cols(100).getType () == sl3::Type::Variant) ;
-            CHECK(cols(100).getStorageType () == sl3::Type::Null) ;
-            return true;
-          });
-      }
-    }
-
 
     WHEN ("accessing values with wanted types")
     {
       THEN ("requesting correct types will work")
       {
+        using namespace sl3 ;
+        db.execute(sql, [](sl3::Columns cols){
+          auto t = {Type::Int, Type::Real, Type::Text, Type::Blob, Type::Variant};
+          sl3::Types expectedTypes{t} ;
+          REQUIRE (expectedTypes.size () == cols.count ()) ;
+          for (int i = 0; i < cols.count (); ++i)
+          {
+            auto type = expectedTypes[i];
+            auto val = cols.getValue (i, type) ;
+            CHECK(val.getType () == type) ;
+            if (i == cols.count () -1 )
+              CHECK(val.getStorageType () == Type::Null) ;
+            else
+              CHECK(val.getStorageType () == type) ;
+          }
 
+          return true;
+        });
       }
 
-      THEN ("requesting in correct types will always throw")
+      THEN ("requesting incorrect types will always throw")
       {
-
+        using namespace sl3 ;
+        db.execute(sql, [](sl3::Columns cols){
+          CHECK_THROWS_AS((void)cols.getValue (0, Type::Real), ErrTypeMisMatch);
+          CHECK_THROWS_AS((void)cols.getValue (1, Type::Int), ErrTypeMisMatch);
+          CHECK_THROWS_AS((void)cols.getValue (2, Type::Int), ErrTypeMisMatch);
+          CHECK_THROWS_AS((void)cols.getValue (3, Type::Int), ErrTypeMisMatch);
+          return true;
+        });
       }
 
     }
 
   }
 }
+
+
+
+SCENARIO("getting rows from columns")
+{
+  GIVEN("a record with known data and known types")
+  {
+    sl3::Database db{":memory:"};
+    auto sql = "SELECT 1 as int, "
+        " 2.3 as real, "
+        " 'hello' as text, "
+        " x'1F' as blob, "
+        " NULL as noval; ";
+
+    WHEN("requesting just a row")
+    {
+      THEN ("fields and types are as expected")
+      {
+        REQUIRE_NOTHROW(db.execute(sql)) ;
+        db.execute(sql, [](sl3::Columns cols){
+          auto row = cols.getRow ();
+          REQUIRE (row.size () == cols.count ()) ;
+          CHECK(row.at (0).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (0).getStorageType () == sl3::Type::Int) ;
+          CHECK(row.at (1).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (1).getStorageType () == sl3::Type::Real) ;
+          CHECK(row.at (2).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (2).getStorageType () == sl3::Type::Text) ;
+          CHECK(row.at (3).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (3).getStorageType () == sl3::Type::Blob) ;
+          CHECK(row.at (4).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (4).getStorageType () == sl3::Type::Null) ;
+          return false;
+        });
+      }
+    }
+
+
+    WHEN("request a row with wrong count of types")
+    {
+      THEN ("exceptions are the consequenze")
+      {
+        REQUIRE_NOTHROW(db.execute(sql)) ;
+        db.execute(sql, [](sl3::Columns cols){
+          using namespace sl3 ;
+          auto toless = {Type::Variant,Type::Variant,Type::Variant,Type::Variant};
+          auto tomany = {Type::Variant,Type::Variant,Type::Variant,Type::Variant,Type::Variant,Type::Variant};
+          CHECK_THROWS_AS (cols.getRow(toless), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS (cols.getRow(tomany), ErrTypeMisMatch) ;
+          return false;
+        });
+      }
+    }
+
+    WHEN("request a row with spezific correct  types")
+    {
+      THEN ("a row with those types is retunred")
+      {
+        REQUIRE_NOTHROW(db.execute(sql)) ;
+        db.execute(sql, [](sl3::Columns cols){
+          using namespace sl3 ;
+          auto types = {Type::Int,Type::Real,Type::Text,Type::Blob,Type::Variant};
+          auto row = cols.getRow (types);
+          CHECK(row.at (0).getType () == sl3::Type::Int) ;
+          CHECK(row.at (0).getStorageType () == sl3::Type::Int) ;
+          CHECK(row.at (1).getType () == sl3::Type::Real) ;
+          CHECK(row.at (1).getStorageType () == sl3::Type::Real) ;
+          CHECK(row.at (2).getType () == sl3::Type::Text) ;
+          CHECK(row.at (2).getStorageType () == sl3::Type::Text) ;
+          CHECK(row.at (3).getType () == sl3::Type::Blob) ;
+          CHECK(row.at (3).getStorageType () == sl3::Type::Blob) ;
+          CHECK(row.at (4).getType () == sl3::Type::Variant) ;
+          CHECK(row.at (4).getStorageType () == sl3::Type::Null) ;
+
+          return false;
+        });
+      }
+    }
+
+  }
+}
+
+
+
+SCENARIO ("for coverage")
+{
+
+  GIVEN("a record with known data and known types")
+  {
+    sl3::Database db{":memory:"};
+    auto sql = "SELECT 'b' as byte, NULL as noval; ";
+    REQUIRE_NOTHROW (db.execute(sql));
+    WHEN ("asking for the used storegae space")
+    {
+      THEN ("some int will use some space, and null non space")
+      {
+        db.execute(sql, [](sl3::Columns cols){
+          CHECK(cols.getSize (0) == 1);
+          CHECK(cols.getSize (1) == 0);
+          return true;
+        });
+      }
+    }
+    WHEN ("geting an int from a null value")
+    {
+      THEN ("sqlite will convert it to 0")
+      {
+        db.execute(sql, [](sl3::Columns cols){
+          CHECK(cols.getInt (1) == 0);
+          return true;
+        });
+      }
+    }
+
+    WHEN ("want accecc to shoot myslef into the foot")
+    {
+      THEN ("this is possible")
+      {
+        db.execute(sql, [](sl3::Columns cols){
+          CHECK(cols.get_stmt () != nullptr);
+          return true;
+        });
+      }
+    }
+  }
+}
+
 
 
