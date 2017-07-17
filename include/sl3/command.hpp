@@ -218,7 +218,7 @@ namespace sl3
      * \throw sl3::ErrTypeMisMatch if size of values differs from the actual
      * one
      */
-    void resetParameters (const DbValues& values);
+    void resetParameters (DbValues values);
 
     /**
      * \brief get a list of the parameter names
