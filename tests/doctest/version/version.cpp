@@ -36,5 +36,15 @@ SCENARIO("check sqlite versions for library and app")
         CHECK (expectedVersion == sl3::sqliteCompiledVersionNumber()) ;
       }
     }
+
+    WHEN ("doing something just for coverage")
+    {
+      THEN ("it should always pass")
+      { // if this is ever important, just use as needed
+        auto tsco = sl3::sqliteThreadSafeCompileOption () ;
+        auto ts = tsco == true || tsco == false ;
+        CHECK (ts) ;
+      }
+    }
   }
 }
