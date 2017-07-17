@@ -301,11 +301,11 @@ namespace sl3
   }
 
   void
-  Command::resetParameters (const DbValues& values)
+  Command::resetParameters (DbValues values)
   {
     ASSERT_EXCEPT (values.size () == _parameters.size (), ErrTypeMisMatch);
-    auto tmp = values;
-    _parameters.swap (tmp);
+    //auto tmp = values;
+    _parameters.swap (values);
   }
 
   std::vector<std::string>
