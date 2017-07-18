@@ -136,8 +136,121 @@ SCENARIO("using precompiled commands")
         CHECK_EQ (cmd2.getParameter(1).getText(), "hello");
 
       }
-
-
     }
+
  }
+}
+
+
+SCENARIO ("executing with callback and parameters")
+{
+  using namespace sl3 ;
+  GIVEN ("a database with some test data and a RowCallBack ")
+  {
+    Database db{":memory:"};
+    db.execute( "CREATE TABLE t (f);"
+        "INSERT INTO  t VALUES (1);"
+        "INSERT INTO  t VALUES (2);"
+        "INSERT INTO  t VALUES (3);");
+
+
+    struct : RowCallback
+    {
+      size_t counter{0};
+      bool onRow(sl3::Columns)
+      {
+        ++counter;
+        return true ;
+      }
+    } cb;
+    WHEN ("executing a command with parameters that give me 1 record")
+    {
+      auto cmd = db.prepare ("SELECT * FROM t WHERE f = ?");
+      cmd.execute (cb, parameters(2)) ;
+      THEN ("then I got the one expected record")
+      {
+        CHECK (cb.counter == 1) ;
+      }
+    }
+  }
+}
+
+
+
+SCENARIO ("handling constraint violations")
+{
+  using namespace sl3 ;
+  GIVEN ("a database with a table that requires unique values")
+  {
+    Database db{":memory:"};
+    db.execute( "CREATE TABLE t (f UNIQUE);");
+
+    WHEN ("having a value")
+    {
+      auto cmd = db.prepare ("INSERT INTO t VALUES(?);");
+      cmd.execute (parameters(1)) ;
+      THEN ("then inserting a value again is a exception")
+      {
+        CHECK_THROWS_AS (cmd.execute (), SQLite3Error) ;
+      }
+    }
+  }
+}
+
+
+SCENARIO ("binding values of all types and using select to check the result")
+{
+  using namespace sl3 ;
+  GIVEN ("a database with a table that can take all types and")
+  {
+    Database db{":memory:"};
+    db.execute( "CREATE TABLE t (fi, fr, fs, fb, fn);");
+    auto sqin = "INSERT INTO t VALUES (?,?,?,?,?);";
+    DbValues params = { 
+      DbValue{1} , 
+      DbValue {2.2}, 
+      DbValue {"drei"}, 
+      DbValue{Blob{1,2,3}}, 
+      DbValue{Type::Variant}
+    } ;
+
+    auto cmd = db.prepare (sqin) ;
+
+    WHEN ("inserting values of all types")
+    {
+      CHECK_NOTHROW (cmd.execute (params)) ;
+      THEN ("selecting all data returns the inserted data")
+      {
+        auto ds = db.select ("SELECT * FROM t;") ;
+        REQUIRE_EQ (ds.size (), 1);
+        REQUIRE_EQ (ds[0].size () , params.size ()) ;
+        REQUIRE_EQ (ds[0][0].getInt (), params[0].getInt());
+        REQUIRE_EQ (ds[0][1].getReal (), params[1].getReal());
+        REQUIRE_EQ (ds[0][2].getText (), params[2].getText());
+        REQUIRE_EQ (ds[0][3].getBlob (), params[3].getBlob());
+        REQUIRE (ds[0][4].isNull ()) ;
+      }
+      THEN ("selecting all data with concrete types will retun typed info")
+      {
+        auto types = Types {Type::Int, Type::Real, Type::Text, Type::Blob, Type::Variant} ;
+        auto ds = db.select ("SELECT * FROM t;", types) ;
+        REQUIRE_EQ (ds.size (), 1);
+        REQUIRE_EQ (ds[0].size (), types.size ());
+        for (size_t i = 0; i < ds[0].size (); ++i)
+          REQUIRE_EQ (ds[0][i].getType () , types[i]) ;
+      }
+      THEN ("selecting all data with wrong types will throw")
+      {
+        auto types = Types {Type::Int, Type::Int, Type::Int, Type::Int, Type::Int} ;
+        REQUIRE_THROWS_AS ((void)db.select ("SELECT * FROM t;", types), ErrTypeMisMatch) ;
+
+      }
+      THEN ("selecting all data with wrong numver of types will throw")
+      {
+        auto types = Types {Type::Int, Type::Real, Type::Text, Type::Blob} ;
+        REQUIRE_THROWS_AS ((void)db.select ("SELECT * FROM t;", types), ErrTypeMisMatch) ;
+
+      }
+    }
+  }
 }
