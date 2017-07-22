@@ -79,30 +79,43 @@ namespace sl3
 
   } //--------------------------------------------------------------------------
 
-  Value::Value () noexcept : _type (Type::Null) {}
-  Value::Value (int val) noexcept : _type (Type::Int) { _store.intval = val; }
-  Value::Value (int64_t val) noexcept : _type (Type::Int)
+  Value::Value () noexcept
+  : _type {Type::Null}
+  {
+  }
+
+  Value::Value (int val) noexcept
+  : _type {Type::Int}
   {
     _store.intval = val;
   }
 
-  Value::Value (std::string val) noexcept : _type (Type::Text)
+  Value::Value (int64_t val) noexcept
+  : _type {Type::Int}
+  {
+    _store.intval = val;
+  }
+
+  Value::Value (std::string val) noexcept
+  : _type {Type::Text}
   {
     new (&_store.textval) std::string (std::move (val));
   }
 
   Value::Value (const char* val)
-  : _type (Type::Text)
+  : _type {Type::Text}
   {
     new (&_store.textval) std::string (val);
   }
 
-  Value::Value (double val) noexcept : _type (Type::Real)
+  Value::Value (double val) noexcept
+  : _type {Type::Real}
   {
     _store.realval = val;
   }
 
-  Value::Value (Blob val) noexcept : _type (Type::Blob)
+  Value::Value (Blob val) noexcept :
+    _type {Type::Blob}
   {
     new (&_store.blobval) Blob (std::move (val));
   }
@@ -119,7 +132,8 @@ namespace sl3
       }
   }
 
-  Value::Value (const Value& other) noexcept : _type (other._type)
+  Value::Value (const Value& other) noexcept
+  : _type {other._type}
   {
     switch (_type)
       {
