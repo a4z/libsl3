@@ -88,7 +88,7 @@ namespace sl3
      *
      * Creates a Null Value
      */
-    Value () noexcept;
+    Value () noexcept ;
 
     /** \brief Constructor
      *
@@ -284,7 +284,7 @@ namespace sl3
     friend bool weak_lt (const Value& a, const Value& b) noexcept;
 
   private:
-    Type _type;
+    Type _type{Type::Null};
 
     // that's the type for the union and what is applied in the db
     union Store
@@ -381,7 +381,7 @@ namespace sl3
   void swap (Value& a, Value& b) noexcept;
 
   /// Define a constant for a Value that is null
-  static const Value NullValue{};
+  //static const Value NullValue{};
 }
 
 #endif
