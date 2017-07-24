@@ -159,3 +159,186 @@ SCENARIO("create, assign, copy and moveing values")
 
   }
 }
+
+SCENARIO("nulvalue values access")
+{
+  GIVEN ("a check throw on invalid value access function")
+  {
+    sl3::Value val ;
+    WHEN ("trying to access any value")
+    {
+      CHECK(val.isNull()) ;
+      THEN ("err null values access will be trhows")
+      {
+        CHECK_THROWS_AS(val.int64(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(static_cast<int64_t>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(val.real(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(static_cast<double>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(val.text(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(static_cast<std::string>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(val.blob(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS(static_cast<sl3::Blob>(val), sl3::ErrNullValueAccess) ;
+      }
+    }
+  }
+}
+
+
+SCENARIO("invalid type access")
+{
+  using namespace sl3;
+  GIVEN ("a check throw on invalid value access function")
+  {
+    const int ival = 2 ;
+    const double dval = 2.3 ;
+    const std::string txt = "hello" ;
+    const Blob blob{'A','B'};
+
+    auto check_invariants = [&](const Value val)
+    {
+      if(val.getType() != Type::Int)
+        {
+          CHECK_THROWS_AS(val.int64(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS(static_cast<int64_t>(val), ErrTypeMisMatch) ;
+        }
+      else
+        {
+          CHECK_EQ(val.int64(), ival) ;
+          CHECK_EQ(static_cast<int64_t>(val), ival) ;
+        }
+      // casting int to real works , other way not
+      if(val.getType() != Type::Real && val.getType() != Type::Int)
+        {
+          CHECK_THROWS_AS(val.real(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS(static_cast<double>(val), ErrTypeMisMatch) ;
+        }
+      else if(val.getType() == Type::Int)
+        {
+          CHECK_EQ(val.int64(), ival) ;
+          CHECK_EQ(static_cast<int64_t>(val), ival) ;
+        }
+      else if(val.getType() == Type::Real)
+        {
+          CHECK_EQ(val.real(),dval) ;
+          CHECK_EQ(static_cast<double>(val), dval) ;
+        }
+
+
+      if(val.getType() != Type::Text)
+        {
+          CHECK_THROWS_AS(val.text(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS(static_cast<std::string>(val), ErrTypeMisMatch) ;
+        }
+      else
+        {
+          CHECK_EQ(val.text(),txt) ;
+          CHECK_EQ(static_cast<std::string>(val), txt) ;
+        }
+
+      if(val.getType() != Type::Blob)
+        {
+          CHECK_THROWS_AS(val.blob(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS(static_cast<Blob>(val), ErrTypeMisMatch) ;
+        }
+      else
+        {
+          CHECK_EQ(val.blob(),blob) ;
+          CHECK_EQ(static_cast<Blob>(val), blob) ;
+        }
+    };
+
+
+    WHEN ("having values of each type")
+    {
+      ValueList vals {typed_values(ival, dval,txt, blob)} ;
+
+      THEN ("running check_throw on each fo this value will work")
+      {
+        for (auto v : vals)
+          check_invariants(v) ;
+      }
+
+      THEN("assinging the values to something otherworks")
+      {
+        vals.emplace_back(Value{}) ;
+        for (auto v : vals)
+          {
+            v = ival ;
+            check_invariants(v) ;
+          }
+        for (auto v : vals)
+           {
+             v = int64_t{ival};
+             check_invariants(v) ;
+           }
+
+        for (auto v : vals)
+           {
+             v = dval ;
+             check_invariants(v) ;
+           }
+        for (auto v : vals)
+           {
+             v = txt;
+             check_invariants(v) ;
+           }
+        for (auto v : vals)
+           {
+             v = blob ;
+             check_invariants(v) ;
+           }
+      }
+    }
+
+  }
+}
+
+SCENARIO("eject values")
+{
+  using namespace sl3 ;
+  GIVEN ("a blob an a string value with knowen value")
+  {
+    const std::string txt = "hello" ;
+    const Blob blob{'A','B'};
+
+    sl3::Value sval{txt} ;
+    sl3::Value bval{blob} ;
+    WHEN ("ejecting the blob / string value from the right type")
+    {
+      auto etxt = sval.ejectText();
+      auto eblob = bval.ejectBlob();
+
+      THEN ("the ejected values are expected")
+      {
+        CHECK_EQ(txt, etxt);
+        CHECK_EQ(blob, eblob);
+
+        AND_THEN("the values are resteded to Null")
+        {
+          CHECK(sval.isNull());
+          CHECK(bval.isNull());
+        }
+      }
+    }
+    WHEN ("ejecting the blob / string value from the wrongtype")
+    {
+      THEN ("exceptions are throws")
+      {
+        CHECK_THROWS_AS(sval.ejectBlob(), ErrTypeMisMatch);
+        CHECK_THROWS_AS(bval.ejectText(), ErrTypeMisMatch);
+      }
+    }
+    WHEN ("ejecting from Null values")
+    {
+      THEN ("exceptions are throws")
+      {
+        Value val ;
+        CHECK_THROWS_AS(val.ejectBlob(), ErrNullValueAccess);
+        CHECK_THROWS_AS(val.ejectText(), ErrNullValueAccess);
+      }
+    }
+  }
+}
+
+
+
