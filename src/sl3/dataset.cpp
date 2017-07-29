@@ -108,14 +108,16 @@ namespace sl3
   }
 
   void
-  Dataset::sort (const std::vector<size_t>& idxs)
+  Dataset::sort (const std::vector<size_t>& idxs, DbValueSort cmp)
   {
-    auto lessValues = [&idxs](const DbValues& a, const DbValues& b) -> bool {
+    ASSERT_EXCEPT(cmp, ErrNullValueAccess) ;
+
+    auto lessValues = [&](const DbValues& a, const DbValues& b) -> bool {
       for (auto cur : idxs)
         {
-          if (a.at (cur) < b.at (cur))
+          if (cmp (a.at (cur), b.at (cur)))
             return true;
-          else if (b.at (cur) < a.at (cur))
+          else if (cmp (b.at (cur),a.at (cur)))
             return false;
         }
       return false;

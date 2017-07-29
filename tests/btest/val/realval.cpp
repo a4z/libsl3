@@ -21,8 +21,8 @@ namespace sl3
     VauleRelation strong_eq = std::equal_to<sl3::Value>() ;
     VauleRelation strong_lt = std::less<Value>() ;
 
-    VauleRelation weak_eq = sl3::weak_eq;
-    VauleRelation weak_lt = sl3::weak_lt ;
+    VauleRelation weak_eq = sl3::value_eq;
+    VauleRelation weak_lt = sl3::value_lt ;
   
     using _v = Value ;
 

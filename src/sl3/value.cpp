@@ -433,10 +433,9 @@ namespace sl3
       }
     else if (_type == Type::Int)
       {
-        using limit = std::numeric_limits<double>;
-
-        if (_store.intval < limit::min () || _store.intval > limit::max ())
-          throw ErrOutOfRange ();
+//        using limit = std::numeric_limits<double>;
+//        if (_store.intval < limit::min () || _store.intval > limit::max ())
+//          throw Not possible  :- );
 
         return static_cast<double>(_store.intval);
       }
@@ -611,7 +610,7 @@ namespace sl3
   }
 
   bool
-  operator== (const Value& a, const Value& b) noexcept
+  value_type_eq (const Value& a, const Value& b) noexcept
   {
     if (a.getType () != b.getType ())
       return false;
@@ -625,24 +624,19 @@ namespace sl3
         break;
 
       case Type::Int:
-        //        if (b._type == Type::Int)
         retval = a._store.intval == b._store.intval;
 
         break;
 
       case Type::Real:
-        //      if (b._type == Type::Real)
-        // retval = a._store.realval == b._store.realval;
         retval = almost_equal (a._store.realval, b._store.realval, 2);
         break;
 
       case Type::Text:
-        //    if (b._type == Type::Text)
         retval = a._store.textval == b._store.textval;
         break;
 
       case Type::Blob:
-        //  if (b._type == Type::Blob)
         retval = a._store.blobval == b._store.blobval;
         break;
 
@@ -655,7 +649,7 @@ namespace sl3
 
 
   bool
-  operator< (const Value& a, const Value& b) noexcept
+  value_type_lt (const Value& a, const Value& b) noexcept
   {
     if (b.isNull ())
       return false;
@@ -669,12 +663,8 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          {
-            if (a._store.intval <= b._store.realval)
-              return true;
-            else
-              return false;
-          }
+          return a._store.intval <= b._store.realval;
+        //respect type, int type smaller if equal to real value
 
         return true;
       }
@@ -682,12 +672,8 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          {
-            if (a._store.realval < b._store.intval)
-              return true;
-            else
-              return false;
-          }
+          return a._store.realval < b._store.intval;
+         //respect type, int type smaller if equal to real value
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;
@@ -700,13 +686,11 @@ namespace sl3
         if (b.getType () == Type::Text)
           return a._store.textval < b._store.textval;
 
-        if (b.getType () == Type::Blob)
-          return true;
-        else
-          return false;
+        // only blob types are bigger
+        return b.getType () == Type::Blob ;
       }
 
-    // TODO assert a.getType () == Type::Blob
+    //ASSERT_EXCEPT(a.getType () == Type::Blob, ErrUnexpected) ;
 
     // this is blob
     if (b.getType () != Type::Blob)
@@ -726,7 +710,7 @@ namespace sl3
   }
 
   bool
-  weak_eq (const Value& a, const Value& b) noexcept
+  value_eq (const Value& a, const Value& b) noexcept
   {
     bool retval = false;
 
@@ -770,7 +754,7 @@ namespace sl3
   }
 
   bool
-  weak_lt (const Value& a, const Value& b) noexcept
+  value_lt (const Value& a, const Value& b) noexcept
   {
     if (b.isNull ())
       return false;

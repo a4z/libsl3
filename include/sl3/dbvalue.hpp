@@ -366,7 +366,7 @@ namespace sl3
                                        const sl3::DbValue& v);
 
   /**
-   * \brief global equality
+   * \brief equality, including type info
    *
    * Check if 2 DbValue instances are of the same type and of the same value.
    *
@@ -375,15 +375,15 @@ namespace sl3
    *
    * \return true if the type and the current value are equal, false otherwise
    */
-  bool operator== (const DbValue& a, const DbValue& b) noexcept;
+  bool dbval_type_eq (const DbValue& a, const DbValue& b) noexcept;
 
   /**
-   * \brief global less operator for DbValue
+   * \brief less than,  including type info
    *
    * Applies following rules which are equal to the sorting rules of sqlite.
    *
-   * - Type::Null is alwasy less than any other storage type.
-   * - Type::Interger or Type::Real is always less than Type::Text or
+   * - Type::Null is always less than any other storage type.
+   * - Type::Integer or Type::Real is always less than Type::Text or
    * Type::Blob
    * - Type::Text is less than Type::Blob
    *
@@ -396,10 +396,10 @@ namespace sl3
    *
    * \returns true if given DbValue a is less than given DbValue b
    */
-  bool operator< (const DbValue& a, const DbValue& b) noexcept;
+  bool dbval_type_lt (const DbValue& a, const DbValue& b) noexcept;
 
   /**
-   * \brief weak order equality
+   * \brief equality, ignoring type info
    *
    * Compares only the stored value for equality and ignores type information.
    *
@@ -407,10 +407,10 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool weak_eq (const DbValue& a, const DbValue& b) noexcept;
+  bool dbval_eq (const DbValue& a, const DbValue& b) noexcept;
 
   /**
-   * \brief weak order less than
+   * \brief less than, ignoring type info
    *
    * Compares only the stored value and ignores type information.
    *
@@ -418,7 +418,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool weak_lt (const DbValue& a, const DbValue& b) noexcept;
+  bool dbval_lt (const DbValue& a, const DbValue& b) noexcept;
 
 
 }
