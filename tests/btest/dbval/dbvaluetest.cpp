@@ -337,10 +337,10 @@ namespace sl3
         DbValue a{1, Type::Variant} ;
         DbValue b{1.0, Type::Variant} ;
         BOOST_CHECK (a != b) ;
-        BOOST_CHECK (weak_eq(a, b)) ;
+        BOOST_CHECK (dbval_eq(a, b)) ;
 
         BOOST_CHECK (b != a) ;
-        BOOST_CHECK (weak_eq(b, a)) ;
+        BOOST_CHECK (dbval_eq(b, a)) ;
 
         DbValue blob{Blob {1,2}} ;
 
@@ -406,15 +406,15 @@ namespace sl3
 
       // these have different types so that needs to be like that
       BOOST_CHECK ( (DbValue (1) < DbValue (1.0)));
-      BOOST_CHECK ( !weak_lt(DbValue (1) , DbValue (1.0)));
-      BOOST_CHECK ( weak_eq(DbValue (1) , DbValue (1.0)));
+      BOOST_CHECK ( !dbval_lt(DbValue (1) , DbValue (1.0)));
+      BOOST_CHECK ( dbval_eq(DbValue (1) , DbValue (1.0)));
 
       BOOST_CHECK ( !(DbValue (2) < DbValue (1.0)));
       BOOST_CHECK ( !(DbValue (1) == DbValue (1.0)) );
       BOOST_CHECK ( !(DbValue (1.0) < DbValue (1)));
       // same values with different type but variant
       BOOST_CHECK ( (DbValue (1, Type::Variant) < DbValue (1.0, Type::Variant)));
-      BOOST_CHECK ( weak_eq(DbValue (1, Type::Variant), DbValue (1.0, Type::Variant)));
+      BOOST_CHECK ( dbval_eq(DbValue (1, Type::Variant), DbValue (1.0, Type::Variant)));
       BOOST_CHECK ( !(DbValue (1, Type::Variant) == DbValue (1.0, Type::Variant)) );
       BOOST_CHECK ( !(DbValue (1.0, Type::Variant) < DbValue (1, Type::Variant)));
       

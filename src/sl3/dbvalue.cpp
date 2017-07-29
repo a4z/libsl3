@@ -20,6 +20,9 @@
 
 namespace sl3
 {
+
+
+
   namespace
   {
     template <typename T>
@@ -103,28 +106,33 @@ namespace sl3
       Type type;
     };
 
+
   } //--------------------------------------------------------------------------
 
+
+
+
+
   bool
-  operator== (const DbValue& a, const DbValue& b) noexcept
+  dbval_type_eq (const DbValue& a, const DbValue& b) noexcept
   {
     if (a.getType () == b.getType ())
       {
-        return a.getValue () == b.getValue ();
+        return value_type_eq(a.getValue(), b.getValue()) ;
       }
 
     return false;
   }
 
   bool
-  operator< (const DbValue& a, const DbValue& b) noexcept
+  dbval_type_lt (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.getValue () < b.getValue ())
+    if (value_type_lt(a.getValue (), b.getValue ()))
       {
         return true;
       }
 
-    if (a.getValue () == b.getValue ())
+    if (value_type_eq(a.getValue(), b.getValue()))
       { // a variant is bigger
         return a.getType () < b.getType ();
       }
@@ -135,15 +143,15 @@ namespace sl3
   // how, and does this makesense ?
 
   bool
-  weak_eq (const DbValue& a, const DbValue& b) noexcept
+  dbval_eq (const DbValue& a, const DbValue& b) noexcept
   {
-    return weak_eq (a.getValue (), b.getValue ());
+    return value_eq (a.getValue (), b.getValue ());
   }
 
   bool
-  weak_lt (const DbValue& a, const DbValue& b) noexcept
+  dbval_lt (const DbValue& a, const DbValue& b) noexcept
   {
-    return weak_lt (a.getValue (), b.getValue ());
+    return value_lt (a.getValue (), b.getValue ());
   }
 
   DbValue::DbValue (Type type) noexcept

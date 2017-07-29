@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <limits>
 
 using ValueList = std::vector<sl3::Value> ;
 
@@ -15,6 +16,23 @@ typed_values (VALS&&... vals)
 }
 
 
+namespace sl3
+{
+  // if ever wanted, implement < and == operators yourself like this
+  inline
+  bool
+  operator== (const sl3::Value& a, const sl3::Value& b) noexcept
+  {
+    return sl3::value_type_eq(a, b) ;
+  }
+
+  inline
+  bool
+  operator< (const sl3::Value& a, const sl3::Value& b) noexcept
+  {
+    return sl3::value_type_lt(a, b) ;
+  }
+}
 // * interesting, does not happen on 6.3
 // on 5.3 there is a Value::Value (const Value& other) noexcept
 // call where oter has some type
@@ -160,7 +178,7 @@ SCENARIO("create, assign, copy and moveing values")
   }
 }
 
-SCENARIO("nulvalue values access")
+SCENARIO("null value values access")
 {
   GIVEN ("a check throw on invalid value access function")
   {
@@ -289,7 +307,66 @@ SCENARIO("invalid type access")
            }
       }
     }
+  }
 
+  // do the int stuff extra here
+  GIVEN ("a null value")
+  {
+    Value v ;
+    WHEN ("converting a null value to an int")
+    {
+      THEN ("a null value access happens")
+      {
+        CHECK_THROWS_AS((void)static_cast<int32_t>(v), ErrNullValueAccess) ;
+      }
+    }
+
+    WHEN ("assign an int value bigger than max int")
+    {
+      v= std::numeric_limits<int64_t>::max() ;
+
+      THEN ("converting to an integer will might throw")
+      {
+         CHECK_THROWS_AS((void)static_cast<int>(v), ErrOutOfRange) ;
+      }
+    }
+
+    WHEN ("assign a real value that is int")
+    {
+      v = 1.00 ;
+      THEN ("converting to an integer will work")
+      {
+        CHECK_EQ(static_cast<int32_t>(v), 1) ;
+      }
+    }
+
+    WHEN ("assign a real value that is not an int")
+    {
+      v = 1.11 ;
+      THEN ("converting to an integer will throw")
+      {
+        CHECK_THROWS_AS((void)static_cast<int32_t>(v), ErrTypeMisMatch) ;
+      }
+    }
+
+    WHEN ("assign a real value bigger than is to big")
+    {
+      v = std::numeric_limits<double>::max() ;
+      THEN ("converting to an integer will throw")
+      {
+        CHECK_THROWS_AS((void)static_cast<int32_t>(v), ErrOutOfRange) ;
+        CHECK_THROWS_AS((void)static_cast<int64_t>(v), ErrOutOfRange) ;
+      }
+    }
+
+    WHEN ("assign something that is not an int")
+    {
+      v = "hello";
+      THEN ("converting to an integer will throw")
+      {
+        CHECK_THROWS_AS((void)static_cast<int32_t>(v), ErrTypeMisMatch) ;
+      }
+    }
   }
 }
 

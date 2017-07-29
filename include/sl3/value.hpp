@@ -31,7 +31,7 @@ namespace sl3
    *
    */
   template<typename T>
-  struct totally_ordered
+  struct totally_ordered  // TODO take cmp as arg
   {
 
     /**
@@ -80,7 +80,7 @@ namespace sl3
    *
    *
    */
-  class LIBSL3_API Value : totally_ordered<Value>
+  class LIBSL3_API Value //: totally_ordered<Value> TODO
   {
   public:
     /**
@@ -276,12 +276,16 @@ namespace sl3
      */
     Type getType () const noexcept;
 
-    friend bool operator== (const Value& a, const Value& b) noexcept;
-    friend bool operator< (const Value& a, const Value& b) noexcept;
+//    friend bool operator== (const Value& a, const Value& b) noexcept;
+//    friend bool operator< (const Value& a, const Value& b) noexcept;
     friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
-    friend bool weak_eq (const Value& a, const Value& b) noexcept;
-    friend bool weak_lt (const Value& a, const Value& b) noexcept;
+
+    friend bool value_type_eq (const Value& a, const Value& b) noexcept;
+    friend bool value_type_lt (const Value& a, const Value& b) noexcept;
+
+    friend bool value_eq (const Value& a, const Value& b) noexcept;
+    friend bool value_lt (const Value& a, const Value& b) noexcept;
 
   private:
     Type _type{Type::Null};
@@ -310,7 +314,7 @@ namespace sl3
   std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
   /**
-   * \brief total order equality Value
+   * \brief equality, including type info
    *
    * Check if 2 Value instances are of the same type and of the same value.
    *
@@ -319,12 +323,12 @@ namespace sl3
    *
    * \return true if the type and the current value are equal, false otherwise
    */
-  bool operator== (const Value& a, const Value& b) noexcept;
+  bool value_type_eq (const Value& a, const Value& b) noexcept;
 
 
 
   /**
-   * \brief total order less than Value
+   * \brief less than, including type info
    *
    * Applies following rules which are equal to the sorting rules of sqlite.
    *
@@ -343,11 +347,11 @@ namespace sl3
    *
    * \returns true if given Value a is less than given Value b
    */
-  bool operator< (const Value& a, const Value& b) noexcept;
+  bool value_type_lt (const Value& a, const Value& b) noexcept;
 
 
   /**
-   * \brief weak order equality
+   * \brief equality, ignoring type info
    *
    * Compares only the stored value and ignores type information.
    *
@@ -355,10 +359,10 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool weak_eq (const Value& a, const Value& b) noexcept;
+  bool value_eq (const Value& a, const Value& b) noexcept;
 
   /**
-   * \brief weak order less than
+   * \brief less than, ignoring type info
    *
    * Compares only the stored value and ignores type information.
    *
@@ -366,7 +370,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool weak_lt (const Value& a, const Value& b) noexcept;
+  bool value_lt (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief Value specialized swap function
