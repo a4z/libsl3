@@ -11,11 +11,11 @@ set (COMMON_TEST_HEADERS
 )
 
 
-#add_subdirectory(commands)
-#add_subdirectory(database)
-#add_subdirectory(dataset)
-#add_subdirectory(rowcallback)
-#add_subdirectory(typenames)
+add_subdirectory(commands)
+add_subdirectory(database)
+add_subdirectory(dataset)
+add_subdirectory(rowcallback)
+add_subdirectory(typenames)
 add_subdirectory(value)
-#add_subdirectory(version)
+add_subdirectory(version)
 

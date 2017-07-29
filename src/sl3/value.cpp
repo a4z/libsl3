@@ -701,12 +701,19 @@ namespace sl3
   }
 
   void
+  Value::swap (Value& other) noexcept
+  {
+    Value t{std::move (other)};
+    // should be auto t{...} but 4.8.2 does not like it
+    other = std::move(*this) ;
+    *this = std::move (t);
+  }
+
+
+  void
   swap (Value& a, Value& b) noexcept
   {
-    Value t{std::move (a)};
-    // should be auto t{...} but 4.8.2 does not like it
-    a = std::move (b);
-    b = std::move (t);
+    a.swap(b) ;
   }
 
   bool
