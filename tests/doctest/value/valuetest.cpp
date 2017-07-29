@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <sstream>
 
 using ValueList = std::vector<sl3::Value> ;
 
@@ -308,11 +309,24 @@ SCENARIO("invalid type access")
       }
     }
   }
+}
 
+SCENARIO ("number special")
+{
+  using namespace sl3 ;
   // do the int stuff extra here
   GIVEN ("a null value")
   {
     Value v ;
+    WHEN ("assign an integer")
+    {
+      v = 100 ;
+      THEN ("accessing that integer is not a problem")
+      {
+        CHECK_EQ(static_cast<int32_t>(v), 100) ;
+      }
+    }
+
     WHEN ("converting a null value to an int")
     {
       THEN ("a null value access happens")
@@ -346,6 +360,15 @@ SCENARIO("invalid type access")
       THEN ("converting to an integer will throw")
       {
         CHECK_THROWS_AS((void)static_cast<int32_t>(v), ErrTypeMisMatch) ;
+      }
+    }
+
+    WHEN ("assign an integer")
+    {
+      v = 100 ;
+      THEN ("converting to a real just works")
+      {
+        CHECK_EQ(static_cast<double>(v), 100.0) ;
       }
     }
 
@@ -414,6 +437,183 @@ SCENARIO("eject values")
         CHECK_THROWS_AS(val.ejectText(), ErrNullValueAccess);
       }
     }
+  }
+}
+
+
+SCENARIO("compare  values")
+{
+  using namespace sl3;
+  GIVEN ("a check smaller function")
+  {
+    auto check_smaller= [](const Value& val, const ValueList& smaller)
+    {
+      CHECK_FALSE(value_lt(val, val)) ;
+      CHECK_FALSE(value_type_lt(val, val)) ;
+
+      for (const auto& v : smaller)
+        {
+          CHECK(value_lt(v, val)) ;
+          CHECK(value_type_lt(v, val)) ;
+          CHECK_FALSE(value_lt(val, v)) ;
+          CHECK_FALSE(value_type_lt(val, v)) ;
+        }
+    };
+
+    WHEN ("checking values with expected smaller values")
+    {
+      Value v{0} ;
+      ValueList smaller = {Value{-1}, Value{}, Value{-1.0} };
+      THEN ("all check succeed")
+      {
+        check_smaller(Value{0}, smaller);
+        check_smaller(Value{1.0}, smaller);
+        smaller.push_back(Value{"aaa"});
+        check_smaller(Value{"bbb"}, smaller);
+        smaller.push_back(Value{Blob{'A'}});
+        check_smaller(Value{Blob{'A', 'B'}}, smaller);
+      }
+    }
+  }
+
+  GIVEN("a function that checks equalities")
+  {
+    auto check_eq= [](const Value& val, const ValueList& different)
+    {
+      CHECK(value_eq(val, val)) ;
+      CHECK(value_type_eq(val, val)) ;
+
+      for (const auto& v : different)
+        {
+          CHECK_FALSE(value_eq(val, v)) ;
+          CHECK_FALSE(value_type_eq(val, v)) ;
+        }
+    };
+    WHEN ("callin check_eq with knowen values")
+    {
+      THEN("all tests succeed")
+      {
+        check_eq(Value{},
+                 {Value{1}, Value{2.0}, Value{"foo"}, Value{Blob{'A'}}});
+
+        check_eq(Value{1},
+                 {Value{},Value{2.0}, Value{"foo"}, Value{Blob{'A'}}});
+
+        check_eq(Value{2.0},
+                 {Value{},Value{1}, Value{"foo"}, Value{Blob{'A'}}});
+
+        check_eq(Value{"foo"},
+                 {Value{},Value{1}, Value{2.0}, Value{Blob{'A'}}});
+
+        check_eq(Value{Blob{'A'}},
+                 {Value{},Value{1}, Value{2.0}, Value{"foo"}});
+
+      }
+    }
+  }
+
+  GIVEN("int and a real types with same values")
+  {
+    Value ival{1} ;
+    Value rval{1.0} ;
+
+    WHEN ("comparing with them self")
+    {
+      THEN("value_eq is true and value_type_eq is true")
+      {
+        CHECK(value_eq(ival, ival)) ;
+        CHECK(value_type_eq(ival, ival)) ;
+        CHECK(value_eq(rval, rval)) ;
+        CHECK(value_type_eq(rval, rval)) ;
+      }
+    }
+
+    WHEN ("comparing both with each other")
+    {
+      THEN("value_eq is true and value_type_eq is false")
+      {
+        CHECK(value_eq(ival, rval)) ;
+        CHECK_FALSE(value_type_eq(ival, rval)) ;
+      }
+    }
+  }
+}
+
+
+SCENARIO("swapping values")
+{
+  using namespace sl3;
+  GIVEN("2 different values")
+  {
+    Value a{1};
+    Value b{"a longer text with no small string opt"};
+
+    WHEN("swapping those values")
+    {
+      std::swap(a,b);
+      THEN("the values are swapped")
+      {
+        CHECK(a.getType() == Type::Text);
+        CHECK(a.text() == "a longer text with no small string opt");
+
+        CHECK(b.getType() == Type::Int);
+        CHECK(b.int64() == 1);
+      }
+    }
+  }
+}
+
+
+SCENARIO("stringing values")
+{
+  using namespace sl3;
+  GIVEN("a string stream")
+  {
+    std::stringstream ss ;
+    WHEN("stringing a null value")
+    {
+      ss << Value{} ;
+      THEN("the stingstream contains <NULL>")
+      {
+        CHECK(ss.str() == "<NULL>");
+      }
+    }
+    WHEN("stringing an int value")
+    {
+      ss << Value{1} ;
+      THEN("the stingstream contains the int")
+      {
+        CHECK(ss.str() == "1");
+      }
+    }
+
+    WHEN("stringing a real value")
+    {
+      ss << Value{1.1} ;
+      THEN("the stingstream contains the real")
+      {
+        CHECK(ss.str() == "1.1");
+      }
+    }
+
+    WHEN("stringing a text value")
+    {
+      ss << Value{"hello"} ;
+      THEN("the stingstream contains the text")
+      {
+        CHECK(ss.str() == "hello");
+      }
+    }
+
+    WHEN("stringing a blob value")
+    {
+      ss << Value{Blob{}} ;
+      THEN("the stingstream contains <BLOB>")
+      {
+        CHECK(ss.str() == "<BLOB>");
+      }
+    }
+
   }
 }
 

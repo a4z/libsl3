@@ -287,6 +287,16 @@ namespace sl3
     friend bool value_eq (const Value& a, const Value& b) noexcept;
     friend bool value_lt (const Value& a, const Value& b) noexcept;
 
+    /**
+     * \brief swap function
+     *
+     *  Independent of the type, a Value is always swapable.
+     *
+     *  \param other value to swap with
+     */
+    void swap(Value& other) noexcept;
+
+
   private:
     Type _type{Type::Null};
 
@@ -376,8 +386,6 @@ namespace sl3
    * \brief Value specialized swap function
    *
    *  Independent of the type, a Value is always swapable.
-   *  This can be theoretical be abused to bypass the type checking,
-   *  but is up to the user to do so or not.
    *
    *  \param a first value to swap with second value
    *  \param b second value to swap with first value
@@ -386,6 +394,16 @@ namespace sl3
 
   /// Define a constant for a Value that is null
   //static const Value NullValue{};
+}
+
+namespace std
+{  // only allowed to extend namespace std with specializations
+
+  template<> // specialization
+  inline void swap<sl3::Value>(sl3::Value& lhs, sl3::Value& rhs)
+  {
+    sl3::swap(lhs, rhs) ;
+  }
 }
 
 #endif
