@@ -35,7 +35,7 @@ namespace sl3
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class LIBSL3_API DbValue : totally_ordered<DbValue>
+  class LIBSL3_API DbValue // TODO : totally_ordered<DbValue>
   {
   public:
     /**
