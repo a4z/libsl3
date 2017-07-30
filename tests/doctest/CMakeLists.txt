@@ -14,6 +14,7 @@ set (COMMON_TEST_HEADERS
 add_subdirectory(commands)
 add_subdirectory(database)
 add_subdirectory(dataset)
+add_subdirectory(dbvalue)
 add_subdirectory(rowcallback)
 add_subdirectory(typenames)
 add_subdirectory(value)
