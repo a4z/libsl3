@@ -46,9 +46,9 @@ SCENARIO("dataset creation and defautl operatores")
         for(const auto &row : ds)
           {
             REQUIRE(row.size() == types.size()) ;
-            REQUIRE(row.at(0).getType() == types[0]) ;
-            REQUIRE(row.at(1).getType() == types[1]) ;
-            REQUIRE(row.at(2).getType() == types[2]) ;
+            REQUIRE(row.at(0).dbtype() == types[0]) ;
+            REQUIRE(row.at(1).dbtype() == types[1]) ;
+            REQUIRE(row.at(2).dbtype() == types[2]) ;
           }
       }
     }

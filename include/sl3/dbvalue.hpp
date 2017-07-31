@@ -40,7 +40,7 @@ namespace sl3
    * is guaranteed that the type will match, or an exception occurs.
    *
    */
-  class LIBSL3_API DbValue // TODO : totally_ordered<DbValue>
+  class LIBSL3_API DbValue
   {
   public:
     /**
@@ -317,10 +317,7 @@ namespace sl3
      *
      * \return the type
      */
-    Type getType () const;
-
-
-    Type type () const { return getType();}
+    Type dbtype () const;
 
 
     /**
@@ -332,10 +329,7 @@ namespace sl3
      *
      * \return the type the value actual holds
      */
-    Type getStorageType () const;
-
-
-    Type storageType () const { return getStorageType();};
+    Type type () const;
 
 
     /**

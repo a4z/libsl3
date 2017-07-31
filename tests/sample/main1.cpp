@@ -25,9 +25,9 @@ int main()
   // Dataset row is a container
   auto row = ds[0] ;
   assert(row.size()==3);
-  assert ( row[0].getStorageType() == Type::Int ) ;
-  assert ( row[1].getStorageType() == Type::Text ) ;
-  assert ( row[2].getStorageType() == Type::Real ) ;
+  assert ( row[0].type() == Type::Int ) ;
+  assert ( row[1].type() == Type::Text ) ;
+  assert ( row[2].type() == Type::Real ) ;
 
   // of course there is also iterator access
   for(auto&& row  :ds) {

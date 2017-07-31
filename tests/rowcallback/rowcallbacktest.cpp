@@ -373,16 +373,16 @@ SCENARIO("getting DbValues from columns")
       THEN ("value type properties are set correct")
       {
         db.execute(sql, [](sl3::Columns cols){
-          CHECK(cols.getValue (0).getType () == sl3::Type::Variant) ;
-          CHECK(cols.getValue (0).getStorageType () == sl3::Type::Int) ;
-          CHECK(cols.getValue (1).getType () == sl3::Type::Variant) ;
-          CHECK(cols.getValue (1).getStorageType () == sl3::Type::Real) ;
-          CHECK(cols.getValue (2).getType () == sl3::Type::Variant) ;
-          CHECK(cols.getValue (2).getStorageType () == sl3::Type::Text) ;
-          CHECK(cols.getValue (3).getType () == sl3::Type::Variant) ;
-          CHECK(cols.getValue (3).getStorageType () == sl3::Type::Blob) ;
-          CHECK(cols.getValue (4).getType () == sl3::Type::Variant) ;
-          CHECK(cols.getValue (4).getStorageType () == sl3::Type::Null) ;
+          CHECK(cols.getValue (0).dbtype () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (0).type () == sl3::Type::Int) ;
+          CHECK(cols.getValue (1).dbtype () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (1).type () == sl3::Type::Real) ;
+          CHECK(cols.getValue (2).dbtype () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (2).type () == sl3::Type::Text) ;
+          CHECK(cols.getValue (3).dbtype () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (3).type () == sl3::Type::Blob) ;
+          CHECK(cols.getValue (4).dbtype () == sl3::Type::Variant) ;
+          CHECK(cols.getValue (4).type () == sl3::Type::Null) ;
           return true;
         });
       }
@@ -401,11 +401,11 @@ SCENARIO("getting DbValues from columns")
           {
             auto type = expectedTypes[i];
             auto val = cols.getValue (i, type) ;
-            CHECK(val.getType () == type) ;
+            CHECK(val.dbtype () == type) ;
             if (i == cols.count () -1 )
-              CHECK(val.getStorageType () == Type::Null) ;
+              CHECK(val.type () == Type::Null) ;
             else
-              CHECK(val.getStorageType () == type) ;
+              CHECK(val.type () == type) ;
           }
 
           return true;
@@ -450,16 +450,16 @@ SCENARIO("getting rows from columns")
         db.execute(sql, [](sl3::Columns cols){
           auto row = cols.getRow ();
           REQUIRE (row.size () == cols.count ()) ;
-          CHECK(row.at (0).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (0).getStorageType () == sl3::Type::Int) ;
-          CHECK(row.at (1).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (1).getStorageType () == sl3::Type::Real) ;
-          CHECK(row.at (2).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (2).getStorageType () == sl3::Type::Text) ;
-          CHECK(row.at (3).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (3).getStorageType () == sl3::Type::Blob) ;
-          CHECK(row.at (4).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (4).getStorageType () == sl3::Type::Null) ;
+          CHECK(row.at (0).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (0).type () == sl3::Type::Int) ;
+          CHECK(row.at (1).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (1).type () == sl3::Type::Real) ;
+          CHECK(row.at (2).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (2).type () == sl3::Type::Text) ;
+          CHECK(row.at (3).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (3).type () == sl3::Type::Blob) ;
+          CHECK(row.at (4).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (4).type () == sl3::Type::Null) ;
           return false;
         });
       }
@@ -491,16 +491,16 @@ SCENARIO("getting rows from columns")
           using namespace sl3 ;
           auto types = {Type::Int,Type::Real,Type::Text,Type::Blob,Type::Variant};
           auto row = cols.getRow (types);
-          CHECK(row.at (0).getType () == sl3::Type::Int) ;
-          CHECK(row.at (0).getStorageType () == sl3::Type::Int) ;
-          CHECK(row.at (1).getType () == sl3::Type::Real) ;
-          CHECK(row.at (1).getStorageType () == sl3::Type::Real) ;
-          CHECK(row.at (2).getType () == sl3::Type::Text) ;
-          CHECK(row.at (2).getStorageType () == sl3::Type::Text) ;
-          CHECK(row.at (3).getType () == sl3::Type::Blob) ;
-          CHECK(row.at (3).getStorageType () == sl3::Type::Blob) ;
-          CHECK(row.at (4).getType () == sl3::Type::Variant) ;
-          CHECK(row.at (4).getStorageType () == sl3::Type::Null) ;
+          CHECK(row.at (0).dbtype () == sl3::Type::Int) ;
+          CHECK(row.at (0).type () == sl3::Type::Int) ;
+          CHECK(row.at (1).dbtype () == sl3::Type::Real) ;
+          CHECK(row.at (1).type () == sl3::Type::Real) ;
+          CHECK(row.at (2).dbtype () == sl3::Type::Text) ;
+          CHECK(row.at (2).type () == sl3::Type::Text) ;
+          CHECK(row.at (3).dbtype () == sl3::Type::Blob) ;
+          CHECK(row.at (3).type () == sl3::Type::Blob) ;
+          CHECK(row.at (4).dbtype () == sl3::Type::Variant) ;
+          CHECK(row.at (4).type () == sl3::Type::Null) ;
 
           return false;
         });

@@ -237,7 +237,7 @@ SCENARIO ("binding values of all types and using select to check the result")
         REQUIRE_EQ (ds.size (), 1);
         REQUIRE_EQ (ds[0].size (), types.size ());
         for (size_t i = 0; i < ds[0].size (); ++i)
-          REQUIRE_EQ (ds[0][i].getType () , types[i]) ;
+          REQUIRE_EQ (ds[0][i].dbtype () , types[i]) ;
       }
       THEN ("selecting all data with wrong types will throw")
       {
