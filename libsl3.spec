@@ -8,7 +8,7 @@ License:    MPL-2.0
 URL:        http://a4z.bitbucket.org/docs/libsl3/html/index.html
 Source0:    https://bitbucket.org/a4z/%{name}/downloads/%{name}-%{version}.tar.gz
 
-BuildRequires:  boost-devel
+
 BuildRequires:  cmake
 BuildRequires:  doxygen
 BuildRequires:  graphviz

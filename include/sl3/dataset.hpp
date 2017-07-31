@@ -152,6 +152,11 @@ namespace sl3
      */
     std::size_t getIndex (const std::string& name) const;
 
+
+    typedef bool (*DbValueSort)(const DbValue&, const DbValue&);
+
+    //using DbValueSort = std::function<bool(const DbValue&, const DbValue&)> ;
+
     /**
      * \brief Sort the Dataset
      *
@@ -160,8 +165,11 @@ namespace sl3
      *
      * \throw sl2::OutOfRange if a given index is invalid
      * \param idxs list of field indexes
+     * \param cmp pointer to a less than compare function, default dbval_lt
      */
-    void sort (const std::vector<size_t>& idxs);
+    void sort (const std::vector<size_t>& idxs,
+               DbValueSort cmp = &dbval_lt
+    );
 
   private:
     Types                    _fieldtypes;

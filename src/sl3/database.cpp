@@ -14,10 +14,10 @@
 #include <sl3/columns.hpp>
 #include <sl3/error.hpp>
 
-namespace sl3
+
+namespace
 {
-  Database::Database (const std::string& name, int openFlags)
-  : _connection (nullptr)
+  sqlite3* opendb(const std::string& name, int openFlags)
   {
     if (openFlags == 0)
       {
@@ -29,20 +29,37 @@ namespace sl3
 
     if (sl3rc != SQLITE_OK)
       {
-        SQLite3Error sl3error (sl3rc, sqlite3_errmsg (db));
+        sl3::SQLite3Error sl3error (sl3rc, sqlite3_errmsg (db));
         sqlite3_close (db);
         throw sl3error;
       }
+    return db ;
+  }
 
-    _connection.reset (new internal::Connection (db));
+}
 
+
+namespace sl3
+{
+
+  std::string
+  getErrStr (int errcode)
+  {
+    return std::string (sqlite3_errstr (errcode));
+  }
+
+
+  Database::Database (const std::string& name, int flags)
+  : _connection {new internal::Connection{opendb(name, flags)}}
+  {
     sqlite3_extended_result_codes (_connection->db (), true);
   }
 
   Database::Database (Database&& other) noexcept
       : _connection (std::move (other._connection))
   {
-    other._connection.reset ();
+    // alsways have a connection, but an invalid one
+    other._connection.reset(new internal::Connection{nullptr});
   }
 
   Database::~Database () noexcept
@@ -74,6 +91,7 @@ namespace sl3
   void
   Database::execute (const char* sql)
   {
+    _connection->ensureValid() ;
     char* dbMsg = 0;
 
     int rc = sqlite3_exec (_connection->db (), sql, 0, 0, &dbMsg);
@@ -118,7 +136,7 @@ namespace sl3
     DbValue retVal (Type::Variant);
 
     auto cb = [&retVal](Columns cols) -> bool {
-      retVal = cols.at (0);
+      retVal = cols.getValue (0);
       return false; // exit after first row
     };
 
@@ -134,7 +152,7 @@ namespace sl3
     DbValue retVal{type};
 
     auto cb = [&retVal, type](Columns cols) -> bool {
-      retVal = cols.at (0, type);
+      retVal = cols.getValue (0, type);
       return false; // exit after first row
     };
 
@@ -147,36 +165,36 @@ namespace sl3
   int
   Database::getMostRecentErrCode ()
   {
+    _connection->ensureValid() ;
     return sqlite3_extended_errcode (_connection->db ());
   }
 
   std::string
   Database::getMostRecentErrMsg ()
   {
+    _connection->ensureValid() ;
     return std::string (sqlite3_errmsg (_connection->db ()));
   }
 
-  std::string
-  Database::getErrStr (int errcode)
-  {
-    return std::string (sqlite3_errstr (errcode));
-  }
 
   std::size_t
   Database::getTotalChanges ()
   {
+    _connection->ensureValid() ;
     return sqlite3_total_changes (_connection->db ());
   }
 
   std::size_t
   Database::getRecentlyChanged ()
   {
+    _connection->ensureValid() ;
     return sqlite3_changes (_connection->db ());
   }
 
   int64_t
   Database::getLastInsertRowid ()
   {
+    _connection->ensureValid() ;
     return sqlite3_last_insert_rowid (_connection->db ());
   }
 
@@ -193,30 +211,31 @@ namespace sl3
   }
 
   Database::Transaction::Transaction (Database& db)
-  : _db (db)
-  , _commit (false)
+  : _db (&db)
   {
-    _db.execute ("BEGIN TRANSACTION");
+    _db->execute ("BEGIN TRANSACTION");
   }
 
   Database::Transaction::Transaction (Transaction&& other)
   : _db (other._db)
-  , _commit (other._commit)
   {
-    other._commit = true; // ensure other does not commit in d'tor
+    other._db = nullptr; // ensure other does not commit in d'tor
   }
 
   Database::Transaction::~Transaction ()
   {
-    if (!_commit)
-      _db.execute ("ROLLBACK TRANSACTION");
+    if (_db)
+      _db->execute ("ROLLBACK TRANSACTION");
   }
 
   void
   Database::Transaction::commit ()
   {
-    _db.execute ("COMMIT TRANSACTION");
-    _commit = true;
+    if(_db)
+      {
+        _db->execute ("COMMIT TRANSACTION");
+        _db = nullptr;
+      }
   }
 
 } // ns
