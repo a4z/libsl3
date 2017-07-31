@@ -62,7 +62,7 @@ namespace sl3
 
           int rc;
 
-          switch (val.getStorageType ())
+          switch (val.type ())
             {
             case Type::Int:
               rc = sqlite3_bind_int64 (stmt, curParaNr, val.getInt ());

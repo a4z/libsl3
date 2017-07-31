@@ -116,7 +116,7 @@ namespace sl3
   bool
   dbval_type_eq (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.type()  == b.type())
+    if (a.dbtype()  == b.dbtype())
       {
         return value_type_eq(a.getValue(), b.getValue()) ;
       }
@@ -134,7 +134,7 @@ namespace sl3
 
     if (value_type_eq(a.getValue(), b.getValue()))
       { // a variant is bigger
-        return a.getType () < b.getType ();
+        return a.dbtype () < b.dbtype ();
       }
 
     return false;
@@ -203,7 +203,7 @@ namespace sl3
             typeName (_type) + "="
             + (other._type == Type::Variant
                    ? typeName (other._type) + " with storage type"
-                         + typeName (other.getStorageType ())
+                         + typeName (other.type ())
                    : typeName (other._type)));
       }
 
@@ -220,7 +220,7 @@ namespace sl3
             typeName (_type) + "="
             + (other._type == Type::Variant
                    ? typeName (other._type) + " with storage type"
-                         + typeName (other.getStorageType ())
+                         + typeName (other.type ())
                    : typeName (other._type)));
       }
     _value = std::move (other._value);
@@ -453,13 +453,13 @@ namespace sl3
   }
 
   Type
-  DbValue::getType () const
+  DbValue::dbtype () const
   {
     return _type;
   }
 
   Type
-  DbValue::getStorageType () const
+  DbValue::type () const
   {
     return _value.getType ();
   }
@@ -467,15 +467,15 @@ namespace sl3
   bool
   DbValue::canAssign (const DbValue& other) const
   {
-    if (this->getType () != Type::Variant)
+    if (this->dbtype () != Type::Variant)
       {
-        if (other.getType () == Type::Variant)
+        if (other.dbtype () == Type::Variant)
           {
-            return check (other.getStorageType ()).oneOf (_type, Type::Null);
+            return check (other.type ()).oneOf (_type, Type::Null);
           }
         else
           {
-            return check (_type).sameAs (other.getType ());
+            return check (_type).sameAs (other.dbtype ());
           }
       }
 

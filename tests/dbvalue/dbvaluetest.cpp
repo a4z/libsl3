@@ -56,19 +56,19 @@ struct check
   getTypedDefaults ()
   {
 
-    if(_val.getStorageType() != sl3::Type::Int)
+    if(_val.type() != sl3::Type::Int)
       {
         CHECK_EQ (_val.getInt (100), 100);
         CHECK_EQ (_val.getInt (int64_t{100}), 100);
       }
 
-    if(_val.getStorageType() != sl3::Type::Real)
+    if(_val.type() != sl3::Type::Real)
       CHECK_EQ (_val.getReal (2.1), 2.1);
 
-    if(_val.getStorageType() != sl3::Type::Text)
+    if(_val.type() != sl3::Type::Text)
       CHECK_EQ (_val.getText ("foo"), "foo");
 
-    if(_val.getStorageType() != sl3::Type::Blob)
+    if(_val.type() != sl3::Type::Blob)
       CHECK_EQ (_val.getBlob (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
 
@@ -97,19 +97,19 @@ struct check
   void
   getDefaults ()
   {
-    if(_val.getStorageType() != sl3::Type::Int)
+    if(_val.type() != sl3::Type::Int)
       {
         CHECK_EQ (_val.get (100), 100);
         CHECK_EQ (_val.get (int64_t{100}), 100);
       }
 
-    if(_val.getStorageType() != sl3::Type::Real)
+    if(_val.type() != sl3::Type::Real)
       CHECK_EQ (_val.get (2.1), 2.1);
 
-    if(_val.getStorageType() != sl3::Type::Text)
+    if(_val.type() != sl3::Type::Text)
       CHECK_EQ (_val.get ("foo"), "foo");
 
-    if(_val.getStorageType() != sl3::Type::Blob)
+    if(_val.type() != sl3::Type::Blob)
       CHECK_EQ (_val.get (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
 
@@ -118,8 +118,8 @@ struct check
   void
   typeAndStorage (sl3::Type type, sl3::Type storage)
   {
-    CHECK (_val.getType () == type);
-    CHECK (_val.getStorageType () == storage);
+    CHECK (_val.dbtype () == type);
+    CHECK (_val.type () == storage);
   }
 
   void
@@ -225,7 +225,7 @@ SCENARIO("using value, basics")
 
     for (DbValue& dbval : vals)
       {
-        CHECK(types[sizeIdx] == dbval.type()) ;
+        CHECK(types[sizeIdx] == dbval.dbtype()) ;
         sizeIdx+=1 ;
 
         WHEN ("extracting other types")
@@ -235,7 +235,7 @@ SCENARIO("using value, basics")
           using namespace std ;
           copy_if(begin(types), end(types),
                       std::back_inserter(otherTypes),
-                      [&dbval](Type t){ return t != dbval.type() ; }
+                      [&dbval](Type t){ return t != dbval.dbtype() ; }
           );
 
           THEN ("getting defaults of other types throws")

@@ -19,56 +19,6 @@
 namespace sl3
 {
 
-  /// @cond internal_helper
-  /**
-   * \brief Mixin creating order operations based on defined ones
-   *
-   * \tparam T a type with defined equality and less operator.
-   *
-   * Creates !=, > , <= and >= operators if == and < are defined on T.
-   *
-   * \see Value or DbValue for usage
-   *
-   */
-  template<typename T>
-  struct totally_ordered  // TODO take cmp as arg
-  {
-
-    /**
-     * \brief derived operator
-     * \param a first element to compare
-     * \param b second element to compare
-     * \return comparison result
-     */
-    friend bool
-    operator!= (const T& a, const T& b) noexcept
-    {
-      return !(a==b);
-    }
-
-    /// \copydoc operator!=
-    friend bool
-    operator> (const T& a, const T& b) noexcept
-    {
-      return b < a ;
-    }
-
-    /// \copydoc operator!=
-    friend bool
-    operator<= (const T& a, const T& b) noexcept
-    {
-      return !(a > b) ;
-    }
-
-    /// \copydoc operator!=
-    friend bool
-    operator>= (const T& a, const T& b) noexcept
-    {
-      return !(a < b) ;
-    }
-
-  };
-  /// @endcond
 
   /**
    *  \brief
@@ -80,7 +30,7 @@ namespace sl3
    *
    *
    */
-  class LIBSL3_API Value //: totally_ordered<Value> TODO
+  class LIBSL3_API Value
   {
   public:
     /**
