@@ -25,17 +25,17 @@ int main()
    assert (ds[0].size() == 3);  // 3 fields
 
    // first row first field is a integer, as inserted
-   assert (ds[0][0].getType() == Type::Variant) ;
-   assert (ds[0][0].getStorageType() == Type::Int) ;
+   assert (ds[0][0].dbtype() == Type::Variant) ;
+   assert (ds[0][0].type() == Type::Int) ;
    // second row first field is text, as inserted
-   assert (ds[1][0].getType() == Type::Variant) ;
-   assert (ds[1][0].getStorageType() == Type::Text) ;
+   assert (ds[1][0].dbtype() == Type::Variant) ;
+   assert (ds[1][0].type() == Type::Text) ;
 
    // of course we can work wit the values
    for(auto&& row  :ds) {
        for (auto&& field : row) {
-           std::cout << typeName (field.getType()) << "/"
-               << typeName (field.getStorageType()) << ": " << field << ", ";
+           std::cout << typeName (field.dbtype()) << "/"
+               << typeName (field.type()) << ": " << field << ", ";
        }
        std::cout << std::endl;
    }

@@ -86,7 +86,7 @@ namespace sl3
       {
         if (_fieldtypes[i] != Type::Variant)
           {
-            if (_fieldtypes[i] != row[i].getType ())
+            if (_fieldtypes[i] != row[i].dbtype ())
               {
                 throw ErrTypeMisMatch ();
               }
