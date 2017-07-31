@@ -38,7 +38,6 @@ URL:        http://a4z.bitbucket.org/docs/libsl3/html/index.html
 Source0:    https://bitbucket.org/a4z/%{libname}/downloads/%{archive_name}.tar.gz
 
 BuildRequires:  gcc-c++
-BuildRequires:  boost-devel
 BuildRequires:  cmake
 BuildRequires:  doxygen
 BuildRequires:  graphviz

@@ -15,13 +15,13 @@
 #include <sl3/config.hpp>
 #include <sl3/dataset.hpp>
 #include <sl3/dbvalue.hpp>
+#include <sl3/rowcallback.hpp>
 
 struct sqlite3;
 struct sqlite3_stmt;
 
 namespace sl3
 {
-  class RowCallback;
 
   namespace internal
   {
@@ -218,7 +218,7 @@ namespace sl3
      * \throw sl3::ErrTypeMisMatch if size of values differs from the actual
      * one
      */
-    void resetParameters (const DbValues& values);
+    void resetParameters (DbValues values);
 
     /**
      * \brief get a list of the parameter names

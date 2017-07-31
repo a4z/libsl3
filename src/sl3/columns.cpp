@@ -35,32 +35,18 @@ namespace sl3
   }
 
   DbValue
-  Columns::at (int idx) const
+  Columns::getValue (int idx) const
   {
+    return getValue (idx, Type::Variant);
+  }
+
+  DbValue
+  Columns::getValue (int idx, Type type) const
+  {
+
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return operator() (idx, Type::Variant);
-  }
-
-  DbValue
-  Columns::at (int idx, Type type) const
-  {
-    if (idx < 0 || !(idx < count ()))
-      throw ErrOutOfRange ("column index out of range");
-
-    return operator() (idx, type);
-  }
-
-  DbValue
-  Columns::operator() (int idx) const
-  {
-    return operator() (idx, Type::Variant);
-  }
-
-  DbValue
-  Columns::operator() (int idx, Type type) const
-  {
     switch (sqlite3_column_type (_stmt, idx))
       {
       case SQLITE_INTEGER:
@@ -94,10 +80,11 @@ namespace sl3
   std::vector<std::string>
   Columns::getNames () const
   {
-    std::vector<std::string> names (count ());
+    std::vector<std::string> names ;
+    names.reserve (count ()) ;
     for (int i = 0; i < count (); ++i)
       {
-        names[i] = getName (i);
+        names.emplace_back (getName (i));
       }
 
     return names;
@@ -109,7 +96,7 @@ namespace sl3
     DbValues::container_type v;
     for (int i = 0; i < count (); ++i)
       {
-        v.push_back (operator() (i));
+        v.push_back (getValue (i));
       }
     return DbValues (std::move (v));
   }
@@ -125,7 +112,7 @@ namespace sl3
     DbValues::container_type v;
     for (int i = 0; i < count (); ++i)
       {
-        v.push_back ((*this) (i, types[i]));
+        v.push_back (getValue (i, types[i]));
       }
     return DbValues (std::move (v));
   }

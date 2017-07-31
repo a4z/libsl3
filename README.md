@@ -59,21 +59,19 @@ this will output as expected
 
    
 Build requirements:
-CMake, libsl3 builds uses cmake.   
-Optional:   
-required for building the tests:  boost,  www.boost.org.    
-
+* CMake, libsl3 builds uses cmake.   
+* doxygen, optional, for building the dcumentation
 
 libsl3 inlcudes sqlite, but it can also build and link with an existing sqlite
 installation.   
-This is controlled via the `USE_INTERNAL_SQLITE3` varialbe, 
+This is controlled via cmake and the `USE_INTERNAL_SQLITE3` varialbe, 
 which is by default true.
 
 The CMake build contains a target for generating doxygen documentation.   
 Some samples can be found in the test subfolder.  
 
 Tested with:
-gcc 4.8.2 and clang 3.3 on Slackware.    
+gcc 4.8.5 (RHEL7) and clang 3.8 on Slackware.    
 mingw-gcc 4.9.2 and Visual Studio 2015 on Windows 10
 
 The documentation can be found here:
