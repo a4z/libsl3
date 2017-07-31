@@ -116,7 +116,7 @@ namespace sl3
   bool
   dbval_type_eq (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.getType () == b.getType ())
+    if (a.type()  == b.type())
       {
         return value_type_eq(a.getValue(), b.getValue()) ;
       }
@@ -192,12 +192,6 @@ namespace sl3
   {
     ensure (type).oneOf (Type::Blob, Type::Variant);
     _value = val;
-  }
-
-  void
-  DbValue::clearValue ()
-  {
-    _value.setNull ();
   }
 
   DbValue&
@@ -449,7 +443,7 @@ namespace sl3
   void
   DbValue::setNull ()
   {
-    clearValue ();
+    _value.setNull ();
   }
 
   bool

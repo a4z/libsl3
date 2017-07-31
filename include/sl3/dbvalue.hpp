@@ -16,6 +16,11 @@
 #include <sl3/types.hpp>
 #include <sl3/value.hpp>
 
+
+// todo after a wile, type and storage type become confusing
+// find better name, type should be value type,
+// storage type something else, find better name!
+
 namespace sl3
 {
   /**
@@ -314,6 +319,10 @@ namespace sl3
      */
     Type getType () const;
 
+
+    Type type () const { return getType();}
+
+
     /**
      * \brief Returns the type of the underlying Value
      *
@@ -324,6 +333,10 @@ namespace sl3
      * \return the type the value actual holds
      */
     Type getStorageType () const;
+
+
+    Type storageType () const { return getStorageType();};
+
 
     /**
      * \brief Check if assignment would be OK
@@ -352,7 +365,6 @@ namespace sl3
 
     void assign (const DbValue& other);
 
-    void clearValue ();
   };
 
   /**
