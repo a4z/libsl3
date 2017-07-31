@@ -189,14 +189,14 @@ SCENARIO("null value values access")
       CHECK(val.isNull()) ;
       THEN ("err null values access will be trhows")
       {
-        CHECK_THROWS_AS(val.int64(), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(static_cast<int64_t>(val), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(val.real(), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(static_cast<double>(val), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(val.text(), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(static_cast<std::string>(val), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(val.blob(), sl3::ErrNullValueAccess) ;
-        CHECK_THROWS_AS(static_cast<sl3::Blob>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)val.int64(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)static_cast<int64_t>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)val.real(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)static_cast<double>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)val.text(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)static_cast<std::string>(val), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)val.blob(), sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS((void)static_cast<sl3::Blob>(val), sl3::ErrNullValueAccess) ;
       }
     }
   }
@@ -217,8 +217,8 @@ SCENARIO("invalid type access")
     {
       if(val.getType() != Type::Int)
         {
-          CHECK_THROWS_AS(val.int64(), ErrTypeMisMatch) ;
-          CHECK_THROWS_AS(static_cast<int64_t>(val), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)val.int64(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)static_cast<int64_t>(val), ErrTypeMisMatch) ;
         }
       else
         {
@@ -228,8 +228,8 @@ SCENARIO("invalid type access")
       // casting int to real works , other way not
       if(val.getType() != Type::Real && val.getType() != Type::Int)
         {
-          CHECK_THROWS_AS(val.real(), ErrTypeMisMatch) ;
-          CHECK_THROWS_AS(static_cast<double>(val), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)val.real(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)static_cast<double>(val), ErrTypeMisMatch) ;
         }
       else if(val.getType() == Type::Int)
         {
@@ -245,8 +245,8 @@ SCENARIO("invalid type access")
 
       if(val.getType() != Type::Text)
         {
-          CHECK_THROWS_AS(val.text(), ErrTypeMisMatch) ;
-          CHECK_THROWS_AS(static_cast<std::string>(val), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)val.text(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)static_cast<std::string>(val), ErrTypeMisMatch) ;
         }
       else
         {
@@ -256,8 +256,8 @@ SCENARIO("invalid type access")
 
       if(val.getType() != Type::Blob)
         {
-          CHECK_THROWS_AS(val.blob(), ErrTypeMisMatch) ;
-          CHECK_THROWS_AS(static_cast<Blob>(val), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)val.blob(), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS((void)static_cast<Blob>(val), ErrTypeMisMatch) ;
         }
       else
         {
