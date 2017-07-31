@@ -52,7 +52,6 @@ unset(_DEFAULT_FLAGS)
 
 include( sqlite/setup_sqlite3.cmake )
 
-include( setup_boost )
 include( setup_doc )
 
 if(USE_INTERNAL_SQLITE3)

@@ -69,7 +69,7 @@ struct check
       CHECK_EQ (_val.getText ("foo"), "foo");
 
     if(_val.getStorageType() != sl3::Type::Blob)
-      CHECK_EQ (_val.getBlob (sl3::Blob{{'a'}}), sl3::Blob{{'a'}});
+      CHECK_EQ (_val.getBlob (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
 
   void
@@ -89,7 +89,7 @@ struct check
           CHECK_THROWS_AS ((void)_val.getText ("foo"), sl3::ErrTypeMisMatch);
 
         if(t == sl3::Type::Blob)
-          CHECK_THROWS_AS ((void)_val.getBlob (sl3::Blob{{'a'}}), sl3::ErrTypeMisMatch);
+          CHECK_THROWS_AS ((void)_val.getBlob (sl3::Blob{'a'}), sl3::ErrTypeMisMatch);
       }
   }
 
@@ -110,7 +110,7 @@ struct check
       CHECK_EQ (_val.get ("foo"), "foo");
 
     if(_val.getStorageType() != sl3::Type::Blob)
-      CHECK_EQ (_val.get (sl3::Blob{{'a'}}), sl3::Blob{{'a'}});
+      CHECK_EQ (_val.get (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
 
 
@@ -306,10 +306,10 @@ SCENARIO ("variant")
         CHECK_EQ (dbval.getText(""), "foba") ;
         CHECK_EQ (dbval.get(""), "foba") ;
         check (dbval).typeAndStorage (Type::Variant, Type::Text);
-        dbval = Blob{{'f'}};
-        CHECK_EQ (dbval.getBlob(Blob{{'a'}}), Blob{{'f'}}) ;
-        CHECK_EQ (dbval.get(Blob{{'a'}}), Blob{{'f'}}) ;
-        CHECK_EQ (dbval.getBlob(), Blob{{'f'}}) ;
+        dbval = Blob{'f'};
+        CHECK_EQ (dbval.getBlob(Blob{'a'}), Blob{'f'}) ;
+        CHECK_EQ (dbval.get(Blob{'a'}), Blob{'f'}) ;
+        CHECK_EQ (dbval.getBlob(), Blob{'f'}) ;
         check (dbval).typeAndStorage (Type::Variant, Type::Blob);
 
         dbval =  Value(1) ;

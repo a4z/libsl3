@@ -56,11 +56,13 @@ SCENARIO("dataset creation and defautl operatores")
 
     WHEN ("creating a dataset via a rvalue")
     {
-      CHECK_NOTHROW(Dataset ds{std::move(db.select("SELECT * FROM t;"))});
+      auto dsm = db.select("SELECT * FROM t;") ;
+      CHECK_NOTHROW(Dataset ds{std::move(dsm)});
 
       THEN ("the ds include all data and names")
       {
-        Dataset ds{std::move(db.select("SELECT * FROM t;"))} ;
+        dsm = db.select("SELECT * FROM t;");
+        Dataset ds{std::move(dsm)} ;
 
         CHECK_EQ(ds.getIndex("int"), 0) ;
         CHECK_EQ(ds.getIndex("txt"), 1) ;
