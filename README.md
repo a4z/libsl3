@@ -71,12 +71,12 @@ The CMake build contains a target for generating doxygen documentation.
 Some samples can be found in the test subfolder.  
 
 Tested with:
-* gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4 and clang version 3.5.0 on travis-ci   
+* travis-ci: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
 [![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3)
-
+* various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
 * mingw-gcc 4.9.2 and Visual Studio 2015 on Windows 10
 
 The documentation can be found here:
-http://a4z.bitbucket.org/docs/libsl3/html/index.html
+http://a4z.bitbucket.io/docs/libsl3/html/index.html
 
 License: https://www.mozilla.org/en-US/MPL/2.0/
