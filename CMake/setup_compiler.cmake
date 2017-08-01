@@ -18,9 +18,9 @@ if (NOT have_myCompilerSetup)
 
     if (NOT CMAKE_CXX_FLAGS)
       if (MINGW)
-        SET (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++1y -pipe")
+        SET (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++11 -pipe")
       else(MINGW)
-        SET (CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic-errors -std=c++1y -pipe -pthread")
+        SET (CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic-errors -std=c++11 -pipe -pthread")
       endif(MINGW)
     endif(NOT CMAKE_CXX_FLAGS)
 
@@ -56,8 +56,9 @@ if (NOT have_myCompilerSetup)
         FORCE )
 
       if (NOT CMAKE_CXX_FLAGS)
-        SET (CMAKE_CXX_FLAGS "-std=c++1z -pipe -pthread -stdlib=libc++  ${MYCLANGWARNINGS}")
-        SET (CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi")
+        SET (CMAKE_CXX_FLAGS "-std=c++11 -pipe -pthread ${MYCLANGWARNINGS}")
+        #SET (CMAKE_CXX_FLAGS "-std=c++11 -pipe -pthread -stdlib=libc++  ${MYCLANGWARNINGS}")
+        #SET (CMAKE_EXE_LINKER_FLAGS="-lc++ -lc++abi")
         #use also the libc++  library, TODO might want to make this configurable
       endif(NOT CMAKE_CXX_FLAGS)
 
