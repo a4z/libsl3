@@ -1,9 +1,7 @@
-libsl3, the convenient modern C++11 interface for SQLite 3.x
+libsl3, the convenient C++11 interface for SQLite 3.x
 
 libsl3 is designed to enable a comfortable and efficient communication with
 SQLite 3.x database based based on its natural language, which is SQL.
-
-
 
 A short usage example:
 
@@ -57,9 +55,9 @@ this will output as expected
 2 two 2.1 
 ```
 
-   
+
 Build requirements:
-* CMake, libsl3 builds uses cmake.   
+* CMake, libsl3 builds uses cmake
 * doxygen, optional, for building the dcumentation
 
 libsl3 inlcudes sqlite, but it can also build and link with an existing sqlite
@@ -68,13 +66,14 @@ This is controlled via cmake and the `USE_INTERNAL_SQLITE3` varialbe,
 which is by default true.
 
 The CMake build contains a target for generating doxygen documentation.   
-Some samples can be found in the test subfolder.  
+Some samples can be found in the test subfolder.
 
 Tested with:
 * travis-ci: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
 [![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3)
 * various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
-* mingw-gcc 4.9.2 and Visual Studio 2015 on Windows 10
+* Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa?svg=true)](https://ci.appveyor.com/project/a4z/libsl3)
+
 
 The documentation can be found here:
 http://a4z.bitbucket.io/docs/libsl3/html/index.html
