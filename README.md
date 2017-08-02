@@ -3,6 +3,12 @@ libsl3, the convenient C++11 interface for SQLite 3.x
 libsl3 is designed to enable a comfortable and efficient communication with
 SQLite 3.x database based based on its natural language, which is SQL.
 
+Tested with:
+* travis-ci: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
+[![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3)
+* various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
+* Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa?svg=true)](https://ci.appveyor.com/project/a4z/libsl3)
+
 A short usage example:
 
 ```c
@@ -33,14 +39,14 @@ int main()
   // Dataset row is a container
   auto row = ds[0] ;
   assert(row.size()==3);
-  assert ( row[0].getStorageType() == Type::Int ) ;
-  assert ( row[1].getStorageType() == Type::Text ) ;
-  assert ( row[2].getStorageType() == Type::Real ) ;
+  assert ( row[0].type() == Type::Int ) ;
+  assert ( row[1].type() == Type::Text ) ;
+  assert ( row[2].type() == Type::Real ) ;
 
   // of course there is also iterator access
-  for(auto&& row  :ds) {
+  for(auto& row  :ds) {
 
-      for (auto&& field : row) {
+      for (auto& field : row) {
           std::cout << field << " " ;
       }
       std::cout << std::endl;
@@ -51,10 +57,11 @@ int main()
 this will output as expected
 
 ```
-1 one 1.1 
-2 two 2.1 
+1 one 1.1
+2 two 2.1
 ```
 
+Additional samples can be found in the tests and tests/sampes subfolder.
 
 Build requirements:
 * CMake, libsl3 builds uses cmake
@@ -65,17 +72,7 @@ installation.
 This is controlled via cmake and the `USE_INTERNAL_SQLITE3` varialbe, 
 which is by default true.
 
-The CMake build contains a target for generating doxygen documentation.   
-Some samples can be found in the test subfolder.
-
-Tested with:
-* travis-ci: gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
-[![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3)
-* various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
-* Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa?svg=true)](https://ci.appveyor.com/project/a4z/libsl3)
-
-
-The documentation can be found here:
+The online documentation for libsl3 can be found here:
 http://a4z.bitbucket.io/docs/libsl3/html/index.html
 
 License: https://www.mozilla.org/en-US/MPL/2.0/
