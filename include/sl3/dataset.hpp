@@ -152,7 +152,14 @@ namespace sl3
      */
     std::size_t getIndex (const std::string& name) const;
 
-
+    /**
+     * \brief Typedef for a relation function signature
+     *
+     * Used to specify the the less function that shall be used for sorting
+     * a Dataset.
+     *
+     * \see Dataset::sort
+     */
     typedef bool (*DbValueSort)(const DbValue&, const DbValue&);
 
     //using DbValueSort = std::function<bool(const DbValue&, const DbValue&)> ;
