@@ -36,6 +36,8 @@ if (NOT CODECOVERAGE)
   add_test( NAME sample2 COMMAND sl3_sample2 )
   add_test( NAME sample3 COMMAND sl3_sample3 )
   add_test( NAME sample4 COMMAND sl3_sample4 )
+  add_test( NAME sample5 COMMAND sl3_sample5 )
+  add_test( NAME sample6 COMMAND sl3_sample6 )
 
 endif(NOT CODECOVERAGE)
 

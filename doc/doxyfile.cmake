@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = libsl3
 PROJECT_NUMBER         = ${sl3_VERSION}
-PROJECT_BRIEF          = "C++ interface for sqlite3"
+PROJECT_BRIEF          = "The convenient C++11 interface for SQLite 3.x"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = "${PROJECT_BINARY_DIR}/doc/"
 CREATE_SUBDIRS         = NO
@@ -135,7 +135,7 @@ USE_MDFILE_AS_MAINPAGE =
 #---------------------------------------------------------------------------
 SOURCE_BROWSER         = NO
 INLINE_SOURCES         = NO
-STRIP_CODE_COMMENTS    = YES
+STRIP_CODE_COMMENTS    = NO
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
 REFERENCES_LINK_SOURCE = YES

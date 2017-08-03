@@ -99,7 +99,7 @@ file a feature request in the issue tracker.
   There are two sl3::Type properties.
   One defines the type rule, the other the type value.  
   
-    - sl3::DbValue::getType: The type rule<BR>
+    - sl3::DbValue::dbtype: The type rule<BR>
     This property is assigned at creation and can not be change <BR>
     If the type is sl3::Type::Variant the instance can hold any type, 
     otherwise only the specified type is allowed, one of: <BR>
@@ -210,50 +210,7 @@ It is return by a sl3::Command::select or sl3::Database::select
 If there are different types in a column, a sl3::Dataset will automatically
 provide correct sl3::DbValue object.
 
-\code
-
-#include <cassert>
-#include <iostream>
-#include <sl3/database.hpp>
-
-int main()
-{
-  using namespace sl3;
-   // define a db
-   Database db(":memory:");
-   // run commands against the db
-   db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
-   // create a command with parameters
-   auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
-   // no types so we use variants
-   //so this will work
-   cmd.execute(DbValues{ {1}, {"one"}, {1.1} } );
-   //and this will also work
-   cmd.execute({ {"some text"}, {"two"}, {2.1} } );
-
-   // access the data
-   Dataset ds = db.select("SELECT * FROM tbl;");
-
-   assert (ds.size () == 2);       // 2 records
-   assert (ds[0].size() == 3);  // 3 fields
-
-   // first row first field is a integer, as inserted
-   assert (ds[0][0].getType() == Type::Variant) ;
-   assert (ds[0][0].getStorageType() == Type::Int) ;
-   // second row first field is text, as inserted
-   assert (ds[1][0].getType() == Type::Variant) ;
-   assert (ds[1][0].getStorageType() == Type::Text) ;
-
-   // of course we can work wit the values
-   for(auto& row  :ds) {
-       for (auto& field : row) {
-           std::cout << typeName (field.getType()) << "/"
-               << typeName (field.getStorageType()) << ": " << field << ", ";
-       }
-       std::cout << std::endl;
-   }
-}
-\endcode
+\include main3.cpp  
 
 running this program will print 
 
@@ -272,40 +229,8 @@ running this program will print
   If the wanted types are not these which are in the table, an sl3::TypeMisMatch
   exception is thrown.
   
-\code
-#include <iostream>
-#include <sl3/database.hpp>
+\include main5.cpp
 
-int main()
-{
-  using namespace sl3;
-   // define a db
-   Database db(":memory:");
-   // run commands against the db
-   db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);");
-   // create a command with parameters
-   auto cmd = db.prepare("INSERT INTO tbl (f1, f2, f3) VALUES (?,?,?);");
-   // no types so we use variants
-   // insert Int, Text, Real
-   cmd.execute({{1}, {"one"}, {1.1}} );
-   // insert Text, Text, Real
-   cmd.execute({{"some text"}, {"two"}, {2.1}});
-
-   // this will throw since types in column0  are different
-   try
-    {
-      Dataset ds = db.select ("SELECT * FROM tbl;",
-                               { Type::Int, Type::Text, Type::Real });
-
-    }
-  catch (const Error& e)
-    {
-      std::cout << e << std::endl ;
-    }
-
-}
-
-\endcode
 
 
 this code will throw an exception, as expected and print
@@ -333,37 +258,7 @@ There are several methods to query the type, size and get the values. <BR>
 
 \subsection columns_example Example
 
-\code
-#include <cassert>
-#include <iostream>
-#include <sl3/database.hpp>
-#include <sl3/columns.hpp>
-int main()
-{
-  using namespace sl3;
-  // define a db
-  Database db(":memory:");
-  // run commands against the db
-
-  db.execute("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);"
-      "INSERT INTO tbl (f1, f2, f3) VALUES (1, 'one', 1.1);"
-      "INSERT INTO tbl (f1, f2, f3) VALUES (2, 'two', 2.2)"
-      );
-
-
-  db.execute ("SELECT f1, f2  FROM tbl;", [](Columns cols)
-              {
-                assert (cols.count() == 2) ;
-                assert (cols.getType(0) == Type::Int) ;
-                assert (cols.getType(1) == Type::Text) ;
-                std::cout << std::to_string(cols.getInt(0))
-                          << "_" << cols.getText(1)
-                          << std::endl;
-                return true ;
-              });
-
-}
-\endcode
+\include main6.cpp
 
 Running this program, the output will be
 
