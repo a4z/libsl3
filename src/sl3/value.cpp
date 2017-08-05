@@ -163,6 +163,9 @@ namespace sl3
 
   Value::Value (Value&& other) noexcept : _type (other._type)
   {
+    // gcc 5.3, only release, will complain if uninitialized
+    _store.intval = 0 ;
+
     switch (_type)
       {
       case Type::Null:
