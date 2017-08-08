@@ -152,7 +152,7 @@ if(sl3_BUILD_STATIC_LIB)
 endif(sl3_BUILD_STATIC_LIB)
 
 if(sl3_BUILD_SHARED_LIB) 
-    # TODO, link against sqlt3 if not included / or required mysqlt3_LIBS ..
+    # TODO, link against sqlt3 if not included / or required sl3_sqlite3LIBS ..
     add_library( sl3_so SHARED  ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
     set_target_properties(sl3_so PROPERTIES VERSION ${sl3_VERSION})
     set_target_properties(sl3_so PROPERTIES SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION})
