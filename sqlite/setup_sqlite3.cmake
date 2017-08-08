@@ -1,7 +1,7 @@
 #since these are a lot of lines and I do not whant to mess up default cmake file,
 #place this in here..
 
-#also , using projects are interested in mysqlt3_LIBS to know what to link
+#also , using projects are interested in sl3_sqlite3LIBS to know what to link
 # TODO think about somthing that exports this info ...
 
 
@@ -81,7 +81,7 @@ if (NOT have_mySqlt3Setup)
 
 
 # TODO , other as required....
-        set( mysqlt3_LIBS  pthread dl  ) # what on windows ???
+        set( sl3_sqlite3LIBS  pthread dl  ) # what on windows ???
         # add defaults first
 
         set(mysqlt3_DEFINES ${SL3_SQLITE_USERDEFINES})
@@ -94,7 +94,7 @@ if (NOT have_mySqlt3Setup)
 
         if (SQLITE_THREADSAFE EQUAL 0)
             list( APPEND mysqlt3_DEFINES SQLITE_THREADSAFE=0 )
-            list( REMOVE_ITEM mysqlt3_LIBS pthread )
+            list( REMOVE_ITEM sl3_sqlite3LIBS pthread )
         elseif( SQLITE_THREADSAFE GREATER 0 AND SQLITE_THREADSAFE LESS 3 )
             list( APPEND mysqlt3_DEFINES SQLITE_THREADSAFE=${SQLITE_THREADSAFE} )
         else( SQLITE_THREADSAFE EQUAL 0 )
@@ -117,7 +117,7 @@ if (NOT have_mySqlt3Setup)
 
             list( REMOVE_ITEM SQLITE3_FILES sqlt3/sqlite3ext.h )
             list( APPEND mysqlt3_DEFINES  SQLITE_OMIT_LOAD_EXTENSION )
-            list( REMOVE_ITEM mysqlt3_LIBS dl )
+            list( REMOVE_ITEM sl3_sqlite3LIBS dl )
 
         endif ( SQLITE_OMIT_LOAD_EXTENSION )
 
@@ -159,19 +159,19 @@ if (NOT have_mySqlt3Setup)
 
         endif ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
 
-        #if win and not unix unset mysqlt3_LIBS  # TODO
+        #if win and not unix unset sl3_sqlite3LIBS  # TODO
 
 
                 if(WIN32)
                   #message(STATUS "**WIN32 " )
                         if(NOT MSYS) #and not cygwin ?
-                                set(mysqlt3_LIBS "")
+                                set(sl3_sqlite3LIBS "")
                                 #someething other spezial for windwos?
                         endif(NOT MSYS)
                 endif(WIN32)
 
         #message(STATUS "**DEFINES ARE: "${mysqlt3_DEFINES} )
-        #message(STATUS "**LIBRARIES ARE: "${mysqlt3_LIBS} )
+        #message(STATUS "**LIBRARIES ARE: "${sl3_sqlite3LIBS} )
         else (USE_INTERNAL_SQLITE3)
           INCLUDE(FindPkgConfig)
 
@@ -182,7 +182,7 @@ if (NOT have_mySqlt3Setup)
           # SQLITE3_LIBRARIES
           # SQLITE3_LIBRARY_DIRS
           pkg_check_modules(SQLITE3 REQUIRED sqlite3)
-          set(mysqlt3_LIBS ${SQLITE3_LIBRARIES})
+          set(sl3_sqlite3LIBS ${SQLITE3_LIBRARIES} CACHE STRING "FOBAR")
 
     endif (USE_INTERNAL_SQLITE3)
 
