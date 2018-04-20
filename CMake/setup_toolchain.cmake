@@ -35,6 +35,8 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 
+    message(STATUS "!! HERE WITH clang")
+
       message(STATUS "set up defaults for clang")
       
       #set(MYCLANGWARNINGS "-Weverything")
@@ -64,6 +66,8 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
     #set(MYCLANGWARNINGS "-Weverything")
     set(MYCLANGWARNINGS "-Wall -Wextra -pedantic")
 
+    message(STATUS "!! HERE WITH APPLE")
+
     if (NOT CMAKE_C_FLAGS)
     SET (CMAKE_C_FLAGS "-std=c99 ${MYCLANGWARNINGS}")
     endif(NOT CMAKE_C_FLAGS)
@@ -73,7 +77,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
     FORCE )
 
     if (NOT CMAKE_CXX_FLAGS)
-    SET (CMAKE_CXX_FLAGS "-std=c++11 -pipe -pthread ${MYCLANGWARNINGS}")
+    SET (CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ -pipe -pthread ${MYCLANGWARNINGS}")
     endif(NOT CMAKE_CXX_FLAGS)
 
     SET (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING

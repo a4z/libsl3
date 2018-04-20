@@ -145,21 +145,7 @@ if (NOT have_mySqlt3Setup)
             list( APPEND mysqlt3_DEFINES  SQLITE_ENABLE_ICU )
         endif ( SQLITE_ENABLE_ICU )
 
-
-        if ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
-            PREFIX_WITH( -D  mysqlt3_DEFINES )
-        elseif( MSVC )
-            PREFIX_WITH( /D  mysqlt3_DEFINES )
-        else ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
-            if(${CMAKE_C_COMPILER} MATCHES "clang")
-              PREFIX_WITH( -D  mysqlt3_DEFINES )
-            else (${CMAKE_C_COMPILER} MATCHES "clang")
-              message(WARNING "unknown compiler")
-            endif(${CMAKE_C_COMPILER} MATCHES "clang")
-
-        endif ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
-
-        #if win and not unix unset sl3_sqlite3LIBS  # TODO
+        PREFIX_COMPILER_DEFINES(mysqlt3_DEFINES)
 
 
                 if(WIN32)

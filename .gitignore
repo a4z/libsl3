@@ -10,3 +10,4 @@ build*/
 *tests/basics/configtest.cpp
 *.pyc
 
+.DS_STORE
