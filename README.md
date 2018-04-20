@@ -8,6 +8,7 @@ Tested with:
 [![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3)
 * various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
 * Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa?svg=true)](https://ci.appveyor.com/project/a4z/libsl3)
+* Apple LLVM version 9.1.0 (clang-902.0.39.1) 
 
 A short usage example:
 
