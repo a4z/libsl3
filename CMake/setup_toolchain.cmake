@@ -35,7 +35,7 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 
-    message(STATUS "!! HERE WITH clang")
+    #message(STATUS "!! HERE WITH clang")
 
       message(STATUS "set up defaults for clang")
       
