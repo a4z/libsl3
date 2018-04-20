@@ -2,8 +2,16 @@
 
 if (NOT have_myMacros)
 
+    # this is a debug function
+    macro(printvars)
+    set(list_var "${ARGN}")
+        foreach(arg IN LISTS list_var)
+            message(STATUS "*var ${arg}:   ${${arg}}")
+        endforeach()
+    endmacro(printvars)
+                
     
-    #haengt ueberall das praefix davor
+
     MACRO(PREFIX_WITH pre what)
         #message(STATUS ${what})
         SET(tmp "")
@@ -15,27 +23,22 @@ if (NOT have_myMacros)
     
     
     MACRO(PREFIX_COMPILER_DEFINES deflist)
-            #message(STATUS ${${deflist}}) 
-            if ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
-                set(perfixd "-D")
-            elseif( MSVC )
-                set(perfixd "/D")        
-            else ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
-            
-                if(${CMAKE_C_COMPILER} MATCHES "clang")
-                    set(perfixd "-D")   
-                else (${CMAKE_C_COMPILER} MATCHES "clang")
-                    message(WARNING "unhandled compiler, can not set define prefix")
-                    set(perfixd "")                 
-                endif(${CMAKE_C_COMPILER} MATCHES "clang")
-            
+
+        if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+            set(perfixd "-D")    
+        elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+            set(perfixd "-D")
+        elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
+            set(perfixd "-D")
+        elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+            set(perfixd "/D")
+        else()
+
+        endif()
                 
-            endif ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )    
-        
-            PREFIX_WITH(${perfixd} ${deflist})  
+        PREFIX_WITH(${perfixd} ${deflist})  
         
     ENDMACRO(PREFIX_COMPILER_DEFINES)
-
 
 
     set( have_myMacros ON )
