@@ -41,11 +41,13 @@ namespace sl3
    */
   class LIBSL3_API Database
   {
+
+  public:
     Database (const Database&) = delete;
     Database& operator= (const Database&) = delete;
     Database& operator= (Database&&) = delete;
 
-  public:
+
     /**
      * \brief Constructor
      *
@@ -66,7 +68,7 @@ namespace sl3
      *
      * \throw sl3::SQLite3Error if the database can not be opened
      */
-    Database (const std::string& name, int openFlags = 0);
+    explicit Database (const std::string& name, int openFlags = 0);
 
     /**
      * \brief Destructor.
@@ -202,7 +204,7 @@ namespace sl3
      * \throw sl3::ErrTypeMisMatch if return type differs from requested type
      * \throw sl3::SQLite3Error in case of a problems.
      * \param sql SQL statement
-     * \param type resutl has to be of that Type
+     * \param type result has to be of that Type
      *
      * \return DbValue of the first available result.
      */
@@ -277,18 +279,20 @@ namespace sl3
 
       sl3::Database* _db;
 
-      Transaction (Database&);
+      explicit Transaction (Database&);
       friend class Database;
 
+    public:
       Transaction (const Transaction&) = delete;
       Transaction& operator= (const Transaction&) = delete;
       Transaction& operator= (Transaction&&) = delete;
 
-    public:
+
+
       /** \brief Move constructor
        *  A Transaction is movalble.
        */
-      Transaction (Transaction&&);
+      Transaction (Transaction&&)  noexcept ;
 
       /** \brief Destructor
        *

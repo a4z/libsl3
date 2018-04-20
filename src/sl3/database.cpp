@@ -10,9 +10,7 @@
 
 #include <sqlite3.h>
 
-#include "../sl3/connection.hpp"
-#include <sl3/columns.hpp>
-#include <sl3/error.hpp>
+#include "connection.hpp"
 
 
 namespace
@@ -25,13 +23,13 @@ namespace
       }
 
     sqlite3* db    = nullptr;
-    auto     sl3rc = sqlite3_open_v2 (name.c_str (), &db, openFlags, 0);
+    auto     sl3rc = sqlite3_open_v2 (name.c_str (), &db, openFlags, nullptr);
 
     if (sl3rc != SQLITE_OK)
       {
-        sl3::SQLite3Error sl3error (sl3rc, sqlite3_errmsg (db));
-        sqlite3_close (db);
-        throw sl3error;
+        using scope_guard = std::unique_ptr<sqlite3, decltype(&sqlite3_close)>;
+        scope_guard guard{db, &sqlite3_close};
+        throw sl3::SQLite3Error{sl3rc, sqlite3_errmsg (db)};
       }
     return db ;
   }
@@ -58,7 +56,7 @@ namespace sl3
   Database::Database (Database&& other) noexcept
       : _connection (std::move (other._connection))
   {
-    // alsways have a connection, but an invalid one
+    // always have a connection, but an invalid one
     other._connection.reset(new internal::Connection{nullptr});
   }
 
@@ -92,17 +90,15 @@ namespace sl3
   Database::execute (const char* sql)
   {
     _connection->ensureValid() ;
-    char* dbMsg = 0;
+    char* dbMsg = nullptr;
 
-    int rc = sqlite3_exec (_connection->db (), sql, 0, 0, &dbMsg);
+    int rc = sqlite3_exec (_connection->db (), sql, nullptr, nullptr, &dbMsg);
 
     if (rc != SQLITE_OK)
       {
-        SQLite3Error sl3error (rc, dbMsg);
-
-        sqlite3_free (dbMsg);
-
-        throw sl3error;
+        using scope_guard = std::unique_ptr<char, decltype(&sqlite3_free)>;
+        scope_guard guard (dbMsg, &sqlite3_free);
+        throw SQLite3Error{rc, dbMsg};
       }
   }
 
@@ -115,7 +111,7 @@ namespace sl3
   void
   Database::execute (const std::string& sql, Callback cb)
   {
-    prepare (sql).execute (cb);
+    prepare (sql).execute (std::move(cb));
   }
 
   Dataset
@@ -135,7 +131,7 @@ namespace sl3
   {
     DbValue retVal (Type::Variant);
 
-    auto cb = [&retVal](Columns cols) -> bool {
+    Callback cb = [&retVal](Columns cols) -> bool {
       retVal = cols.getValue (0);
       return false; // exit after first row
     };
@@ -151,7 +147,7 @@ namespace sl3
   {
     DbValue retVal{type};
 
-    auto cb = [&retVal, type](Columns cols) -> bool {
+    Callback cb = [&retVal, type](Columns cols) -> bool {
       retVal = cols.getValue (0, type);
       return false; // exit after first row
     };
@@ -181,14 +177,14 @@ namespace sl3
   Database::getTotalChanges ()
   {
     _connection->ensureValid() ;
-    return sqlite3_total_changes (_connection->db ());
+    return static_cast<std::size_t>(sqlite3_total_changes (_connection->db ()));
   }
 
   std::size_t
   Database::getRecentlyChanged ()
   {
     _connection->ensureValid() ;
-    return sqlite3_changes (_connection->db ());
+    return static_cast<std::size_t>(sqlite3_changes (_connection->db ()));
   }
 
   int64_t
@@ -216,7 +212,7 @@ namespace sl3
     _db->execute ("BEGIN TRANSACTION");
   }
 
-  Database::Transaction::Transaction (Transaction&& other)
+  Database::Transaction::Transaction (Transaction&& other) noexcept
   : _db (other._db)
   {
     other._db = nullptr; // ensure other does not commit in d'tor
