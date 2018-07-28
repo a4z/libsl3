@@ -76,7 +76,7 @@ installation.
 This is controlled via cmake and the `USE_INTERNAL_SQLITE3` varialbe, 
 which is by default true.
 
-## Addtitional informatio
+## Addtitional information
 
 The online documentation for libsl3 can be found here:
 http://a4z.bitbucket.io/docs/libsl3/html/index.html
