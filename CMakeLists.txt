@@ -8,8 +8,8 @@ set(sl3_MINOR_VERSION 1)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 19)
-set(internal_SQLITE_PATCH_V  3)
+set(internal_SQLITE_MINOR_V 24)
+set(internal_SQLITE_PATCH_V  0)
 
 # sqlite uses (X*1000000 + Y*1000 + Z),
 # but minor patch used since major is always 3
