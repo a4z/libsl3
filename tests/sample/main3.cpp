@@ -32,8 +32,8 @@ int main()
    assert (ds[1][0].type() == Type::Text) ;
 
    // of course we can work wit the values
-   for(auto&& row  :ds) {
-       for (auto&& field : row) {
+   for(const auto& row  :ds) {
+       for (const auto& field : row) {
            std::cout << typeName (field.dbtype()) << "/"
                << typeName (field.type()) << ": " << field << ", ";
        }
