@@ -1,7 +1,7 @@
 # libsl3, the convenient C++11 interface for SQLite 3.x
 
 libsl3 is designed to enable a comfortable and efficient communication with
-SQLite 3.x database based based on its natural language, which is SQL.
+SQLite 3.x database based on its natural language, which is SQL.
 
 Tested - with 100% code coverage - on:
 
