@@ -26,26 +26,16 @@ init:
 # clone directory
 clone_folder: C:\projects\libsl3
 
-# branches to build
-#branches:
-  # whitelist
-  # only: 
-  #   - master
-  # blacklist
-
-# scripts that run after cloning repository
-#install:
-#  - ps: cd C:\projects\libsl3\ci
-#  - ps: .\appveyor_install.ps1
 
 # scripts to run before build
 before_build:
   - cmd: cd C:\projects\libsl3
   - cmd: md build
   - cmd: cd build
-  # We generate project files for Visual Studio 12 because the boost binaries installed on the test server are for Visual Studio 12.
-  - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015
-  - cmd: if "%platform%"=="x64"   set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64
+  - cmd: if "%platform%"=="Win32" set arch=
+  - cmd: if "%platform%"=="x64"   set arch= Win64
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set CMAKE_GENERATOR_NAME="Visual Studio 15 2017%arch%" )
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set CMAKE_GENERATOR_NAME="Visual Studio 14 2015%arch%" )
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration%  ..
 
 # build: off
