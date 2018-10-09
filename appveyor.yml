@@ -32,7 +32,7 @@ init:
   - cmd: msbuild /version
   - cmd: echo %APPVEYOR_BUILD_WORKER_IMAGE%
   - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator=Visual Studio 15 2017 Win64 )
-  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015 Win64 )
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator=Visual Studio 14 2015 Win64 )
   - cmd: echo %generator%
 
 # scripts to run before build
