@@ -14,8 +14,11 @@ platform:
 # specify custom environment variables
 environment:
   MSVC_DEFAULT_OPTIONS: ON
+  
+matrix:
+ fast_finish: true  
 
-# build configuration, i.e. Debug, Release, etc.
+
 configuration:
   - Debug
   - Release
@@ -27,12 +30,9 @@ clone_folder: C:\projects\libsl3
 init:
   - cmd: cmake --version
   - cmd: msbuild /version
-  - cmd: set arch=
-  - cmd: if "%arch%"=="Win64" ( set arch= Win64)
-  - cmd: echo %arch%
   - cmd: echo %APPVEYOR_BUILD_WORKER_IMAGE%
-  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
-  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator=Visual Studio 15 2017 Win64 )
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015 Win64 )
   - cmd: echo %generator%
 
 # scripts to run before build
