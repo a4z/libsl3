@@ -29,14 +29,13 @@ init:
 clone_folder: C:\projects\libsl3
 
 init:
-  - set arch=
-  - if "%arch%"=="Win64" ( set arch= Win64)
-  - echo %arch%
-  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
-  - echo %generator%
+  - cmd: set arch=
+  - cmd: if "%arch%"=="Win64" ( set arch= Win64)
+  - cmd: echo %arch%
+  - cmd: echo %APPVEYOR_BUILD_WORKER_IMAGE%
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
+  - cmd: echo %generator%
 
 # scripts to run before build
 before_build:
