@@ -58,7 +58,7 @@ jobs:
     vmImage: 'windows-latest'
   steps:
   - script: |
-      echo "##vso[task.setvariable variable=number_cpus]%NUMBER_OF_PROCESSORS%"
+      echo "##vso[task.setvariable variable=num_cpus]%NUMBER_OF_PROCESSORS%"
     displayName: 'explore environment'  
   - task: CMake@1
     displayName: 'cmake ..'
