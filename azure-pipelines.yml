@@ -6,6 +6,10 @@
 trigger:
 - master
 
+# find out how $(nproc) could be used on linux
+variables:
+  num_cpus: 1
+
 jobs:
 - job: Linux
   pool:
@@ -14,14 +18,14 @@ jobs:
   - task: CMake@1
     displayName: 'cmake ..'
     inputs:
-      cmakeArgs: '.. -DCMAKE_BUILD_TYPE=Release'
+      cmakeArgs: .. -DCMAKE_BUILD_TYPE=Release
 
   - task: CMake@1
     displayName: 'cmake build'
     inputs:
-      cmakeArgs: '--build . --parallel \$(nproc)'
+      cmakeArgs: --build . --parallel $(num_cpus)
 
   - task: CMake@1
     displayName: 'cmake test'
     inputs:
-      cmakeArgs: '--build . --parallel \$(nproc) --target test'
+      cmakeArgs: --build . --parallel $(num_cpus) --target test
