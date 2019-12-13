@@ -68,7 +68,13 @@ jobs:
     displayName: 'cmake build'
     inputs:
       cmakeArgs: --build . --parallel $(num_cpus)
-  - task: CMake@1
-    displayName: 'cmake test'
-    inputs:
-      cmakeArgs: --build . --target=test --parallel $(num_cpus) 
+
+  - script: |
+      ctest --build-config Release -j $(num_cpus)
+    displayName: 'ctest'
+    workingDirectory: build
+    
+#  - task: CMake@1
+#    displayName: 'cmake test'
+#    inputs:
+#      cmakeArgs: --build . --target=test --parallel $(num_cpus) 
