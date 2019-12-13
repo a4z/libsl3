@@ -11,6 +11,8 @@ Tested - with 100% code coverage - on:
 * Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa?svg=true)](https://ci.appveyor.com/project/a4z/libsl3)
 * various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
  
+[![Linux, OSX, Windows on Azure](https://dev.azure.com/a4z/libsl3/_apis/build/status/a4z.libsl3?branchName=master)](https://dev.azure.com/a4z/libsl3/_build/latest?definitionId=2&branchName=master)
+
 ## A short usage example
 
 
