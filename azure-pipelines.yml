@@ -71,4 +71,4 @@ jobs:
   - task: CMake@1
     displayName: 'cmake test'
     inputs:
-      cmakeArgs: '--build=.  --parallel=$(num_cpus) --target=test'
+      cmakeArgs: --build . --target=test --parallel $(num_cpus) 
