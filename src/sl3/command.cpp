@@ -78,7 +78,7 @@ namespace sl3
               rc = sqlite3_bind_text (stmt,
                                       curParaNr,
                                       val.getText ().c_str (),
-                                      val.getText ().size (),
+                                      static_cast<int>(val.getText ().size ()),
                                       SQLITE_STATIC);
 
               break;
@@ -87,7 +87,7 @@ namespace sl3
               rc = sqlite3_bind_blob (stmt,
                                       curParaNr,
                                       &(val.getBlob ()[0]),
-                                      val.getBlob ().size (),
+                                      static_cast<int>(val.getBlob ().size ()),
                                       SQLITE_STATIC);
 
               break;
