@@ -11,17 +11,17 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - script: |
-      cmake -DCMAKE_BUILD_TYPE=Release -S . -B build
-    failOnStderr: true
-    displayName: 'cmake configure'
+  - task: CMake@1
+    displayName: 'cmake ..'
+    inputs:
+      cmakeArgs: '.. -DCMAKE_BUILD_TYPE=Release'
 
-  - script: |
-      --build build --parallel $(nproc)
-    failOnStderr: true
+  - task: CMake@1
     displayName: 'cmake build'
+    inputs:
+      cmakeArgs: '--build . --parallel \$(nproc)'
 
-  - script: |
-      --build build --parallel $(nproc) --target test
-    failOnStderr: true
+  - task: CMake@1
     displayName: 'cmake test'
+    inputs:
+      cmakeArgs: '--build . --parallel \$(nproc) --target test'
