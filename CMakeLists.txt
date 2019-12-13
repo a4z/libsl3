@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.0.2)
 
 project(libsl3 C CXX) 
 
@@ -8,8 +8,8 @@ set(sl3_MINOR_VERSION 1)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 28)
-set(internal_SQLITE_PATCH_V  0)
+set(internal_SQLITE_MINOR_V 30)
+set(internal_SQLITE_PATCH_V  1)
 
 # sqlite uses (X*1000000 + Y*1000 + Z),
 # but minor patch used since major is always 3
