@@ -6,15 +6,16 @@
 trigger:
 - master
 
-# find out how $(nproc) could be used on linux
-variables:
-  num_cpus: 1
 
 jobs:
 - job: Linux
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+  - script: |
+      ncpus=$(nproc)
+      echo "##vso[task.setvariable variable=num_cpus]$ncpus"
+    displayName: 'explore environment'
   - task: CMake@1
     displayName: 'cmake ..'
     inputs:
@@ -25,6 +26,48 @@ jobs:
     inputs:
       cmakeArgs: --build . --parallel $(num_cpus)
 
+  - task: CMake@1
+    displayName: 'cmake test'
+    inputs:
+      cmakeArgs: --build . --parallel $(num_cpus) --target test
+
+
+- job: macOS
+  pool:
+    vmImage: 'macOS-latest'
+  steps:  
+  - script: |
+      ncpus=$(sysctl -n hw.ncpu)
+      echo "##vso[task.setvariable variable=num_cpus]$ncpus"
+    displayName: 'explore environment'
+  - task: CMake@1
+    displayName: 'cmake ..'
+    inputs:
+      cmakeArgs: .. -DCMAKE_BUILD_TYPE=Release
+  - task: CMake@1
+    displayName: 'cmake build'
+    inputs:
+      cmakeArgs: --build . --parallel $(num_cpus)
+  - task: CMake@1
+    displayName: 'cmake test'
+    inputs:
+      cmakeArgs: --build . --parallel $(num_cpus) --target test
+
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - script: |
+      echo "##vso[task.setvariable variable=number_cpus]%NUMBER_OF_PROCESSORS%"
+    displayName: 'explore environment'  
+  - task: CMake@1
+    displayName: 'cmake ..'
+    inputs:
+      cmakeArgs: .. -DCMAKE_BUILD_TYPE=Release
+  - task: CMake@1
+    displayName: 'cmake build'
+    inputs:
+      cmakeArgs: --build . --parallel $(num_cpus)
   - task: CMake@1
     displayName: 'cmake test'
     inputs:
