@@ -30,7 +30,7 @@ if (NOT have_myMacros)
             set(perfixd "-D")
         elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
             set(perfixd "-D")
-        elseif(${MSVC})
+        elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
             set(perfixd "/D")
         else()
 

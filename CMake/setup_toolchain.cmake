@@ -84,8 +84,8 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
     "Flags used by the compiler during all build types."
     FORCE )
 
-#elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-elseif(${MSVC})
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+#elseif(${MSVC})
     message(STATUS "using defaults for MSVC")
 
 else()
