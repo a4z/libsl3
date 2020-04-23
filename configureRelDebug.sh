@@ -11,8 +11,6 @@ fi
 
 
 
-cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo \
--DUSE_BOOSTTESTING_DYNLINK=ON 
- 
+cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo 
 
 

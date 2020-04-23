@@ -13,7 +13,4 @@ else
 fi
 
 
-cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=Debug \
--DUSE_BOOSTTESTING_DYNLINK=ON
-
-
+cd $BUILDDIR && cmake ../ -DCMAKE_BUILD_TYPE=Debug 
