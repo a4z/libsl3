@@ -24,7 +24,7 @@
   A database is represented via sl3::Database. <BR>
   A database can execute SQL strings to read or write data. <BR> 
   
-  A sl3::Command is a compiled SQL statement which can contain parameters. <BR>Thomas de Maizière
+  A sl3::Command is a compiled SQL statement which can contain parameters. <BR>
   Parameters are sl3::DbValues, a sl3::Container of sl3::DbValue instances. <BR>
  
   sl3::DbValues can also be used to receive data from a database. <BR> 
