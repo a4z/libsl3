@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <ostream>
 #include <type_traits>
+#include <limits>
 
 namespace sl3
 {

@@ -1,0 +1,86 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 4
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "binaryDir": "${sourceDir}/build/${presetName}"
+    },
+    {
+      "inherits": "base",
+      "name": "default",
+      "displayName": "Default Config",
+      "description": "Default build using Ninja Multi generator",
+      "generator": "Ninja Multi-Config"
+    },
+    {
+      "name": "xcode",
+      "displayName": "XCode Config",
+      "description": "Build config with the Xcode generator",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/xcode"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "configuration": "Debug"
+    },
+    {
+      "name": "default-release",
+      "inherits": "default",
+      "configuration": "Release"
+    },
+    {
+      "name": "xcode",
+      "configurePreset": "xcode",
+      "configuration": "Debug"
+    },
+    {
+      "name": "xcode-release",
+      "inherits": "xcode",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "default-release",
+      "inherits": "default",
+      "configuration": "release"
+    },
+    {
+      "name": "xcode",
+      "configurePreset": "xcode",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "xcode-release",
+      "inherits": "xcode",
+      "configuration": "Release"
+    }
+  ]
+}

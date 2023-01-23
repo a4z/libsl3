@@ -1,0 +1,80 @@
+
+name: Deploy doxygen docs
+
+on:
+  push:
+    branches: ["master", "modernize/everything"]
+
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  CONAN_USER_HOME: "${{ github.workspace }}/.conan/"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/.conan/short"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: 1.57.0
+      - name: Cache Conan Home
+        id: cache-primes
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/.conan/
+          key: ubuntu-latest-docsgen-conan-home
+      - name: Install requirements
+        run: sudo apt-get install -y ninja-build doxygen
+      - name: Configure conan
+        run: |
+          conan profile new --detect default --force
+          conan profile update settings.compiler.libcxx=libstdc++11 default
+      # enable revisions e.t.c...
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      # For doc gen present should not be used, since the multi config is not needed, but keep that for now
+      - name: Configure project
+        run:  cmake -S . -B build/default
+      - name: Build documentation
+        run:  cmake --build build/default --parallel --target doc
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'build/default/doc/html/'
+      # cache only the required conan packages
+      - name: Clean up Conan
+        run: |
+          conan remove -f "*" --builds
+          conan remove -f "*" --src
+          conan remove -f "*" --system-reqs
+
+# this will publish the pages, disabled for now since I do not want to replace existing pages
+  # deploy:
+  #   needs: build
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v2
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v1

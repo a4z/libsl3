@@ -118,7 +118,7 @@ struct check
   void
   typeAndStorage (sl3::Type type, sl3::Type storage)
   {
-    CHECK (_val.dbtype () == type);
+     CHECK (_val.dbtype () == type);
     CHECK (_val.type () == storage);
   }
 
@@ -165,15 +165,17 @@ SCENARIO("using value, basics")
   using namespace sl3;
   GIVEN ("list of types without value")
   {
-    DbValue dbval{Type::Variant};
+    // DbValue dbval{Type::Variant};
 
-    std::vector<DbValue> vals{DbValue{Type::Variant},
-      DbValue{Type::Null}, // usless but is variant
-      DbValue{Type::Int},
-      DbValue{Type::Real},
-      DbValue{Type::Text},
-      DbValue{Type::Blob} };
+    std::vector<DbValue> vals{DbValue{Type::Variant}
+    , DbValue{Type::Null} // useless but is variant
+    ,  DbValue{Type::Int}
+    ,  DbValue{Type::Real}
+    ,  DbValue{Type::Text}
+    ,  DbValue{Type::Blob}
+    };
 
+    // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
     for (DbValue& dbval : vals)
       {
         WHEN ("using a value without value")
@@ -225,6 +227,7 @@ SCENARIO("using value, basics")
 
     for (DbValue& dbval : vals)
       {
+        // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
         CHECK(types[sizeIdx] == dbval.dbtype()) ;
         sizeIdx+=1 ;
 

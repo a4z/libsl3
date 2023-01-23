@@ -1,14 +1,5 @@
-SET (TESTNAME typenames)
-SET (TESTPREFIX sl3test)
 
-SET( test_SRC
-  typenames.cpp
+add_doctest(typenames
+    SOURCES
+    typenamestest.cpp
 )
-
-
-ADD_EXECUTABLE( ${TESTPREFIX}_${TESTNAME} ${test_SRC} $<TARGET_OBJECTS:doctest_main>)
-
-TARGET_LINK_LIBRARIES( ${TESTPREFIX}_${TESTNAME} sl3 ${sl3_sqlite3LIBS} ${OPTION_GCOVLIB})
-
-add_test( NAME ${TESTPREFIX}_${TESTNAME} COMMAND ${TESTPREFIX}_${TESTNAME} )
-

@@ -3,20 +3,9 @@
 libsl3 is designed to enable a comfortable and efficient communication with
 SQLite 3.x database based on its natural language, which is SQL.
 
-Tested - with 100% code coverage - on:
-
-* travis-ci: [![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3) 
-  * gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
-  * Apple LLVM version 9.1.0 (clang-902.0.39.1)
-* Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa/branch/master?svg=true&passingText=master%20-%20OK)](https://ci.appveyor.com/project/a4z/libsl3/branch/master)
-* various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
- 
-Linux, OSX, Windows builds on Azurer: [![Linux, OSX, Windows on Azure](https://dev.azure.com/a4z/libsl3/_apis/build/status/a4z.libsl3?branchName=master)](https://dev.azure.com/a4z/libsl3/_build/latest?definitionId=2&branchName=master)
-
 ## A short usage example
 
-
-```c
+```cpp
 #include <cassert>
 #include <iostream>
 #include <sl3/database.hpp>
@@ -59,9 +48,10 @@ int main()
 }
 
 ```
-this will output as expected
 
-```
+This will output as expected
+
+```bash
 1 one 1.1
 2 two 2.1
 ```
@@ -70,13 +60,12 @@ Additional samples can be found in the tests and tests/sampes subfolder.
 
 ## Build requirements
 
-* CMake, libsl3 builds uses cmake
+* CMake
 * doxygen, optional, for building the documentation
+* Conan
 
-libsl3 inlcudes sqlite, but it can also build and link with an existing sqlite
-installation.   
-This is controlled via cmake and the `USE_INTERNAL_SQLITE3` variable, 
-which is by default true.
+libsl3 requires, no surprise, sqlite3, and uses doctest for unit testing.
+The requirements will be handled by CMake via Conan, therefore, Conan needs to be installed. https://docs.conan.io/
 
 ## Addtitional information
 

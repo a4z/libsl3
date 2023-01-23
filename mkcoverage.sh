@@ -30,9 +30,9 @@ Options:
       $ME --append="bin/tests/example_first bin/tests/example_second"
 
     Paths are relative to the current build directory
-    
+
   --noclean
-      do not run make clean and rebuild everything  
+      do not run make clean and rebuild everything
 
   --branch
     Enable branch coverage.
@@ -90,7 +90,7 @@ for i in "$@" ; do
       BRANCH_COVERAGE="true"
       shift
       ;;
-      
+
       --noclean)
 	  NO_CLEAN="true"
       shift
