@@ -399,7 +399,7 @@ SCENARIO("getting DbValues from columns")
           REQUIRE (expectedTypes.size () == cols.count ()) ;
           for (int i = 0; i < cols.count (); ++i)
           {
-            auto type = expectedTypes[i];
+            auto type = expectedTypes[size_t(i)];
             auto val = cols.getValue (i, type) ;
             CHECK(val.dbtype () == type) ;
             if (i == cols.count () -1 )
