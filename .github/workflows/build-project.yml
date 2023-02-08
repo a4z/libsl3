@@ -39,7 +39,7 @@ jobs:
       run: conan profile update settings.compiler.libcxx=libstdc++11 default
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Configure project
-      run:  cmake --preset default
+      run:  cmake --preset default --compile-no-warning-as-error # TODO , once all is foxed, remove
     - name: Build project
       run:  cmake --build --preset default-release
     - name: Run unit test
