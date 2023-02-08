@@ -9,7 +9,10 @@
 #include <sl3/columns.hpp>
 #include <sl3/error.hpp>
 
+#include <cassert>
 #include <sqlite3.h>
+
+#include "utils.hpp"
 
 namespace sl3
 {
@@ -43,7 +46,6 @@ namespace sl3
   DbValue
   Columns::getValue (int idx, Type type) const
   {
-
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
@@ -80,8 +82,8 @@ namespace sl3
   std::vector<std::string>
   Columns::getNames () const
   {
-    std::vector<std::string> names ;
-    names.reserve (count ()) ;
+    std::vector<std::string> names;
+    names.reserve (as_size_t (count ()));
     for (int i = 0; i < count (); ++i)
       {
         names.emplace_back (getName (i));
@@ -112,7 +114,7 @@ namespace sl3
     DbValues::container_type v;
     for (int i = 0; i < count (); ++i)
       {
-        v.push_back (getValue (i, types[i]));
+        v.push_back (getValue (i, types[as_size_t (i)]));
       }
     return DbValues (std::move (v));
   }
@@ -161,7 +163,7 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    return sqlite3_column_bytes (_stmt, idx);
+    return as_size_t (sqlite3_column_bytes (_stmt, idx));
   }
 
   std::string
@@ -170,8 +172,9 @@ namespace sl3
     if (idx < 0 || !(idx < count ()))
       throw ErrOutOfRange ("column index out of range");
 
-    const char* first = (const char*)sqlite3_column_text (_stmt, idx);
-    std::size_t s     = sqlite3_column_bytes (_stmt, idx);
+    const char* first
+        = reinterpret_cast<const char*> (sqlite3_column_text (_stmt, idx));
+    std::size_t s = as_size_t (sqlite3_column_bytes (_stmt, idx));
     return s > 0 ? std::string (first, s) : std::string ();
   }
 
@@ -211,7 +214,7 @@ namespace sl3
     using value_type = Blob::value_type;
     const value_type* first
         = static_cast<const value_type*> (sqlite3_column_blob (_stmt, idx));
-    std::size_t s = sqlite3_column_bytes (_stmt, idx);
+    std::size_t s = as_size_t (sqlite3_column_bytes (_stmt, idx));
     return s > 0 ? Blob (first, first + s) : Blob ();
   }
 

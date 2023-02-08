@@ -17,6 +17,8 @@
 #include <sl3/database.hpp>
 #include <sl3/error.hpp>
 
+#include "utils.hpp"
+
 namespace sl3
 {
   namespace
@@ -24,8 +26,8 @@ namespace sl3
     sqlite3_stmt*
     createStmt (sqlite3* db, const std::string& sql)
     {
-      if(db == nullptr)
-        throw ErrNoConnection{} ;
+      if (db == nullptr)
+        throw ErrNoConnection{};
 
       sqlite3_stmt* stmt       = nullptr;
       const char*   unussedSQL = nullptr;
@@ -44,7 +46,7 @@ namespace sl3
     DbValues
     createParameters (sqlite3_stmt* stmt)
     {
-      const size_t paracount = sqlite3_bind_parameter_count (stmt);
+      const size_t paracount = as_size_t (sqlite3_bind_parameter_count (stmt));
 
       using container = DbValues::container_type;
 
@@ -75,20 +77,22 @@ namespace sl3
             case Type::Text:
               // note, i do not want \0 in the db so take size
               // SQLITE_TRANSIENT would copy the string , is unwanted here
-              rc = sqlite3_bind_text (stmt,
-                                      curParaNr,
-                                      val.getText ().c_str (),
-                                      static_cast<int>(val.getText ().size ()),
-                                      SQLITE_STATIC);
+              rc = sqlite3_bind_text (
+                  stmt,
+                  curParaNr,
+                  val.getText ().c_str (),
+                  static_cast<int> (val.getText ().size ()),
+                  SQLITE_STATIC);
 
               break;
 
             case Type::Blob:
-              rc = sqlite3_bind_blob (stmt,
-                                      curParaNr,
-                                      &(val.getBlob ()[0]),
-                                      static_cast<int>(val.getBlob ().size ()),
-                                      SQLITE_STATIC);
+              rc = sqlite3_bind_blob (
+                  stmt,
+                  curParaNr,
+                  &(val.getBlob ()[0]),
+                  static_cast<int> (val.getBlob ().size ()),
+                  SQLITE_STATIC);
 
               break;
 
@@ -121,7 +125,7 @@ namespace sl3
   , _stmt (createStmt (_connection->db (), sql))
   , _parameters (std::move (parameters))
   {
-    const size_t paracount = sqlite3_bind_parameter_count (_stmt);
+    const size_t paracount = as_size_t (sqlite3_bind_parameter_count (_stmt));
 
     if (paracount != _parameters.size ())
       {
@@ -164,7 +168,7 @@ namespace sl3
   Command::select (const DbValues& parameters, const Types& types)
   {
     Dataset  ds{std::move (types)};
-    Callback fillds = [&ds](Columns columns) -> bool {
+    Callback fillds = [&ds] (Columns columns) -> bool {
       if (ds._names.size () == 0)
         {
           const int typeCount = static_cast<int> (ds._fieldtypes.size ());
@@ -172,7 +176,7 @@ namespace sl3
           if (typeCount == 0)
             {
               using container_type = Types::container_type;
-              container_type c (columns.count (), Type::Variant);
+              container_type c (as_size_t (columns.count ()), Type::Variant);
               Types          fieldtypes{c};
               ds._fieldtypes.swap (fieldtypes);
             }
@@ -203,7 +207,7 @@ namespace sl3
   void
   Command::execute (const DbValues& parameters)
   {
-    execute ([](Columns) -> bool { return true; }, parameters);
+    execute ([] (Columns) -> bool { return true; }, parameters);
   }
 
   void
@@ -211,7 +215,7 @@ namespace sl3
   {
     cb.onStart ();
 
-    auto cbf = [&cb](Columns cols) -> bool { return cb.onRow (cols); };
+    auto cbf = [&cb] (Columns cols) -> bool { return cb.onRow (cols); };
 
     execute (cbf, parameters);
 
@@ -277,13 +281,13 @@ namespace sl3
   DbValue&
   Command::getParameter (int idx)
   {
-    return _parameters.at (idx);
+    return _parameters.at (as_size_t (idx));
   }
 
   const DbValue&
   Command::getParameter (int idx) const
   {
-    return _parameters.at (idx);
+    return _parameters.at (as_size_t (idx));
   }
 
   void
@@ -304,7 +308,7 @@ namespace sl3
   Command::resetParameters (DbValues values)
   {
     ASSERT_EXCEPT (values.size () == _parameters.size (), ErrTypeMisMatch);
-    //auto tmp = values;
+    // auto tmp = values;
     _parameters.swap (values);
   }
 
@@ -316,8 +320,9 @@ namespace sl3
 
     for (unsigned int i = 0; i < _parameters.size (); ++i)
       {
-        const char* chrname = sqlite3_bind_parameter_name (_stmt, i + 1);
-        names[i]            = chrname ? chrname : "";
+        const char* chrname
+            = sqlite3_bind_parameter_name (_stmt, as_int (i + 1));
+        names[i] = chrname ? chrname : "";
       }
     return names;
   }

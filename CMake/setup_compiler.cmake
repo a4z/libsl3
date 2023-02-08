@@ -33,7 +33,33 @@ add_library(default::libs ALIAS _DefaultLibs)
 add_library(_DefaultWarnings INTERFACE)
 target_compile_options(_DefaultWarnings
   INTERFACE
-    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>>:-Wall -Wextra -pedantic -Wdeprecated -pthread>
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>>:
+    -Wall -Wextra -pedantic
+    -Wdeprecated
+    -Wformat-security
+    -Wimplicit-fallthrough
+    -Wmissing-braces
+    -Wmissing-field-initializers
+    -Wnon-virtual-dtor
+    -Wnull-dereference
+    -Wold-style-cast
+#    -Wpadded interesting but not possible in this context, psys yes
+    -Wparentheses
+    -Wpointer-arith
+    -Wredundant-decls
+    -Wreturn-type
+    -Wsequence-point
+    -Wshadow
+    -Wswitch
+    -Wuninitialized
+    -Wunused-function
+    -Wunused-variable
+    -Wunused-variable
+    -Wconversion
+    -Wsign-conversion
+    -Wsign-promo
+    -Wfloat-conversion
+    -pthread>
 
     $<$<CXX_COMPILER_ID:GNU>: -Wduplicated-branches
                               -Wduplicated-cond
@@ -44,31 +70,13 @@ target_compile_options(_DefaultWarnings
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
-if(WARN_ERROR)
-  target_compile_options(_DefaultWarnings
-    INTERFACE
-      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>>:-Werror>
-      $<$<CXX_COMPILER_ID:MSVC>:/WX>
-  )
-endif(WARN_ERROR)
-
 add_library(default::warnings ALIAS _DefaultWarnings)
+
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
 
 # ----------
 add_library(_DefaultFlags INTERFACE)
-
-# TODO, old bad idea, remove
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set (_DEBUG_FLAGS "DEBUG")
-else()
-    set (_DEBUG_FLAGS "RELEASE")
-endif()
-
-target_compile_options(_DefaultFlags
-  INTERFACE
-    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:AppleClang>>:-D${_DEBUG_FLAGS}>
-    $<$<CXX_COMPILER_ID:MSVC>:/D${_DEBUG_FLAGS}>
-)
 
 target_link_libraries(_DefaultFlags
     INTERFACE default::libs default::warnings # default::coverage
