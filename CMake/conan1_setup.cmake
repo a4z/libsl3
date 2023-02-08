@@ -23,6 +23,13 @@ get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
 # TODO, replace PROFILE, PROFILE_HOST, PROFILE_BUILD
 
+set(CONAN_SYSTEM_INCLUDES ON)
+
+
+set(CONAN_PROFILE "default" CACHE STRING "Conan profile to use")
+
+message("CONAN_PROFILE is set to ${CONAN_PROFILE}")
+
 if(isMultiConfig)
   foreach(TYPE ${CMAKE_CONFIGURATION_TYPES})
     conan_cmake_install(
@@ -30,7 +37,7 @@ if(isMultiConfig)
       REMOTE conancenter
       BUILD missing
       GENERATOR cmake_multi
-      PROFILE default
+      PROFILE ${CONAN_PROFILE}
       SETTINGS build_type=${TYPE})
   endforeach()
   include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
@@ -40,7 +47,7 @@ else()
     REMOTE conancenter
     BUILD missing
     GENERATOR cmake
-    PROFILE default
+    PROFILE ${CONAN_PROFILE}
   )
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 endif()
