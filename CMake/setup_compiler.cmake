@@ -17,7 +17,8 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Off, we do not want to annoy potential packager
 option(WARN_ERROR "Thread warnings as errors. Default OFF" OFF)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 # set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)

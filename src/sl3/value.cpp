@@ -17,6 +17,8 @@
 #include <type_traits>
 #include <limits>
 
+#include "utils.hpp"
+
 namespace sl3
 {
   namespace
@@ -53,7 +55,8 @@ namespace sl3
         throw ErrTypeMisMatch{"Conversion loses fraction"};
 
       using limit = std::numeric_limits<OutT>;
-      if (converted < limit::min () || converted > limit::max ())
+      //if (converted < limit::min () || converted > limit::max ())
+      if (is_less(converted, limit::min ()) || is_greater(converted, limit::max ()))
         throw ErrOutOfRange{"Converted value to big"};
 
       return static_cast<OutT> (converted);
@@ -667,7 +670,7 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          return a._store.intval <= b._store.realval;
+          return is_less_equal(a._store.intval, b._store.realval);
         //respect type, int type smaller if equal to real value
 
         return true;
@@ -676,7 +679,7 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          return a._store.realval < b._store.intval;
+          return is_less(a._store.realval, b._store.intval);
          //respect type, int type smaller if equal to real value
 
         if (b.getType () == Type::Real)
@@ -735,13 +738,13 @@ namespace sl3
         if (b._type == Type::Int)
           retval = a._store.intval == b._store.intval;
         else if (b._type == Type::Real)
-          retval = a._store.intval == b._store.realval;
+          retval = is_equal(a._store.intval, b._store.realval);
 
         break;
 
       case Type::Real:
         if (b._type == Type::Int)
-          retval = a._store.realval == b._store.intval;
+          retval = is_equal(a._store.realval, b._store.intval);
         else if (b._type == Type::Real)
           retval = a._store.realval == b._store.realval;
 
@@ -779,7 +782,7 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          return a._store.intval < b._store.realval;
+          return is_less(a._store.intval, b._store.realval);
 
         return true;
       }
@@ -787,7 +790,7 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          return a._store.realval < b._store.intval;
+          return is_less(a._store.realval, b._store.intval);
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;

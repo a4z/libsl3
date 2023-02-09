@@ -23,6 +23,14 @@
       "description": "Build config with the Xcode generator",
       "generator": "Xcode",
       "binaryDir": "${sourceDir}/xcode"
+    },
+    {
+      "inherits": "base",
+      "name": "brew-gcc",
+      "displayName": "brew gcc",
+      "description": "Build config with gcc on MacOS",
+      "generator": "Ninja Multi-Config",
+      "toolchainFile": "${sourceDir}/CMake/brew-gcc-toolchain.cmake"
     }
   ],
   "buildPresets": [
@@ -45,6 +53,11 @@
       "name": "xcode-release",
       "inherits": "xcode",
       "configuration": "Release"
+    },
+    {
+      "name": "brew-gcc",
+      "configurePreset": "brew-gcc",
+      "configuration": "Debug"
     }
   ],
   "testPresets": [
