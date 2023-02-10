@@ -94,6 +94,18 @@
       "name": "xcode-release",
       "inherits": "xcode",
       "configuration": "Release"
+    },
+    {
+      "name": "brew-gcc",
+      "configurePreset": "brew-gcc",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
     }
   ]
 }
