@@ -2,8 +2,9 @@ name: build project
 on:
   push:
     branches:
-        - modernize/everything
-#         - main
+    - main
+  pull_request:
+
 
 env:
   CONAN_USER_HOME: "${{ github.workspace }}/.conan/"
