@@ -25,7 +25,7 @@
       "binaryDir": "${sourceDir}/xcode"
     },
     {
-    "name": "msvs",
+    "name": "msvc",
     "displayName": "Visual Studio 17",
     "description": "Build config with the Visual Studio 17 generator",
     "generator": "Visual Studio 17 2022"
@@ -92,12 +92,7 @@
     {
       "name": "default-release",
       "inherits": "default",
-      "configuration": "release"
-    },
-    {
-      "name": "msvc",
-      "inherits": "default",
-      "configurePreset": "msvc"
+      "configuration": "Release"
     },
     {
       "name": "xcode",
@@ -115,6 +110,16 @@
       "name": "xcode-release",
       "inherits": "xcode",
       "configuration": "Release"
+    },
+    {
+      "name": "msvc",
+      "inherits": "default",
+      "configurePreset": "msvc"
+    },
+    {
+      "name": "msvc-release`",
+      "inherits": "default-release",
+      "configurePreset": "msvc"
     },
     {
       "name": "brew-gcc",
