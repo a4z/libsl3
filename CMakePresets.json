@@ -28,7 +28,8 @@
     "name": "msvc",
     "displayName": "Visual Studio 17",
     "description": "Build config with the Visual Studio 17 generator",
-    "generator": "Visual Studio 17 2022"
+    "generator": "Visual Studio 17 2022",
+    "binaryDir": "${sourceDir}/vs"
     },
     {
       "inherits": "base",
