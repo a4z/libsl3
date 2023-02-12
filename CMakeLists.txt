@@ -1,72 +1,31 @@
-cmake_minimum_required(VERSION 2.8.11)
-
-project(libsl3 C CXX) 
-
+cmake_minimum_required(VERSION 3.25)
 
 set(sl3_MAJOR_VERSION 1)
-set(sl3_MINOR_VERSION 1)
-
-# sqlite major is always 3, no need to use that here
-# set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 31)
-set(internal_SQLITE_PATCH_V  1)
-
-# sqlite uses (X*1000000 + Y*1000 + Z),
-# but minor patch used since major is always 3
-math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE_PATCH_V}")
-
+set(sl3_MINOR_VERSION 2)
+set(sl3_PATCH_VERSION 0)
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
+
+project(libsl3
+    VERSION ${sl3_VERSION}
+    LANGUAGES C CXX
+)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Include necessary submodules
-set(CMAKE_MODULE_PATH
-  "${libsl3_SOURCE_DIR}/CMake"
-)
-
+LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
+include(conan1_setup)
 
 include( macros )
 include( setup_compiler )
 
-
-
-if(NOT CMAKE_BUILD_TYPE)
-
-  SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE )
-endif(NOT CMAKE_BUILD_TYPE)
-
-
-if (CMAKE_BUILD_TYPE STREQUAL "Debug") 
-    set (_DEFAULT_FLAGS "DEBUG")
-else()
-    set (_DEFAULT_FLAGS "RELEASE")
-endif()
-
-
-PREFIX_COMPILER_DEFINES(_DEFAULT_FLAGS)
-add_definitions(${_DEFAULT_FLAGS})
-
-unset(_DEFAULT_FLAGS)
-
-include( sqlite/setup_sqlite3.cmake )
-
 include( setup_doc )
 
-if(USE_INTERNAL_SQLITE3)
-  set(CONFIG_SQLITE3_INTERNAL "true")
-else(USE_INTERNAL_SQLITE3)  
-  set(CONFIG_SQLITE3_INTERNAL "false")
-endif(USE_INTERNAL_SQLITE3)
+set(CONFIG_SQLITE3_INTERNAL false) # TODO, legacy, remove also in config.in
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}")
 
-
-
-add_definitions(${mysqlt3_DEFINES})
-
+# TODO, add on targets
 include_directories(
 ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -96,7 +55,7 @@ SET ( sl3_HDR
     include/sl3/rowcallback.hpp
     include/sl3/types.hpp
     include/sl3/value.hpp
-    
+
 )
 #-------------------------------------------------------------------------------
 SET ( sl3_SRCHDR
@@ -124,65 +83,43 @@ SET ( sl3_SRC
 
 # TODO check win build
 
-if(WIN32 AND NOT UNIX)
+# TODO , legacy
 
-    option(sl3_BUILD_STATIC_LIB "ON for static lib build, OFF for shared lib build" ON )
+# TODO, if on, forward to conan usage?
+option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
-    if(NOT sl3_BUILD_STATIC_LIB)
-        set(sl3_BUILD_SHARED_LIB ON)
-    endif(NOT sl3_BUILD_STATIC_LIB)
+add_library( sl3 ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
+set(sl3_install_targets ${sl3_install_targets} sl3)
+target_link_libraries(sl3
+    PRIVATE default::flags
+    PUBLIC CONAN_PKG::sqlite3
+)
+target_include_directories(sl3 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
+)
 
-elseif(UNIX)
-    option(sl3_BUILD_STATIC_LIB "build static library" ON )
-    option(sl3_BUILD_SHARED_LIB "build shared library" OFF )
+if(BUILD_SHARED_LIBS)
+    set_target_properties(sl3 PROPERTIES
+        VERSION ${sl3_VERSION}
+        SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}
+        POSITION_INDEPENDENT_CODE ON
+    )
+endif(BUILD_SHARED_LIBS)
 
-    if(NOT sl3_BUILD_STATIC_LIB AND NOT sl3_BUILD_SHARED_LIB)
-        message(WARNING "neither static nor shared build enabled, will use default static")
-        set(sl3_BUILD_STATIC_LIB ON)
-    endif(NOT sl3_BUILD_STATIC_LIB AND NOT sl3_BUILD_SHARED_LIB) 
-
-endif(WIN32 AND NOT UNIX)
-
-
-
-if(sl3_BUILD_STATIC_LIB)
-    add_library( sl3 STATIC  ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
-    #SET_TARGET_PROPERTIES(sl3 PROPERTIES OUTPUT_NAME sl3)
-    set(sl3_install_targets ${sl3_install_targets} sl3)    
-endif(sl3_BUILD_STATIC_LIB)
-
-if(sl3_BUILD_SHARED_LIB) 
-    # TODO, link against sqlt3 if not included / or required sl3_sqlite3LIBS ..
-    add_library( sl3_so SHARED  ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
-    set_target_properties(sl3_so PROPERTIES VERSION ${sl3_VERSION})
-    set_target_properties(sl3_so PROPERTIES SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION})
-    SET_TARGET_PROPERTIES(sl3_so PROPERTIES OUTPUT_NAME sl3)
-    set(sl3_install_targets ${sl3_install_targets} sl3_so)
-endif(sl3_BUILD_SHARED_LIB)
-
-#since alias the libs, this seems to be required
-link_directories( ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
-
-if (DEFINED sl3_BUILD_TESTS)
-    if (${sl3_BUILD_TESTS})
-        set (ALL_A4_TESTING_DISABLED FALSE)
-    else (${sl3_BUILD_TESTS})
-        set (ALL_A4_TESTING_DISABLED TRUE)
-    endif(${sl3_BUILD_TESTS})
-endif (DEFINED sl3_BUILD_TESTS)
-include( setup_testing )
- 
+enable_testing()
+add_subdirectory(tests)
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
 if(a4qlt3_LOCAL_TRIALS)
-    add_subdirectory(trials)  
+    add_subdirectory(trials)
 endif(a4qlt3_LOCAL_TRIALS)
 
 #only add install target if this is the top level project
 if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
-    INSTALL(TARGETS ${sl3_install_targets} 
+    INSTALL(TARGETS ${sl3_install_targets}
       RUNTIME DESTINATION bin
       LIBRARY DESTINATION lib${LIB_SUFFIX}
       ARCHIVE DESTINATION lib${LIB_SUFFIX}

@@ -1,22 +1,18 @@
-# libsl3, the convenient C++11 interface for SQLite 3.x
+# libsl3, the convenient interface for SQLite 3.x
 
 libsl3 is designed to enable a comfortable and efficient communication with
 SQLite 3.x database based on its natural language, which is SQL.
 
-Tested - with 100% code coverage - on:
+libsl3 origins back to a time when C++11 was new.
+It has been stable to support an existing user for quite a while, over a decade.
+With C++23 landing, development has been restarted.
+The goal is to keep the interface stable, but using newer C++ standard might justify some breaking changes.
 
-* travis-ci: [![Build Status](https://travis-ci.org/a4z/libsl3.svg?branch=master)](https://travis-ci.org/a4z/libsl3) 
-  * gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4, clang version 3.5.0
-  * Apple LLVM version 9.1.0 (clang-902.0.39.1)
-* Visual Studio 2015 [![Build status](https://ci.appveyor.com/api/projects/status/vsk807oexd8592sa/branch/master?svg=true&passingText=master%20-%20OK)](https://ci.appveyor.com/project/a4z/libsl3/branch/master)
-* various newer gcc and clang versions on differnt Linux distributions (RHEL, SUSE, Slackware)
- 
-Linux, OSX, Windows builds on Azurer: [![Linux, OSX, Windows on Azure](https://dev.azure.com/a4z/libsl3/_apis/build/status/a4z.libsl3?branchName=master)](https://dev.azure.com/a4z/libsl3/_build/latest?definitionId=2&branchName=master)
+There is a branch preserving the original C++11 state for people looking for the old interface.
 
 ## A short usage example
 
-
-```c
+```cpp
 #include <cassert>
 #include <iostream>
 #include <sl3/database.hpp>
@@ -59,28 +55,28 @@ int main()
 }
 
 ```
-this will output as expected
 
-```
+This will output as expected
+
+```bash
 1 one 1.1
 2 two 2.1
 ```
 
-Additional samples can be found in the tests and tests/sampes subfolder.
+Additional samples can be found in the tests and tests/samples subfolder.
 
 ## Build requirements
 
-* CMake, libsl3 builds uses cmake
+* CMake
 * doxygen, optional, for building the documentation
+* Conan
 
-libsl3 inlcudes sqlite, but it can also build and link with an existing sqlite
-installation.   
-This is controlled via cmake and the `USE_INTERNAL_SQLITE3` variable, 
-which is by default true.
+libsl3 requires, no surprise, sqlite3, and uses doctest for unit testing.
+The requirements will be handled by CMake via Conan, therefore, Conan needs to be installed. https://docs.conan.io/
 
-## Addtitional information
+## Additional information
 
 The online documentation for libsl3 can be found here:
-http://a4z.bitbucket.io/docs/libsl3/html/index.html
+https://a4z.github.io/libsl3/
 
 License: https://www.mozilla.org/en-US/MPL/2.0/

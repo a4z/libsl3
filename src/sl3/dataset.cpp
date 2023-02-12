@@ -15,6 +15,8 @@
 #include <sl3/error.hpp>
 #include <stdexcept>
 
+#include "utils.hpp"
+
 namespace sl3
 {
   Dataset::Dataset () noexcept : _fieldtypes (), _names () {}
@@ -104,7 +106,7 @@ namespace sl3
     if (pos == _names.end ())
       throw ErrOutOfRange ("Field name " + name + " not found");
 
-    return distance (_names.begin (), pos);
+    return as_size_t(distance (_names.begin (), pos));
   }
 
   void

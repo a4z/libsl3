@@ -147,17 +147,17 @@ SCENARIO("merging datasets")
 
     WHEN ("having an dataset with names fields")
     {
-      Dataset ds = db.select("SELECT 1 as int, 'eins' as txt, 2.2 as dbl;");
-      CHECK_EQ(ds.getIndex("int"), 0) ;
-      CHECK_EQ(ds.getIndex("txt"), 1) ;
-      CHECK_EQ(ds.getIndex("dbl"), 2) ;
+      Dataset dsf = db.select("SELECT 1 as int, 'eins' as txt, 2.2 as dbl;");
+      CHECK_EQ(dsf.getIndex("int"), 0) ;
+      CHECK_EQ(dsf.getIndex("txt"), 1) ;
+      CHECK_EQ(dsf.getIndex("dbl"), 2) ;
 
       THEN ("merging a dataset with the same fieldnames work")
       {
-        const auto orig_cout = ds.size() ;
+        const auto orig_cout = dsf.size() ;
         auto ds1 = db.select("SELECT 1 as int, 'eins' as txt, 2.2 as dbl;");
-        CHECK_NOTHROW(ds.merge(ds1)) ;
-        CHECK (ds.size() == orig_cout+1);
+        CHECK_NOTHROW(dsf.merge(ds1)) ;
+        CHECK (dsf.size() == orig_cout+1);
       }
 
       AND_WHEN ("merging a dataset with different fieldnames throws")

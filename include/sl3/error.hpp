@@ -44,19 +44,13 @@ namespace sl3
   constexpr const char*
   ErrCodeName (ErrCode ec)
   {
-    return ec == ErrCode::SQL3Error
-               ? "SQLite3Error"
-               : ec == ErrCode::NoConnection
-                     ? "NoConnection"
-                     : ec == ErrCode::OutOfRange
-                           ? "OutOfRange"
-                           : ec == ErrCode::TypeMisMatch
-                                 ? "TypeMisMatch"
-                                 : ec == ErrCode::NullValueAccess
-                                       ? "NullValueAccess"
-                                       : ec == ErrCode::UNEXPECTED
-                                             ? "UNEXPECTED"
-                                             : "NA";
+    return ec == ErrCode::SQL3Error         ? "SQLite3Error"
+           : ec == ErrCode::NoConnection    ? "NoConnection"
+           : ec == ErrCode::OutOfRange      ? "OutOfRange"
+           : ec == ErrCode::TypeMisMatch    ? "TypeMisMatch"
+           : ec == ErrCode::NullValueAccess ? "NullValueAccess"
+           : ec == ErrCode::UNEXPECTED      ? "UNEXPECTED"
+                                            : "NA";
   }
 
   /**
@@ -73,9 +67,9 @@ namespace sl3
     using std::runtime_error::runtime_error;
 
     /**
-      * \brief Get ErrCode
-      * \return the Errcode of the excetion
-      */
+     * \brief Get ErrCode
+     * \return the Errcode of the excetion
+     */
     virtual ErrCode getId () const = 0;
   };
 
@@ -148,9 +142,12 @@ namespace sl3
      * \brief c'tor
      * \param sl3ec sqite error code
      * \param sl3msg sqite error code
+     * \param msg additional message
      */
-    ErrType<ErrCode::SQL3Error> (int sl3ec, const char* sl3msg)
-    : ErrType<ErrCode::SQL3Error> (sl3ec, sl3msg, "")
+    ErrType (int sl3ec, const char* sl3msg, const std::string& msg)
+    : Error ("(" + std::to_string (sl3ec) + ":" + sl3msg + "):" + msg)
+    , _sqlite_ec (sl3ec)
+    , _sqlite_msg (sl3msg)
     {
     }
 
@@ -158,17 +155,11 @@ namespace sl3
      * \brief c'tor
      * \param sl3ec sqite error code
      * \param sl3msg sqite error code
-     * \param msg additional message
      */
-    ErrType<ErrCode::SQL3Error> (int                sl3ec,
-                                 const char*        sl3msg,
-                                 const std::string& msg)
-    : Error ("(" + std::to_string (sl3ec) + ":" + sl3msg + "):" + msg)
-    , _sqlite_ec (sl3ec)
-    , _sqlite_msg (sl3msg)
+    ErrType (int sl3ec, const char* sl3msg)
+    : ErrType (sl3ec, sl3msg, "")
     {
     }
-
     ErrCode
     getId () const override
     {
@@ -215,31 +206,31 @@ namespace sl3
   if (!(exp))                      \
   throw except (std::string (__FUNCTION__) + ": " + #exp)
 
+  /*
+    TODO check if this can be done, togehter with __FUNCTION__
+    into a nice code locastion for nicer messages
+    File.cpp::Function::39 The problem
 
-/*
-  TODO check if this can be done, togehter with __FUNCTION__
-  into a nice code locastion for nicer messages
-  File.cpp::Function::39 The problem
 
+    using cstr = const char * const;
 
-  using cstr = const char * const;
+    static constexpr cstr past_last_slash(cstr str, cstr last_slash)
+    {
+        return
+            *str == '\0' ? last_slash :
+            *str == '/'  ? past_last_slash(str + 1, str + 1) :
+                           past_last_slash(str + 1, last_slash);
+    }
 
-  static constexpr cstr past_last_slash(cstr str, cstr last_slash)
-  {
-      return
-          *str == '\0' ? last_slash :
-          *str == '/'  ? past_last_slash(str + 1, str + 1) :
-                         past_last_slash(str + 1, last_slash);
-  }
+    static constexpr cstr past_last_slash(cstr str)
+    {
+        return past_last_slash(str, str);
+    }
 
-  static constexpr cstr past_last_slash(cstr str) 
-  { 
-      return past_last_slash(str, str);
-  }
+  #define __SHORT_FILE__ ({constexpr cstr sf__ {past_last_slash(__FILE__)};
+  sf__;})
 
-#define __SHORT_FILE__ ({constexpr cstr sf__ {past_last_slash(__FILE__)}; sf__;})
-
-*/
+  */
 
 } // ns
 

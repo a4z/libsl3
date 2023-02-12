@@ -1,7 +1,6 @@
 #include "../testing.hpp"
 #include <sl3/dbvalue.hpp>
 
-
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -51,69 +50,66 @@ struct check
     CHECK_THROWS_AS (_val.ejectBlob (), sl3::ErrNullValueAccess);
   }
 
-
   void
   getTypedDefaults ()
   {
-
-    if(_val.type() != sl3::Type::Int)
+    if (_val.type () != sl3::Type::Int)
       {
         CHECK_EQ (_val.getInt (100), 100);
         CHECK_EQ (_val.getInt (int64_t{100}), 100);
       }
 
-    if(_val.type() != sl3::Type::Real)
+    if (_val.type () != sl3::Type::Real)
       CHECK_EQ (_val.getReal (2.1), 2.1);
 
-    if(_val.type() != sl3::Type::Text)
+    if (_val.type () != sl3::Type::Text)
       CHECK_EQ (_val.getText ("foo"), "foo");
 
-    if(_val.type() != sl3::Type::Blob)
+    if (_val.type () != sl3::Type::Blob)
       CHECK_EQ (_val.getBlob (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
 
   void
   getTypedDefaultsThrows (const sl3::Types& types)
   {
-    for(auto t : types)
+    for (auto t : types)
       {
-        if(t == sl3::Type::Int)
+        if (t == sl3::Type::Int)
           {
             CHECK_THROWS_AS ((void)_val.getInt (100), sl3::ErrTypeMisMatch);
-            CHECK_THROWS_AS ((void)_val.getInt (int64_t{1}), sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS ((void)_val.getInt (int64_t{1}),
+                             sl3::ErrTypeMisMatch);
           }
-        if(t == sl3::Type::Real)
+        if (t == sl3::Type::Real)
           CHECK_THROWS_AS ((void)_val.getReal (2.1), sl3::ErrTypeMisMatch);
 
-        if(t == sl3::Type::Text)
+        if (t == sl3::Type::Text)
           CHECK_THROWS_AS ((void)_val.getText ("foo"), sl3::ErrTypeMisMatch);
 
-        if(t == sl3::Type::Blob)
-          CHECK_THROWS_AS ((void)_val.getBlob (sl3::Blob{'a'}), sl3::ErrTypeMisMatch);
+        if (t == sl3::Type::Blob)
+          CHECK_THROWS_AS ((void)_val.getBlob (sl3::Blob{'a'}),
+                           sl3::ErrTypeMisMatch);
       }
   }
-
 
   void
   getDefaults ()
   {
-    if(_val.type() != sl3::Type::Int)
+    if (_val.type () != sl3::Type::Int)
       {
         CHECK_EQ (_val.get (100), 100);
         CHECK_EQ (_val.get (int64_t{100}), 100);
       }
 
-    if(_val.type() != sl3::Type::Real)
+    if (_val.type () != sl3::Type::Real)
       CHECK_EQ (_val.get (2.1), 2.1);
 
-    if(_val.type() != sl3::Type::Text)
+    if (_val.type () != sl3::Type::Text)
       CHECK_EQ (_val.get ("foo"), "foo");
 
-    if(_val.type() != sl3::Type::Blob)
+    if (_val.type () != sl3::Type::Blob)
       CHECK_EQ (_val.get (sl3::Blob{'a'}), sl3::Blob{'a'});
   }
-
-
 
   void
   typeAndStorage (sl3::Type type, sl3::Type storage)
@@ -129,11 +125,12 @@ struct check
       {
         if (type == sl3::Type::Int)
           {
+            // const int64_t one = 1;
             CHECK_THROWS_AS (_val.set (1), sl3::ErrTypeMisMatch);
-            CHECK_THROWS_AS (_val.set ((int64_t)1), sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS (_val.set (int64_t{1}), sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val = 1, sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val = sl3::Value{1}, sl3::ErrTypeMisMatch);
-            CHECK_THROWS_AS (_val = (int64_t)1, sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS (_val = int64_t{1}, sl3::ErrTypeMisMatch);
           }
         else if (type == sl3::Type::Text)
           {
@@ -151,43 +148,43 @@ struct check
           {
             CHECK_THROWS_AS (_val.set (sl3::Blob ()), sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val = sl3::Blob (), sl3::ErrTypeMisMatch);
-            CHECK_THROWS_AS (_val = sl3::Value{sl3::Blob ()}, sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS (_val = sl3::Value{sl3::Blob ()},
+                             sl3::ErrTypeMisMatch);
           }
       }
   }
 };
 
-
-
-
-SCENARIO("using value, basics")
+SCENARIO ("using value, basics")
 {
   using namespace sl3;
   GIVEN ("list of types without value")
   {
-    DbValue dbval{Type::Variant};
+    // DbValue dbval{Type::Variant};
 
     std::vector<DbValue> vals{DbValue{Type::Variant},
-      DbValue{Type::Null}, // usless but is variant
-      DbValue{Type::Int},
-      DbValue{Type::Real},
-      DbValue{Type::Text},
-      DbValue{Type::Blob} };
+                              DbValue{Type::Null} // useless but is variant
+                              ,
+                              DbValue{Type::Int},
+                              DbValue{Type::Real},
+                              DbValue{Type::Text},
+                              DbValue{Type::Blob}};
 
+    // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
     for (DbValue& dbval : vals)
       {
         WHEN ("using a value without value")
         {
-          check(dbval).typeAndStorage (Type::Variant, Type::Null);
+          check (dbval).typeAndStorage (Type::Variant, Type::Null);
 
           THEN ("access any value property will throw")
           {
-            check(dbval).throwsNullAccess() ;
+            check (dbval).throwsNullAccess ();
           }
           THEN ("access values with default ones return the default")
           {
-            check(dbval).getTypedDefaults() ;
-            check(dbval).getDefaults() ;
+            check (dbval).getTypedDefaults ();
+            check (dbval).getDefaults ();
           }
         }
       }
@@ -195,153 +192,143 @@ SCENARIO("using value, basics")
 
   GIVEN ("list of types")
   {
-    Types types{{Type::Int,Type::Real,Type::Text,Type::Blob}} ;
+    Types types{{Type::Int, Type::Real, Type::Text, Type::Blob}};
     WHEN ("creating type tagged values of wrong type")
     {
       THEN ("this will throw type miss match")
       {
-        CHECK_THROWS_AS( DbValue(1, types[1]), ErrTypeMisMatch) ;
-        CHECK_THROWS_AS( DbValue(1.1, types[0]), ErrTypeMisMatch) ;
-        CHECK_THROWS_AS( DbValue("f", types[3]), ErrTypeMisMatch) ;
-        CHECK_THROWS_AS( DbValue(Blob{}, types[2]), ErrTypeMisMatch) ;
+        CHECK_THROWS_AS (DbValue (1, types[1]), ErrTypeMisMatch);
+        CHECK_THROWS_AS (DbValue (1.1, types[0]), ErrTypeMisMatch);
+        CHECK_THROWS_AS (DbValue ("f", types[3]), ErrTypeMisMatch);
+        CHECK_THROWS_AS (DbValue (Blob{}, types[2]), ErrTypeMisMatch);
       }
     }
   }
 
   GIVEN ("list of typed types with value")
   {
-    DbValue dbval{Type::Variant};
+    Types types{{Type::Int, Type::Int, Type::Real, Type::Text, Type::Blob}};
 
-    Types types{{Type::Int, Type::Int,Type::Real,Type::Text,Type::Blob}} ;
+    std::vector<DbValue> vals{DbValue{1, types[0]},
+                              DbValue{int64_t{1000}, types[0]},
+                              DbValue{2.1, types[2]},
+                              DbValue{"hi", types[3]},
+                              DbValue{Blob{{'a', 'f'}}, types[4]}};
 
-    std::vector<DbValue> vals{
-      DbValue{1, types[0]},
-      DbValue{int64_t{1000}, types[0]},
-      DbValue{2.1, types[2]},
-      DbValue{"hi", types[3]},
-      DbValue{Blob{{'a','f'}},types[4]} };
-
-    size_t sizeIdx = 0 ;
+    size_t sizeIdx = 0;
 
     for (DbValue& dbval : vals)
       {
-        CHECK(types[sizeIdx] == dbval.dbtype()) ;
-        sizeIdx+=1 ;
+        // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
+        CHECK (types[sizeIdx] == dbval.dbtype ());
+        sizeIdx += 1;
 
         WHEN ("extracting other types")
         {
-          std::vector<Type> otherTypes ;
+          std::vector<Type> otherTypes;
 
-          using namespace std ;
-          copy_if(begin(types), end(types),
-                      std::back_inserter(otherTypes),
-                      [&dbval](Type t){ return t != dbval.dbtype() ; }
-          );
+          using namespace std;
+          copy_if (begin (types),
+                   end (types),
+                   std::back_inserter (otherTypes),
+                   [&dbval] (Type t) { return t != dbval.dbtype (); });
 
           THEN ("getting defaults of other types throws")
           {
-            check(dbval).getTypedDefaultsThrows(otherTypes) ;
+            check (dbval).getTypedDefaultsThrows (otherTypes);
           }
 
           THEN ("getting any other types throws")
           {
-            check(dbval).throwsSetTypes(otherTypes) ;
+            check (dbval).throwsSetTypes (otherTypes);
           }
-
 
           THEN ("setting any other types throws")
           {
-            check(dbval).throwsSetTypes(otherTypes) ;
+            check (dbval).throwsSetTypes (otherTypes);
           }
 
           THEN ("access values with default ones return the default")
           {
-            check(dbval).getDefaults() ;
+            check (dbval).getDefaults ();
           }
         }
 
         WHEN ("copy a typed value to a variant one")
         {
-          DbValue v{Type::Variant} ;
+          DbValue v{Type::Variant};
           THEN ("this always succeed")
           {
-            v = dbval ;
-            CHECK (value_type_eq(v.value(), dbval.value()));
+            v = dbval;
+            CHECK (value_type_eq (v.value (), dbval.value ()));
           }
         }
       }
   }
 }
 
-
-
 SCENARIO ("variant")
 {
-  using namespace sl3 ;
+  using namespace sl3;
   GIVEN ("an variant value")
   {
     DbValue dbval{Type::Variant};
 
-    WHEN("setting to any value")
+    WHEN ("setting to any value")
     {
       THEN ("this works")
       {
         check (dbval).typeAndStorage (Type::Variant, Type::Null);
         dbval = 1;
-        CHECK_EQ (dbval.getInt(), 1) ;
-        CHECK_EQ (dbval.getInt(0), 1) ;
-        CHECK_EQ (dbval.get(0), 1) ;
+        CHECK_EQ (dbval.getInt (), 1);
+        CHECK_EQ (dbval.getInt (0), 1);
+        CHECK_EQ (dbval.get (0), 1);
         dbval = int64_t{1000};
-        CHECK_EQ (dbval.getInt(), 1000) ;
-        CHECK_EQ (dbval.getInt(int64_t{0}), 1000) ;
-        CHECK_EQ (dbval.get(int64_t{0}), 1000) ;
+        CHECK_EQ (dbval.getInt (), 1000);
+        CHECK_EQ (dbval.getInt (int64_t{0}), 1000);
+        CHECK_EQ (dbval.get (int64_t{0}), 1000);
         check (dbval).typeAndStorage (Type::Variant, Type::Int);
         dbval = 2.1;
-        CHECK_EQ (dbval.getReal(), 2.1) ;
-        CHECK_EQ (dbval.getReal(1.0), 2.1) ;
-        CHECK_EQ (dbval.get(1.0), 2.1) ;
+        CHECK_EQ (dbval.getReal (), 2.1);
+        CHECK_EQ (dbval.getReal (1.0), 2.1);
+        CHECK_EQ (dbval.get (1.0), 2.1);
         check (dbval).typeAndStorage (Type::Variant, Type::Real);
         dbval = "foba";
-        CHECK_EQ (dbval.getText(), "foba") ;
-        CHECK_EQ (dbval.getText(""), "foba") ;
-        CHECK_EQ (dbval.get(""), "foba") ;
+        CHECK_EQ (dbval.getText (), "foba");
+        CHECK_EQ (dbval.getText (""), "foba");
+        CHECK_EQ (dbval.get (""), "foba");
         check (dbval).typeAndStorage (Type::Variant, Type::Text);
         dbval = Blob{'f'};
-        CHECK_EQ (dbval.getBlob(Blob{'a'}), Blob{'f'}) ;
-        CHECK_EQ (dbval.get(Blob{'a'}), Blob{'f'}) ;
-        CHECK_EQ (dbval.getBlob(), Blob{'f'}) ;
+        CHECK_EQ (dbval.getBlob (Blob{'a'}), Blob{'f'});
+        CHECK_EQ (dbval.get (Blob{'a'}), Blob{'f'});
+        CHECK_EQ (dbval.getBlob (), Blob{'f'});
         check (dbval).typeAndStorage (Type::Variant, Type::Blob);
 
-        dbval =  Value(1) ;
+        dbval = Value (1);
         check (dbval).typeAndStorage (Type::Variant, Type::Int);
-        dbval =  Value("foo") ;
+        dbval = Value ("foo");
         check (dbval).typeAndStorage (Type::Variant, Type::Text);
 
-        dbval.setNull() ;
+        dbval.setNull ();
         check (dbval).typeAndStorage (Type::Variant, Type::Null);
-
       }
     }
   }
-
-
 }
-
-
 
 SCENARIO ("assign values")
 {
-  using namespace sl3 ;
+  using namespace sl3;
   GIVEN ("a variant value")
   {
     DbValue dbval{Type::Variant};
 
-    WHEN("assingin any other typed value")
+    WHEN ("assingin any other typed value")
     {
       THEN ("this works")
       {
-        CHECK_NOTHROW(dbval = DbValue{"foo"}) ;
-        CHECK_NOTHROW(dbval = DbValue{Type::Real}) ;
+        CHECK_NOTHROW (dbval = DbValue{"foo"});
+        CHECK_NOTHROW (dbval = DbValue{Type::Real});
       }
     }
   }
@@ -350,49 +337,46 @@ SCENARIO ("assign values")
   {
     DbValue dbval{Type::Int};
 
-    WHEN("assign any other typed value")
+    WHEN ("assign any other typed value")
     {
       DbValue strval{"foo"};
 
       THEN ("this thorws")
       {
-        CHECK_THROWS_AS(dbval = strval, ErrTypeMisMatch) ;
-        CHECK_THROWS_AS(dbval = DbValue{Type::Real}, ErrTypeMisMatch) ;
+        CHECK_THROWS_AS (dbval = strval, ErrTypeMisMatch);
+        CHECK_THROWS_AS (dbval = DbValue{Type::Real}, ErrTypeMisMatch);
       }
     }
-    WHEN("assign a comaptible varaint")
+    WHEN ("assign a comaptible varaint")
     {
-
       DbValue strval{12, Type::Variant};
 
       THEN ("this works")
       {
-        CHECK_NOTHROW(dbval = strval) ;
-        CHECK(dbval.getInt()==12) ;
-        CHECK_NOTHROW(dbval = DbValue{Type::Variant}) ;
-        CHECK(dbval.isNull()) ;
+        CHECK_NOTHROW (dbval = strval);
+        CHECK (dbval.getInt () == 12);
+        CHECK_NOTHROW (dbval = DbValue{Type::Variant});
+        CHECK (dbval.isNull ());
       }
     }
-
   }
 
   GIVEN ("a real value")
   {
     DbValue dbval{Type::Real};
 
-    WHEN("assign a integer")
+    WHEN ("assign a integer")
     {
-      int i = 3 ;
+      int i = 3;
 
       THEN ("this works")
       {
-        CHECK_NOTHROW(dbval = i) ;
-        CHECK(dbval.getReal() == 3.0) ;
+        CHECK_NOTHROW (dbval = i);
+        CHECK (dbval.getReal () == 3.0);
       }
     }
   }
 }
-
 
 SCENARIO ("to stream")
 {
@@ -411,7 +395,6 @@ SCENARIO ("to stream")
 
       THEN ("the stream contains expected content")
       {
-
         stm << intval;
         CHECK (stm.str () == "1");
         stm.str (std::string ());
@@ -431,47 +414,40 @@ SCENARIO ("to stream")
         stm << blobval;
         CHECK (stm.str () == "<BLOB>");
         stm.str (std::string ());
-
       }
     }
   }
 }
-
 
 SCENARIO ("sorting")
 {
   using namespace sl3;
   GIVEN ("a typed integer and a typed real with the same value")
   {
-    DbValue ival{1} ;
-    DbValue rval{1.0} ;
+    DbValue ival{1};
+    DbValue rval{1.0};
 
-    check(ival).typeAndStorage(Type::Int, Type::Int) ;
-    check(rval).typeAndStorage(Type::Real, Type::Real) ;
+    check (ival).typeAndStorage (Type::Int, Type::Int);
+    check (rval).typeAndStorage (Type::Real, Type::Real);
 
     WHEN ("comparing them")
     {
       THEN ("they are value equal but not value type eaql")
       {
-        CHECK(dbval_eq(ival, ival)) ;
-        CHECK(dbval_eq(ival, rval)) ;
-        CHECK_FALSE(dbval_type_eq(ival, rval)) ;
-        CHECK(dbval_type_eq(rval, rval)) ;
-        CHECK_FALSE(dbval_type_eq(ival, DbValue{1, Type::Variant})) ;
+        CHECK (dbval_eq (ival, ival));
+        CHECK (dbval_eq (ival, rval));
+        CHECK_FALSE (dbval_type_eq (ival, rval));
+        CHECK (dbval_type_eq (rval, rval));
+        CHECK_FALSE (dbval_type_eq (ival, DbValue{1, Type::Variant}));
       }
       THEN ("they are value type less but not value less")
       {
-        CHECK(dbval_type_lt(ival, rval)) ;
-        CHECK(dbval_type_lt(ival, DbValue{1, Type::Variant})) ;
-        CHECK_FALSE(dbval_lt(ival, rval)) ;
-        CHECK_FALSE(dbval_type_lt(ival, DbValue{0, Type::Variant})) ;
-        CHECK_FALSE(dbval_type_lt(ival, DbValue{0})) ;
+        CHECK (dbval_type_lt (ival, rval));
+        CHECK (dbval_type_lt (ival, DbValue{1, Type::Variant}));
+        CHECK_FALSE (dbval_lt (ival, rval));
+        CHECK_FALSE (dbval_type_lt (ival, DbValue{0, Type::Variant}));
+        CHECK_FALSE (dbval_type_lt (ival, DbValue{0}));
       }
-
     }
-
   }
-
 }
-
-

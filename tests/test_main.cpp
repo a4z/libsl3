@@ -4,7 +4,7 @@
 
 
 #define DOCTEST_CONFIG_IMPLEMENT
-#include "doctest.h"
+#include "doctest/doctest.h"
 
 int main(int argc, char** argv) {
  // environment setup give me the code that should stand here
@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     context.applyCommandLine(argc, argv);
 
     // overrides
-    context.setOption("abort-after", 5); // stop test execution after 5 failed assertions 
+    context.setOption("abort-after", 5); // stop test execution after 5 failed assertions
     // context.setOption("sort", "name");   // sort the test cases by their name
 
     int res = context.run(); // run

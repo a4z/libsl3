@@ -157,8 +157,12 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  =
-HTML_EXTRA_FILES       =
+HTML_EXTRA_STYLESHEET  = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome.css
+HTML_EXTRA_FILES       = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-darkmode-toggle.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-fragment-copy-button.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-paragraph-link.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-custom/toggle-alternative-theme.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-interactive-toc.js
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
