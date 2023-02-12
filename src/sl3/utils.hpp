@@ -15,7 +15,7 @@ namespace sl3
   }
 
   inline size_t
-  as_size_t (long val)
+  as_size_t (ptrdiff_t val)
   {
     assert (val >= 0);
     return static_cast<size_t> (val);
