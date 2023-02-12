@@ -19,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Install Conan
-      run: pip install wheel conan=1.58
+      run: pip install wheel conan==1.58
       # id: conan
       # uses: turtlebrowser/get-conan@main
       # with:
