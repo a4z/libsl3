@@ -1,7 +1,14 @@
-# libsl3, the convenient C++11 interface for SQLite 3.x
+# libsl3, the convenient interface for SQLite 3.x
 
 libsl3 is designed to enable a comfortable and efficient communication with
 SQLite 3.x database based on its natural language, which is SQL.
+
+libsl3 origins back to a time when C++11 was new.
+It has been stable to support an existing user for quite a while, over a decade.
+With C++23 landing, development has been restarted.
+The goal is to keep the interface stable, but using newer C++ standard might justify some breaking changes.
+
+There is a branch preserving the original C++11 state for people looking for the old interface.
 
 ## A short usage example
 
@@ -56,7 +63,7 @@ This will output as expected
 2 two 2.1
 ```
 
-Additional samples can be found in the tests and tests/sampes subfolder.
+Additional samples can be found in the tests and tests/samples subfolder.
 
 ## Build requirements
 
@@ -67,9 +74,9 @@ Additional samples can be found in the tests and tests/sampes subfolder.
 libsl3 requires, no surprise, sqlite3, and uses doctest for unit testing.
 The requirements will be handled by CMake via Conan, therefore, Conan needs to be installed. https://docs.conan.io/
 
-## Addtitional information
+## Additional information
 
 The online documentation for libsl3 can be found here:
-http://a4z.bitbucket.io/docs/libsl3/html/index.html
+https://a4z.github.io/libsl3/
 
 License: https://www.mozilla.org/en-US/MPL/2.0/

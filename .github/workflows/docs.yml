@@ -3,7 +3,7 @@ name: Deploy doxygen docs
 
 on:
   push:
-    branches: ["master", "modernize/everything_not_now"]
+    branches: ["master_not_now", "modernize/everything_not_now"]
 
   workflow_dispatch:
 
