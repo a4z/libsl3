@@ -61,9 +61,9 @@ jobs:
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} --compile-no-warning-as-error
     - name: Build project
-      run:  cmake --build --preset ${{ matrix.build.preset }}
+      run:  cmake --build --preset ${{ matrix.build.preset }} --parallel
     - name: Run unit test
-      run:  ctest --preset ${{ matrix.build.preset }}
+      run:  ctest --preset ${{ matrix.build.preset }} --parallel
 
     # It's enough to cache packages
     - name: Clean up Conan
