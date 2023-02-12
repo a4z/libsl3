@@ -111,7 +111,7 @@
       "configurePreset": "msvc"
     },
     {
-      "name": "msvc-release`",
+      "name": "msvc-release",
       "inherits": "msvc",
       "configuration": "Release"
     },
