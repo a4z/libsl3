@@ -13,11 +13,27 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-12, ubuntu-22.04, windows-2022]
-    runs-on: ${{ matrix.os }}
+        build:
+          - {
+            os: ubuntu-22.04,
+            preset: default
+          }
+          - {
+            os: macos-12,
+            preset: xcode
+          },
+          - {
+            os: windows-2022,
+            preset: msvc
+          },
+
+    runs-on: ${{ matrix.build.os }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+    - name: Setup MSVC
+      if: startsWith(matrix.build.os, 'windows')
+      uses: ilammy/msvc-dev-cmd@v1
     - name: Install Conan
       run: pip3 install wheel conan==1.58
       # id: conan
@@ -29,22 +45,26 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ github.workspace }}/.conan/
-        key: ${{ matrix.os }}-${{ matrix.build }}-conan-home
+        key: ${{ matrix.build.os }}-${{ matrix.build.preset }}-conan-home
     - name: Create conan default profile
-      run: conan profile new default --detect --force
+      run: |
+        conan profile new default --detect --force
+        conan profile show default
+
     # not needed in this context, but later
     # - name: Enable conan revisions
     #   run: conan config set general.revisions_enabled=1
     - name: Adopt conan profiles on Ubuntu
-      if:  ${{ startsWith(matrix.os,'ubuntu') }}
+      if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
       run: conan profile update settings.compiler.libcxx=libstdc++11 default
     - uses: seanmiddleditch/gha-setup-ninja@master
+      if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
     - name: Configure project
-      run:  cmake --preset default --compile-no-warning-as-error # TODO , once all is foxed, remove
+      run:  cmake --preset ${{ matrix.build.preset }} --compile-no-warning-as-error
     - name: Build project
-      run:  cmake --build --preset default-release
+      run:  cmake --build --preset ${{ matrix.build.preset }}
     - name: Run unit test
-      run:  ctest --preset default-release
+      run:  ctest --preset ${{ matrix.build.preset }}
 
     # It's enough to cache packages
     - name: Clean up Conan
