@@ -81,7 +81,7 @@ target_link_libraries(_DefaultFlags
     INTERFACE default::libs default::warnings # default::coverage
 )
 
-TODO: Coverage, check https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
+# TODO: Coverage, check https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
 
 add_library(default::flags ALIAS _DefaultFlags)
 
