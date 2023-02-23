@@ -9,6 +9,7 @@
 #ifndef SL3_TYPES_HPP_
 #define SL3_TYPES_HPP_
 
+#include <cstddef>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -122,7 +123,7 @@ namespace sl3
   /**
    * A type for binary data
    */
-  using Blob = std::vector<char>;
+  using Blob = std::vector<std::byte>;
 }
 
 #endif

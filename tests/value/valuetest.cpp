@@ -44,17 +44,18 @@ SCENARIO("create, assign, copy and moveing values")
   using namespace sl3;
   GIVEN ("some values of each supported type")
   {
+    using b = std::byte;
     const int ival = 2 ;
     const double dval = 2.3 ;
     const std::string txt = "hello" ;
-    const Blob blob{'A','B'};
+    const Blob blob{b{'A'},b{'B'}};
 
     WHEN ("creating a values vector via the helper function")
     {
       ValueList vals {typed_values(ival, dval,txt, blob)} ;
 
       THEN ("the expected values with expected types have been created")
-      { 
+      {
          CHECK(vals.at(0).getType() == Type::Int) ;
          CHECK(vals.at(0).int64() == ival) ;
          CHECK(vals.at(1).getType() == Type::Real) ;
@@ -211,7 +212,7 @@ SCENARIO("invalid type access")
     const int ival = 2 ;
     const double dval = 2.3 ;
     const std::string txt = "hello" ;
-    const Blob blob{'A','B'};
+    const Blob blob{std::byte{'A'},std::byte{'B'}};
 
     auto check_invariants = [&](const Value val)
     {
@@ -399,7 +400,7 @@ SCENARIO("eject values")
   GIVEN ("a blob an a string value with knowen value")
   {
     const std::string txt = "hello" ;
-    const Blob blob{'A','B'};
+    const Blob blob{std::byte{'A'},std::byte{'B'}};
 
     sl3::Value sval{txt} ;
     sl3::Value bval{blob} ;
@@ -470,8 +471,8 @@ SCENARIO("compare  values")
         check_smaller(Value{1.0}, smaller);
         smaller.push_back(Value{"aaa"});
         check_smaller(Value{"bbb"}, smaller);
-        smaller.push_back(Value{Blob{'A'}});
-        check_smaller(Value{Blob{'A', 'B'}}, smaller);
+        smaller.push_back(Value{Blob{std::byte{'A'}}});
+        check_smaller(Value{Blob{std::byte{'A'}, std::byte{'B'}}}, smaller);
       }
     }
   }
