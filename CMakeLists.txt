@@ -10,6 +10,14 @@ project(libsl3
     LANGUAGES C CXX
 )
 
+if(PROJECT_IS_TOP_LEVEL)
+    # make git ignore the build directory
+    file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
@@ -20,23 +28,8 @@ include( setup_compiler )
 
 include( setup_doc )
 
-set(CONFIG_SQLITE3_INTERNAL false) # TODO, legacy, remove also in config.in
-
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}")
-
-# TODO, add on targets
-include_directories(
-${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-
-if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-    message(STATUS "sl3 set top project output pathes")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-endif( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
 
 
 

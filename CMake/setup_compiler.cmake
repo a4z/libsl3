@@ -81,4 +81,13 @@ target_link_libraries(_DefaultFlags
     INTERFACE default::libs default::warnings # default::coverage
 )
 
+# TODO: Coverage, check https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
+
 add_library(default::flags ALIAS _DefaultFlags)
+
+
+#[[
+-Wdeprecated-copy (C++ and Objective-C++ only)
+
+    Warn that the implicit declaration of a copy constructor or copy assignment operator is deprecated if the class has a user-provided copy constructor or copy assignment operator, in C++11 and up. This warning is enabled by -Wextra. With -Wdeprecated-copy-dtor, also deprecate if the class has a user-provided destructor.
+]]

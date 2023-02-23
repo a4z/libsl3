@@ -206,11 +206,14 @@ SCENARIO ("binding values of all types and using select to check the result")
     Database db{":memory:"};
     db.execute( "CREATE TABLE t (fi, fr, fs, fb, fn);");
     auto sqin = "INSERT INTO t VALUES (?,?,?,?,?);";
-    DbValues params = { 
-      DbValue{1} , 
-      DbValue {2.2}, 
-      DbValue {"drei"}, 
-      DbValue{Blob{1,2,3}}, 
+
+    auto b = [](int v) -> std::byte { return std::byte(v); };
+
+    DbValues params = {
+      DbValue{1} ,
+      DbValue {2.2},
+      DbValue {"drei"},
+      DbValue {Blob{b(1) , b(2) , b(3) , b(4)}},
       DbValue{Type::Variant}
     } ;
 

@@ -41,12 +41,10 @@ namespace sl3
    */
   class LIBSL3_API Database
   {
-
   public:
-    Database (const Database&) = delete;
+    Database (const Database&)            = delete;
     Database& operator= (const Database&) = delete;
-    Database& operator= (Database&&) = delete;
-
+    Database& operator= (Database&&)      = delete;
 
     /**
      * \brief Constructor
@@ -232,7 +230,6 @@ namespace sl3
      */
     std::string getMostRecentErrMsg ();
 
-
     /**
      * \brief Returns number of row that have changed since database opening.
      *
@@ -276,23 +273,20 @@ namespace sl3
      */
     class Transaction
     {
-
       sl3::Database* _db;
 
       explicit Transaction (Database&);
       friend class Database;
 
     public:
-      Transaction (const Transaction&) = delete;
+      Transaction (const Transaction&)            = delete;
       Transaction& operator= (const Transaction&) = delete;
-      Transaction& operator= (Transaction&&) = delete;
-
-
+      Transaction& operator= (Transaction&&)      = delete;
 
       /** \brief Move constructor
        *  A Transaction is movalble.
        */
-      Transaction (Transaction&&)  noexcept ;
+      Transaction (Transaction&&) noexcept;
 
       /** \brief Destructor
        *
@@ -331,6 +325,13 @@ namespace sl3
      * \brief Define internal::Connection type.
      *
      * Only internal used
+     *
+     * This uses a shared_ptr.
+     * libsl3 allows a sl3::Database do go out of scope,
+     * but keep a sl3::Command instance.
+     * The Command instance is still connected, and the underlying sqlite3
+     * connection will be closed when the last Command instance is destroyed.
+     *
      */
     using ConnectionPtr = std::shared_ptr<internal::Connection>;
 
@@ -347,15 +348,14 @@ namespace sl3
   };
 
   /**
-    * \brief Wraps sqlite3_errstr() function
-    *
-    * The sqlite3_errstr() interface returns the English-language text
-    * that describes the result code, as UTF
-    * \param errcode err number
-    * \return Count of changed rows
-    */
+   * \brief Wraps sqlite3_errstr() function
+   *
+   * The sqlite3_errstr() interface returns the English-language text
+   * that describes the result code, as UTF
+   * \param errcode err number
+   * \return Count of changed rows
+   */
   std::string getErrStr (int errcode);
-
 
 }
 

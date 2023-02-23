@@ -213,7 +213,7 @@ SCENARIO ("using value, basics")
                               DbValue{int64_t{1000}, types[0]},
                               DbValue{2.1, types[2]},
                               DbValue{"hi", types[3]},
-                              DbValue{Blob{{'a', 'f'}}, types[4]}};
+                              DbValue{Blob{{std::byte{'a'}, std::byte{'f'}}}, types[4]}};
 
     size_t sizeIdx = 0;
 
@@ -383,11 +383,12 @@ SCENARIO ("to stream")
   using namespace sl3;
   GIVEN ("some dbvalues ")
   {
+    using b = std::byte ;
     auto intval  = DbValue{1};
     auto dblval  = DbValue{1.1};
     auto strval  = DbValue{"foo"};
     auto nullval = DbValue{Type::Null};
-    auto blobval = DbValue{Blob{1, 2, 3}};
+    auto blobval = DbValue{Blob{ b{1}, b{2}, b{3}}};
 
     WHEN ("dumping to a stream")
     {

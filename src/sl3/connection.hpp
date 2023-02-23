@@ -46,9 +46,9 @@ namespace sl3
     private:
       Connection (Connection&&) = default;
 
-      Connection (const Connection&) = delete;
+      Connection (const Connection&)            = delete;
       Connection& operator= (const Connection&) = delete;
-      Connection& operator= (Connection&&) = delete;
+      Connection& operator= (Connection&&)      = delete;
 
       void close (); // called by the db
 
@@ -65,6 +65,7 @@ namespace sl3
     }
 
     inline Connection::~Connection () { close (); }
+
     inline sqlite3*
     Connection::db ()
     {
