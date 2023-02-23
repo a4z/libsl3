@@ -33,7 +33,7 @@ SCENARIO("check sqlite versions for library and app")
       THEN ("it should always pass")
       { // if this is ever important, just use as needed
         auto tsco = sl3::sqliteThreadSafeCompileOption () ;
-        auto ts = tsco == 0 || tsco != 0 ;
+        auto ts = tsco == 1 || tsco == 2 || tsco == 3;
         CHECK (ts) ;
       }
     }

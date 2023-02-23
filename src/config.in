@@ -25,7 +25,7 @@
     #else
         #define LIBSL3_API
     #endif
-#else    
+#else
     #define LIBSL3_API
 #endif
 
@@ -45,7 +45,6 @@ namespace sl3
   static constexpr int MINOR_VERSION = ${sl3_MINOR_VERSION} ;
   static constexpr int PATCH_VERSION = ${sl3_PATCH_VERSION} ;
 
-  static constexpr bool build_internal_sqlite3 = ${CONFIG_SQLITE3_INTERNAL};
 
   /**
    * \brief sqlite version string at compile time
