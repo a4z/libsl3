@@ -32,12 +32,16 @@ message("CONAN_PROFILE is set to ${CONAN_PROFILE}")
 
 if(isMultiConfig)
   foreach(TYPE ${CMAKE_CONFIGURATION_TYPES})
+  if(${TYPE} STREQUAL "RelWithDebInfo")
+    continue()
+  endif()
     conan_cmake_install(
       PATH_OR_REFERENCE ${CMAKE_SOURCE_DIR}
       REMOTE conancenter
       BUILD missing
       GENERATOR cmake_multi
-      PROFILE ${CONAN_PROFILE}
+      PROFILE_BUILD ${CONAN_PROFILE}
+      PROFILE_HOST ${CONAN_PROFILE}_${TYPE}
       SETTINGS build_type=${TYPE})
   endforeach()
   include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
@@ -47,7 +51,8 @@ else()
     REMOTE conancenter
     BUILD missing
     GENERATOR cmake
-    PROFILE ${CONAN_PROFILE}
+    PROFILE_BUILD ${CONAN_PROFILE}
+    PROFILE_HOST ${CONAN_PROFILE}_${CMAKE_BUILD_TYPE}
   )
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 endif()

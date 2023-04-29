@@ -10,6 +10,7 @@ project(libsl3
     LANGUAGES C CXX
 )
 
+
 if(PROJECT_IS_TOP_LEVEL)
     # make git ignore the build directory
     file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
