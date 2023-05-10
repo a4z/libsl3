@@ -5,11 +5,6 @@ on:
     - main
   pull_request:
 
-
-env:
-  CONAN_USER_HOME: "${{ github.workspace }}/.conan/"
-  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/.conan/short"
-
 jobs:
   build:
     strategy:
@@ -34,30 +29,7 @@ jobs:
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
-    - name: Install Conan
-      run: pip3 install wheel conan==1.58
-      # id: conan
-      # uses: turtlebrowser/get-conan@main
-      # with:
-      #   version: 1.57.0
-    - name: Cache Conan Home
-      id: cache-primes
-      uses: actions/cache@v3
-      with:
-        path: ${{ github.workspace }}/.conan/
-        key: ${{ matrix.build.os }}-${{ matrix.build.preset }}-conan-home
-    - name: Create conan default profile
-      run: |
-        conan profile new default --detect --force
-        conan profile show default
-
-    # not needed in this context, but later
-    # - name: Enable conan revisions
-    #   run: conan config set general.revisions_enabled=1
-    - name: Adopt conan profiles on Ubuntu
-      if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
-      run: conan profile update settings.compiler.libcxx=libstdc++11 default
-    - uses: seanmiddleditch/gha-setup-ninja@master
+    - run: sudo apt-get update && sudo apt-get install --no-install-recommends ninja-build xsltproc
       if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} --compile-no-warning-as-error
@@ -66,10 +38,4 @@ jobs:
     - name: Run unit test
       run:  ctest --preset ${{ matrix.build.preset }}-release --parallel
 
-    # It's enough to cache packages
-    - name: Clean up Conan
-      run: |
-        conan remove -f "*" --builds
-        conan remove -f "*" --src
-        conan remove -f "*" --system-reqs
 

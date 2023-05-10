@@ -26,15 +26,14 @@ namespace sl3
   {
   }
 
-  using namespace std;
 
   Dataset::Dataset (Dataset&& other) noexcept (
       std::is_nothrow_move_constructible<Container<DbValues>>::value&&
           std::is_nothrow_move_constructible<Types>::value&& std::
               is_nothrow_move_constructible<std::vector<std::string>>::value)
   : Container<std::vector<DbValues>> (std::move (other))
-  , _fieldtypes (move (other._fieldtypes))
-  , _names (move (other._names))
+  , _fieldtypes (std::move (other._fieldtypes))
+  , _names (std::move (other._names))
   {
   }
 
@@ -99,7 +98,7 @@ namespace sl3
   }
 
   size_t
-  Dataset::getIndex (const string& name) const
+  Dataset::getIndex (const std::string& name) const
   {
     using namespace std;
     auto pos = find (_names.begin (), _names.end (), name);
