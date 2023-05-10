@@ -29,7 +29,7 @@ jobs:
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
-    - uses: seanmiddleditch/gha-setup-ninja@master
+    - run: sudo apt-get update && sudo apt-get install --no-install-recommends ninja-build xsltproc
       if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} --compile-no-warning-as-error
