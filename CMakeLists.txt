@@ -1,9 +1,22 @@
 cmake_minimum_required(VERSION 3.25)
 
+
 set(sl3_MAJOR_VERSION 1)
 set(sl3_MINOR_VERSION 2)
-set(sl3_PATCH_VERSION 0)
+
+# sqlite major is always 3, no need to use that here
+# set(internal_SQLITE_MAJOR_V 3)
+set(internal_SQLITE_MINOR_V 41)
+set(internal_SQLITE_PATCH_V  2)
+
+# sqlite uses (X*1000000 + Y*1000 + Z),
+# but minor patch used since major is always 3
+math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE_PATCH_V}")
+
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
+
+
+set( M_THREADSAFE 1 CACHE STRING "defines SQLITE_THREADSAFE=<0 or 1 or 2>")
 
 project(libsl3
     VERSION ${sl3_VERSION}
@@ -22,17 +35,16 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
-include(conan1_setup)
 
 include( macros )
 include( setup_compiler )
+SET (USE_INTERNAL_SQLITE3 TRUE CACHE BOOL
+    "use buildin sqlite3 ON, use system sqlite3 header/lib, OFF" )
 
 include( setup_doc )
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}")
-
-
 
 ################################################################################
 
@@ -58,7 +70,6 @@ SET ( sl3_SRCHDR
 )
 #-------------------------------------------------------------------------------
 SET ( sl3_SRC
-
     src/sl3/columns.cpp
     src/sl3/config.cpp
     src/sl3/command.cpp
@@ -74,24 +85,26 @@ SET ( sl3_SRC
 )
 ################################################################################
 
-
-# TODO check win build
-
-# TODO , legacy
-
-# TODO, if on, forward to conan usage?
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
-
 add_library( sl3 ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
-set(sl3_install_targets ${sl3_install_targets} sl3)
-target_link_libraries(sl3
-    PRIVATE default::flags
-    PUBLIC CONAN_PKG::sqlite3
-)
 target_include_directories(sl3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
 )
+target_link_libraries(sl3
+    PRIVATE default::flags
+)
+
+if (USE_INTERNAL_SQLITE3)
+    include( sqlite/setup_sqlite3.cmake )
+else(USE_INTERNAL_SQLITE3)
+    find_package(SQLite3 REQUIRED)
+    target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
+    target_include_directories(sl3 PRIVATE ${SQLite3_INCLUDE_DIRS})
+endif(USE_INTERNAL_SQLITE3)
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+
+set(sl3_install_targets ${sl3_install_targets} sl3)
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(sl3 PROPERTIES
@@ -106,9 +119,7 @@ add_subdirectory(tests)
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
-if(a4qlt3_LOCAL_TRIALS)
-    add_subdirectory(trials)
-endif(a4qlt3_LOCAL_TRIALS)
+
 
 #only add install target if this is the top level project
 if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})

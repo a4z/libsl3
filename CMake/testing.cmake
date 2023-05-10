@@ -3,9 +3,21 @@ include_guard(GLOBAL)
 
 # this is obviously a requirements, tests...
 # TODO , find that file, in test and tests
-add_library(doctest_main OBJECT ${PROJECT_SOURCE_DIR}/tests/test_main.cpp)
 
-set(CON_DOCTEST CONAN_PKG::doctest)
+
+include(FetchContent)
+
+FetchContent_Declare(
+        DocTest
+        SYSTEM
+        GIT_REPOSITORY "https://github.com/onqtam/doctest"
+        GIT_TAG "v2.4.8"
+)
+FetchContent_MakeAvailable(DocTest)
+
+set(CON_DOCTEST doctest)
+
+add_library(doctest_main OBJECT ${PROJECT_SOURCE_DIR}/tests/test_main.cpp)
 
 target_link_libraries(doctest_main PUBLIC ${CON_DOCTEST})
 
