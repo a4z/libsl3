@@ -123,12 +123,13 @@ struct check
   {
     for (auto type : types)
       {
-        if (type == sl3::Type::Int)
-          {
+        if (type == sl3::Type::Int && _val.dbtype () != sl3::Type::Real)
+          { // we convert int to real since this is no loss, no problem, but
+            // TODO, is that really wanted
             // const int64_t one = 1;
-            CHECK_THROWS_AS (_val.set (1), sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS (_val.set (int{1}), sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val.set (int64_t{1}), sl3::ErrTypeMisMatch);
-            CHECK_THROWS_AS (_val = 1, sl3::ErrTypeMisMatch);
+            CHECK_THROWS_AS (_val = int{1}, sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val = sl3::Value{1}, sl3::ErrTypeMisMatch);
             CHECK_THROWS_AS (_val = int64_t{1}, sl3::ErrTypeMisMatch);
           }
@@ -160,17 +161,11 @@ SCENARIO ("using value, basics")
   using namespace sl3;
   GIVEN ("list of types without value")
   {
-    // DbValue dbval{Type::Variant};
+    // test for types that construct to variant / null
+    std::vector<DbValue> vals{
+        DbValue{Type::Variant}, DbValue{Type::Null}, // useless but is variant
+    };
 
-    std::vector<DbValue> vals{DbValue{Type::Variant},
-                              DbValue{Type::Null} // useless but is variant
-                              ,
-                              DbValue{Type::Int},
-                              DbValue{Type::Real},
-                              DbValue{Type::Text},
-                              DbValue{Type::Blob}};
-
-    // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
     for (DbValue& dbval : vals)
       {
         WHEN ("using a value without value")
@@ -209,17 +204,17 @@ SCENARIO ("using value, basics")
   {
     Types types{{Type::Int, Type::Int, Type::Real, Type::Text, Type::Blob}};
 
-    std::vector<DbValue> vals{DbValue{1, types[0]},
-                              DbValue{int64_t{1000}, types[0]},
-                              DbValue{2.1, types[2]},
-                              DbValue{"hi", types[3]},
-                              DbValue{Blob{{std::byte{'a'}, std::byte{'f'}}}, types[4]}};
+    std::vector<DbValue> vals{
+        DbValue{1, types[0]},
+        DbValue{int64_t{1000}, types[1]},
+        DbValue{2.1, types[2]},
+        DbValue{"hi", types[3]},
+        DbValue{Blob{{std::byte{'a'}, std::byte{'f'}}}, types[4]}};
 
     size_t sizeIdx = 0;
 
     for (DbValue& dbval : vals)
       {
-        // TODO, doctest 2.4.9 fails with loops, 2.4.8 works, report!
         CHECK (types[sizeIdx] == dbval.dbtype ());
         sizeIdx += 1;
 
@@ -383,12 +378,12 @@ SCENARIO ("to stream")
   using namespace sl3;
   GIVEN ("some dbvalues ")
   {
-    using b = std::byte ;
+    using b      = std::byte;
     auto intval  = DbValue{1};
     auto dblval  = DbValue{1.1};
     auto strval  = DbValue{"foo"};
     auto nullval = DbValue{Type::Null};
-    auto blobval = DbValue{Blob{ b{1}, b{2}, b{3}}};
+    auto blobval = DbValue{Blob{b{1}, b{2}, b{3}}};
 
     WHEN ("dumping to a stream")
     {

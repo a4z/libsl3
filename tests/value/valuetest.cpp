@@ -86,8 +86,9 @@ SCENARIO("create, assign, copy and moveing values")
 
       THEN ("every value can be copied to an other value")
       {
-
-        for (auto val : vals)
+        ValueList vals_m {typed_values(ival, dval,txt, blob)} ;
+        vals_m.emplace_back(Value{}) ;
+        for (auto val : vals_m)
           {
             CHECK_NOTHROW(val = vals.at(0));
             CHECK(val.getType() == Type::Int) ;
