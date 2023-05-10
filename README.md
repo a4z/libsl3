@@ -69,10 +69,10 @@ Additional samples can be found in the tests and tests/samples subfolder.
 
 * CMake
 * doxygen, optional, for building the documentation
-* Conan
 
 libsl3 requires, no surprise, sqlite3, and uses doctest for unit testing.
-The requirements will be handled by CMake via Conan, therefore, Conan needs to be installed. https://docs.conan.io/
+sqlite3 is included and will be build in the library itself, if this is unwanted, use `-DUSE_INTERNAL_SQLITE3=FALSE` when doing the CMake configuration.
+
 
 ## Additional information
 
