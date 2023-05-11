@@ -157,12 +157,16 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome.css
-HTML_EXTRA_FILES       = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-darkmode-toggle.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-fragment-copy-button.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-paragraph-link.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-custom/toggle-alternative-theme.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.1.0/doxygen-awesome-interactive-toc.js
+HTML_EXTRA_STYLESHEET  = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome.css
+HTML_EXTRA_FILES       = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-darkmode-toggle.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-fragment-copy-button.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-paragraph-link.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-custom/toggle-alternative-theme.js \
+                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-interactive-toc.js
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+GENERATE_TREEVIEW      = NO
+HTML_COLORSTYLE        = LIGHT
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
@@ -191,8 +195,6 @@ QHP_SECT_FILTER_ATTRS  =
 QHG_LOCATION           =
 GENERATE_ECLIPSEHELP   = NO
 ECLIPSE_DOC_ID         = org.doxygen.Project
-DISABLE_INDEX          = NO
-GENERATE_TREEVIEW      = NO
 ENUM_VALUES_PER_LINE   = 1
 TREEVIEW_WIDTH         = 250
 EXT_LINKS_IN_WINDOW    = NO
