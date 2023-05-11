@@ -246,16 +246,34 @@ SCENARIO ("using value, basics")
             check (dbval).getDefaults ();
           }
         }
-        // FIXME  yesterday it worked, today it creats a test timeout
-        // WHEN ("copy a typed value to a variant one")
-        // {
-        //   DbValue v{Type::Variant};
-        //   THEN ("this always succeed")
-        //   {
-        //     v = dbval;
-        //     CHECK (value_type_eq (v.value (), dbval.value ()));
-        //   }
-        // }
+      }
+  }
+  GIVEN ("another list of typed types with value")
+  {
+    Types types{{Type::Int, Type::Int, Type::Real, Type::Text, Type::Blob}};
+
+    std::vector<DbValue> vals{
+        DbValue{1, types[0]},
+        DbValue{int64_t{1000}, types[1]},
+        DbValue{2.1, types[2]},
+        DbValue{"hi", types[3]},
+        DbValue{Blob{{std::byte{'a'}, std::byte{'f'}}}, types[4]}};
+
+    size_t sizeIdx = 0;
+
+    for (DbValue& dbval : vals)
+      {
+        CHECK (types[sizeIdx] == dbval.dbtype ());
+        sizeIdx += 1;
+        WHEN ("copy a typed value to a variant one")
+        {
+          DbValue v{Type::Variant};
+          THEN ("this always succeed")
+          {
+            v = dbval;
+            CHECK (value_type_eq (v.value (), dbval.value ()));
+          }
+        }
       }
   }
 }
