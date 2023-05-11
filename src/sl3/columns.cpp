@@ -67,16 +67,19 @@ namespace sl3
         return DbValue (getBlob (idx), type);
         break;
 
+      // return this one at the end
+      // some compiler detect unreachable code and warn
       case SQLITE_NULL:
-        return DbValue (type);
+        // return DbValue (type);
         break;
 
       default: // LCOV_EXCL_START
         throw ErrUnexpected ("should never reach this line");
-        break;
+        break; // LCOV_EXCL_STOP
       }
-
-    return DbValue (type); // for the lexer  LCOV_EXCL_STOP
+    // some complains non reachable code.
+    // therefore, handle the Null value here
+    return DbValue (type);
   }
 
   std::vector<std::string>
