@@ -13,9 +13,9 @@
 #include <climits>
 #include <cmath>
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include <type_traits>
-#include <limits>
 
 #include "utils.hpp"
 
@@ -24,7 +24,8 @@ namespace sl3
   namespace
   {
     // not in coverage, only used in never reachable case/if branches
-    void raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
+    void
+    raiseErrUnexpected (const std::string& msg) // LCOV_EXCL_LINE
     {
       throw ErrUnexpected (msg); // LCOV_EXCL_LINE
     }
@@ -55,8 +56,9 @@ namespace sl3
         throw ErrTypeMisMatch{"Conversion loses fraction"};
 
       using limit = std::numeric_limits<OutT>;
-      //if (converted < limit::min () || converted > limit::max ())
-      if (is_less(converted, limit::min ()) || is_greater(converted, limit::max ()))
+      // if (converted < limit::min () || converted > limit::max ())
+      if (is_less (converted, limit::min ())
+          || is_greater (converted, limit::max ()))
         throw ErrOutOfRange{"Converted value to big"};
 
       return static_cast<OutT> (converted);
@@ -84,42 +86,42 @@ namespace sl3
   } //--------------------------------------------------------------------------
 
   Value::Value () noexcept
-  : _type {Type::Null}
+  : _type{Type::Null}
   {
   }
 
   Value::Value (int val) noexcept
-  : _type {Type::Int}
+  : _type{Type::Int}
   {
     _store.intval = val;
   }
 
   Value::Value (int64_t val) noexcept
-  : _type {Type::Int}
+  : _type{Type::Int}
   {
     _store.intval = val;
   }
 
   Value::Value (std::string val) noexcept
-  : _type {Type::Text}
+  : _type{Type::Text}
   {
     new (&_store.textval) std::string (std::move (val));
   }
 
   Value::Value (const char* val)
-  : _type {Type::Text}
+  : _type{Type::Text}
   {
     new (&_store.textval) std::string (val);
   }
 
   Value::Value (double val) noexcept
-  : _type {Type::Real}
+  : _type{Type::Real}
   {
     _store.realval = val;
   }
 
-  Value::Value (Blob val) noexcept :
-    _type {Type::Blob}
+  Value::Value (Blob val) noexcept
+  : _type{Type::Blob}
   {
     new (&_store.blobval) Blob (std::move (val));
   }
@@ -137,7 +139,7 @@ namespace sl3
   }
 
   Value::Value (const Value& other) noexcept
-  : _type {other._type}
+  : _type{other._type}
   {
     switch (_type)
       {
@@ -165,10 +167,11 @@ namespace sl3
       }
   }
 
-  Value::Value (Value&& other) noexcept : _type (other._type)
+  Value::Value (Value&& other) noexcept
+  : _type (other._type)
   {
     // gcc 5.3, only release, will complain if uninitialized
-    _store.intval = 0 ;
+    _store.intval = 0;
 
     switch (_type)
       {
@@ -416,7 +419,7 @@ namespace sl3
     if (_store.intval < limit::min () || _store.intval > limit::max ())
       throw ErrOutOfRange ("Implicit conversion int64_t to int, value to big");
 
-    return static_cast<int>(_store.intval);
+    return static_cast<int> (_store.intval);
   }
 
   Value::operator int64_t () const
@@ -440,16 +443,17 @@ namespace sl3
       }
     else if (_type == Type::Int)
       {
-//        using limit = std::numeric_limits<double>;
-//        if (_store.intval < limit::min () || _store.intval > limit::max ())
-//          throw Not possible  :- );
+        //        using limit = std::numeric_limits<double>;
+        //        if (_store.intval < limit::min () || _store.intval >
+        //        limit::max ())
+        //          throw Not possible  :- );
 
-        return static_cast<double>(_store.intval);
+        return static_cast<double> (_store.intval);
       }
     else if (_type != Type::Real)
       {
-        throw ErrTypeMisMatch (typeName (_type) + " != "
-                               + typeName (Type::Real));
+        throw ErrTypeMisMatch (typeName (_type)
+                               + " != " + typeName (Type::Real));
       }
 
     return _store.realval;
@@ -460,8 +464,8 @@ namespace sl3
     if (isNull ())
       throw ErrNullValueAccess ();
     else if (_type != Type::Text)
-      throw ErrTypeMisMatch (typeName (_type) + " != "
-                             + typeName (Type::Text));
+      throw ErrTypeMisMatch (typeName (_type)
+                             + " != " + typeName (Type::Text));
 
     return _store.textval;
   }
@@ -471,8 +475,8 @@ namespace sl3
     if (isNull ())
       throw ErrNullValueAccess ();
     else if (_type != Type::Blob)
-      throw ErrTypeMisMatch (typeName (_type) + " != "
-                             + typeName (Type::Blob));
+      throw ErrTypeMisMatch (typeName (_type)
+                             + " != " + typeName (Type::Blob));
 
     return _store.blobval;
   }
@@ -533,13 +537,20 @@ namespace sl3
   Value::ejectText ()
   {
     if (_type == Type::Null)
-      throw ErrNullValueAccess ();
+      {
+        throw ErrNullValueAccess ();
+      }
     else if (_type != Type::Text)
-      throw ErrTypeMisMatch (typeName (_type) + " != "
-                             + typeName (Type::Text));
-
+      {
+        throw ErrTypeMisMatch (typeName (_type)
+                               + " != " + typeName (Type::Text));
+      }
     auto tmp = std::move (_store.textval);
-    setNull ();
+    // setNull (); // does not works,
+    // gcc reports some obscure error in release build
+    // therefore we do it manually
+    _store.textval.~basic_string<std::string::value_type> ();
+    _type = Type::Null;
     return tmp;
   }
 
@@ -547,13 +558,21 @@ namespace sl3
   Value::ejectBlob ()
   {
     if (_type == Type::Null)
-      throw ErrNullValueAccess ();
+      {
+        throw ErrNullValueAccess ();
+      }
     else if (_type != Type::Blob)
-      throw ErrTypeMisMatch (typeName (_type) + " != "
-                             + typeName (Type::Blob));
+      {
+        throw ErrTypeMisMatch (typeName (_type)
+                               + " != " + typeName (Type::Blob));
+      }
 
     auto tmp = std::move (_store.blobval);
-    setNull ();
+    // setNull (); // does not works,
+    // gcc reports some obscure error in release build
+    // therefore we do it manually
+    _store.blobval.~vector<Blob::value_type> ();
+    _type = Type::Null;
     return tmp;
   }
 
@@ -654,7 +673,6 @@ namespace sl3
     return retval;
   }
 
-
   bool
   value_type_lt (const Value& a, const Value& b) noexcept
   {
@@ -670,8 +688,8 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          return is_less_equal(a._store.intval, b._store.realval);
-        //respect type, int type smaller if equal to real value
+          return is_less_equal (a._store.intval, b._store.realval);
+        // respect type, int type smaller if equal to real value
 
         return true;
       }
@@ -679,8 +697,8 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          return is_less(a._store.realval, b._store.intval);
-         //respect type, int type smaller if equal to real value
+          return is_less (a._store.realval, b._store.intval);
+        // respect type, int type smaller if equal to real value
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;
@@ -694,10 +712,10 @@ namespace sl3
           return a._store.textval < b._store.textval;
 
         // only blob types are bigger
-        return b.getType () == Type::Blob ;
+        return b.getType () == Type::Blob;
       }
 
-    //ASSERT_EXCEPT(a.getType () == Type::Blob, ErrUnexpected) ;
+    // ASSERT_EXCEPT(a.getType () == Type::Blob, ErrUnexpected) ;
 
     // this is blob
     if (b.getType () != Type::Blob)
@@ -712,15 +730,14 @@ namespace sl3
   {
     Value t{std::move (other)};
     // should be auto t{...} but 4.8.2 does not like it
-    other = std::move(*this) ;
+    other = std::move (*this);
     *this = std::move (t);
   }
-
 
   void
   swap (Value& a, Value& b) noexcept
   {
-    a.swap(b) ;
+    a.swap (b);
   }
 
   bool
@@ -738,13 +755,13 @@ namespace sl3
         if (b._type == Type::Int)
           retval = a._store.intval == b._store.intval;
         else if (b._type == Type::Real)
-          retval = is_equal(a._store.intval, b._store.realval);
+          retval = is_equal (a._store.intval, b._store.realval);
 
         break;
 
       case Type::Real:
         if (b._type == Type::Int)
-          retval = is_equal(a._store.realval, b._store.intval);
+          retval = is_equal (a._store.realval, b._store.intval);
         else if (b._type == Type::Real)
           retval = a._store.realval == b._store.realval;
 
@@ -782,7 +799,7 @@ namespace sl3
           return a._store.intval < b._store.intval;
 
         if (b.getType () == Type::Real)
-          return is_less(a._store.intval, b._store.realval);
+          return is_less (a._store.intval, b._store.realval);
 
         return true;
       }
@@ -790,7 +807,7 @@ namespace sl3
     if (a.getType () == Type::Real)
       {
         if (b.getType () == Type::Int)
-          return is_less(a._store.realval, b._store.intval);
+          return is_less (a._store.realval, b._store.intval);
 
         if (b.getType () == Type::Real)
           return a._store.realval < b._store.realval;
@@ -818,7 +835,5 @@ namespace sl3
     // we are both bolb
     return a._store.blobval < b._store.blobval;
   }
-
-
 
 } // ns

@@ -104,7 +104,7 @@ SCENARIO("using precompiled commands")
         CHECK_EQ (names1.at (0), ":eins");
         CHECK_EQ (names1.at (1), "@zwei");
         CHECK_EQ (names1.at (2), "$drei");
-        REQUIRE_THROWS_AS (names1.at (100), std::out_of_range) ;
+        REQUIRE_THROWS_AS (auto _ = names1.at (100), std::out_of_range) ;
 
         auto cmd2 = db.prepare(sql2) ;
         auto names2 = cmd2.getParameterNames () ;

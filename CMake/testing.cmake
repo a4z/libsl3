@@ -11,7 +11,7 @@ FetchContent_Declare(
         DocTest
         SYSTEM
         GIT_REPOSITORY "https://github.com/onqtam/doctest"
-        GIT_TAG "v2.4.8"
+        GIT_TAG "v2.4.11"
 )
 FetchContent_MakeAvailable(DocTest)
 

@@ -167,7 +167,7 @@ namespace sl3
   Dataset
   Command::select (const DbValues& parameters, const Types& types)
   {
-    Dataset  ds{std::move (types)};
+    Dataset  ds{types};
     Callback fillds = [&ds] (Columns columns) -> bool {
       if (ds._names.size () == 0)
         {
