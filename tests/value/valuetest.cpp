@@ -195,9 +195,14 @@ SCENARIO ("null value values access")
         CHECK_THROWS_AS ((void)static_cast<std::string> (val),
                          sl3::ErrNullValueAccess);
         CHECK_THROWS_AS ((void)val.blob (), sl3::ErrNullValueAccess);
-        // FIXME interesting error on gcc 13 release build
+        // TODO, this raises an error on gcc 13 release build
+        // interestingly, not for the string.
+        // add further investigation if I do the case operators as they should
+        // be or, if they should be removed
         // CHECK_THROWS_AS((void)static_cast<sl3::Blob>(val),
         // sl3::ErrNullValueAccess) ;
+        CHECK_THROWS_AS ((void)static_cast<const sl3::Blob&> (val),
+                         sl3::ErrNullValueAccess);
       }
     }
   }
@@ -256,8 +261,8 @@ SCENARIO ("invalid type access")
       if (val.getType () != Type::Blob)
         {
           CHECK_THROWS_AS ((void)val.blob (), ErrTypeMisMatch);
-          // FIXME interesting error on gcc 13 release build
-          // CHECK_THROWS_AS((void)static_cast<Blob>(val), ErrTypeMisMatch) ;
+          CHECK_THROWS_AS ((void)static_cast<const Blob&> (val),
+                           ErrTypeMisMatch);
         }
       else
         {
