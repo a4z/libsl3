@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -19,13 +19,16 @@
 
 namespace sl3
 {
-  Dataset::Dataset () noexcept : _fieldtypes (), _names () {}
+  Dataset::Dataset () noexcept
+  : _fieldtypes ()
+  , _names ()
+  {
+  }
   Dataset::Dataset (Types types)
   : _fieldtypes (std::move (types))
   , _names ()
   {
   }
-
 
   Dataset::Dataset (Dataset&& other) noexcept (
       std::is_nothrow_move_constructible<Container<DbValues>>::value&&
@@ -105,20 +108,20 @@ namespace sl3
     if (pos == _names.end ())
       throw ErrOutOfRange ("Field name " + name + " not found");
 
-    return as_size_t(distance (_names.begin (), pos));
+    return as_size_t (distance (_names.begin (), pos));
   }
 
   void
   Dataset::sort (const std::vector<size_t>& idxs, DbValueSort cmp)
   {
-    ASSERT_EXCEPT(cmp, ErrNullValueAccess) ;
+    ASSERT_EXCEPT (cmp, ErrNullValueAccess);
 
-    auto lessValues = [&](const DbValues& a, const DbValues& b) -> bool {
+    auto lessValues = [&] (const DbValues& a, const DbValues& b) -> bool {
       for (auto cur : idxs)
         {
           if (cmp (a.at (cur), b.at (cur)))
             return true;
-          else if (cmp (b.at (cur),a.at (cur)))
+          else if (cmp (b.at (cur), a.at (cur)))
             return false;
         }
       return false;

@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -80,8 +80,8 @@ namespace sl3
     Dataset (Dataset&&) noexcept (
         std::is_nothrow_move_constructible<Container<DbValues>>::value&&
                 std::is_nothrow_move_constructible<Types>::value&&
-                std::is_nothrow_move_constructible<std::vector<std::string>>::
-                    value);
+                std::is_nothrow_move_constructible<
+                    std::vector<std::string>>::value);
     //  = default; no mscv does not like it
 
     /**
@@ -160,9 +160,10 @@ namespace sl3
      *
      * \see Dataset::sort
      */
-    typedef bool (*DbValueSort)(const DbValue&, const DbValue&);
+    typedef bool (*DbValueSort) (const DbValue&, const DbValue&);
 
-    //using DbValueSort = std::function<bool(const DbValue&, const DbValue&)> ;
+    // using DbValueSort = std::function<bool(const DbValue&, const DbValue&)>
+    // ;
 
     /**
      * \brief Sort the Dataset
@@ -174,9 +175,7 @@ namespace sl3
      * \param idxs list of field indexes
      * \param cmp pointer to a less than compare function, default dbval_lt
      */
-    void sort (const std::vector<size_t>& idxs,
-               DbValueSort cmp = &dbval_lt
-    );
+    void sort (const std::vector<size_t>& idxs, DbValueSort cmp = &dbval_lt);
 
   private:
     Types                    _fieldtypes;

@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -20,8 +20,6 @@
 
 namespace sl3
 {
-
-
 
   namespace
   {
@@ -52,7 +50,9 @@ namespace sl3
         return type != Type::Null;
       } //----------------------------------------------------------------------
 
-      template <typename... ARGS> bool oneOf (ARGS... args)
+      template <typename... ARGS>
+      bool
+      oneOf (ARGS... args)
       {
         return oneof (type, args...);
 
@@ -84,7 +84,9 @@ namespace sl3
         return *this;
       } //----------------------------------------------------------------------
 
-      template <typename... ARGS> ensure& oneOf (ARGS... args)
+      template <typename... ARGS>
+      ensure&
+      oneOf (ARGS... args)
       {
         if (!oneof (type, args...))
           throw ErrTypeMisMatch (typeName (type)
@@ -106,19 +108,14 @@ namespace sl3
       Type type;
     };
 
-
   } //--------------------------------------------------------------------------
-
-
-
-
 
   bool
   dbval_type_eq (const DbValue& a, const DbValue& b) noexcept
   {
-    if (a.dbtype()  == b.dbtype())
+    if (a.dbtype () == b.dbtype ())
       {
-        return value_type_eq(a.getValue(), b.getValue()) ;
+        return value_type_eq (a.getValue (), b.getValue ());
       }
 
     return false;
@@ -127,12 +124,12 @@ namespace sl3
   bool
   dbval_type_lt (const DbValue& a, const DbValue& b) noexcept
   {
-    if (value_type_lt(a.getValue (), b.getValue ()))
+    if (value_type_lt (a.getValue (), b.getValue ()))
       {
         return true;
       }
 
-    if (value_type_eq(a.getValue(), b.getValue()))
+    if (value_type_eq (a.getValue (), b.getValue ()))
       { // a variant is bigger
         return a.dbtype () < b.dbtype ();
       }
@@ -155,7 +152,7 @@ namespace sl3
   }
 
   DbValue::DbValue (Type type) noexcept
-      : _type (type == Type::Null ? Type::Variant : type)
+  : _type (type == Type::Null ? Type::Variant : type)
   {
   }
 
@@ -199,12 +196,12 @@ namespace sl3
   {
     if (!canAssign (other))
       {
-        throw ErrTypeMisMatch (
-            typeName (_type) + "="
-            + (other._type == Type::Variant
-                   ? typeName (other._type) + " with storage type"
-                         + typeName (other.type ())
-                   : typeName (other._type)));
+        throw ErrTypeMisMatch (typeName (_type) + "="
+                               + (other._type == Type::Variant
+                                      ? typeName (other._type)
+                                            + " with storage type"
+                                            + typeName (other.type ())
+                                      : typeName (other._type)));
       }
 
     assign (other);
@@ -216,12 +213,12 @@ namespace sl3
   {
     if (!canAssign (other))
       {
-        throw ErrTypeMisMatch (
-            typeName (_type) + "="
-            + (other._type == Type::Variant
-                   ? typeName (other._type) + " with storage type"
-                         + typeName (other.type ())
-                   : typeName (other._type)));
+        throw ErrTypeMisMatch (typeName (_type) + "="
+                               + (other._type == Type::Variant
+                                      ? typeName (other._type)
+                                            + " with storage type"
+                                            + typeName (other.type ())
+                                      : typeName (other._type)));
       }
     _value = std::move (other._value);
 
@@ -404,7 +401,7 @@ namespace sl3
   }
 
   std::string // TODO consider change to reference, with warning in the doc
-      DbValue::get (const std::string& defval) const
+  DbValue::get (const std::string& defval) const
   {
     if (_value.getType () != Type::Text)
       return defval;
@@ -413,7 +410,7 @@ namespace sl3
   }
 
   Blob // TODO consider change to reference, with warning in the doc
-      DbValue::get (const Blob& defval) const
+  DbValue::get (const Blob& defval) const
   {
     if (_value.getType () != Type::Blob)
       return defval;

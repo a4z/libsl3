@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -12,10 +12,10 @@
 
 #include "connection.hpp"
 
-
 namespace
 {
-  sqlite3* opendb(const std::string& name, int openFlags)
+  sqlite3*
+  opendb (const std::string& name, int openFlags)
   {
     if (openFlags == 0)
       {
@@ -27,15 +27,15 @@ namespace
 
     if (sl3rc != SQLITE_OK)
       {
-        using scope_guard = std::unique_ptr<sqlite3, decltype(&sqlite3_close)>;
+        using scope_guard
+            = std::unique_ptr<sqlite3, decltype (&sqlite3_close)>;
         scope_guard guard{db, &sqlite3_close};
         throw sl3::SQLite3Error{sl3rc, sqlite3_errmsg (db)};
       }
-    return db ;
+    return db;
   }
 
 }
-
 
 namespace sl3
 {
@@ -46,18 +46,17 @@ namespace sl3
     return std::string (sqlite3_errstr (errcode));
   }
 
-
   Database::Database (const std::string& name, int flags)
-  : _connection {new internal::Connection{opendb(name, flags)}}
+  : _connection{new internal::Connection{opendb (name, flags)}}
   {
     sqlite3_extended_result_codes (_connection->db (), true);
   }
 
   Database::Database (Database&& other) noexcept
-      : _connection (std::move (other._connection))
+  : _connection (std::move (other._connection))
   {
     // always have a connection, but an invalid one
-    other._connection.reset(new internal::Connection{nullptr});
+    other._connection.reset (new internal::Connection{nullptr});
   }
 
   Database::~Database () noexcept
@@ -89,14 +88,14 @@ namespace sl3
   void
   Database::execute (const char* sql)
   {
-    _connection->ensureValid() ;
+    _connection->ensureValid ();
     char* dbMsg = nullptr;
 
     int rc = sqlite3_exec (_connection->db (), sql, nullptr, nullptr, &dbMsg);
 
     if (rc != SQLITE_OK)
       {
-        using scope_guard = std::unique_ptr<char, decltype(&sqlite3_free)>;
+        using scope_guard = std::unique_ptr<char, decltype (&sqlite3_free)>;
         scope_guard guard (dbMsg, &sqlite3_free);
         throw SQLite3Error{rc, dbMsg};
       }
@@ -111,7 +110,7 @@ namespace sl3
   void
   Database::execute (const std::string& sql, Callback cb)
   {
-    prepare (sql).execute (std::move(cb));
+    prepare (sql).execute (std::move (cb));
   }
 
   Dataset
@@ -131,7 +130,7 @@ namespace sl3
   {
     DbValue retVal (Type::Variant);
 
-    Callback cb = [&retVal](Columns cols) -> bool {
+    Callback cb = [&retVal] (Columns cols) -> bool {
       retVal = cols.getValue (0);
       return false; // exit after first row
     };
@@ -147,7 +146,7 @@ namespace sl3
   {
     DbValue retVal{type};
 
-    Callback cb = [&retVal, type](Columns cols) -> bool {
+    Callback cb = [&retVal, type] (Columns cols) -> bool {
       retVal = cols.getValue (0, type);
       return false; // exit after first row
     };
@@ -161,36 +160,36 @@ namespace sl3
   int
   Database::getMostRecentErrCode ()
   {
-    _connection->ensureValid() ;
+    _connection->ensureValid ();
     return sqlite3_extended_errcode (_connection->db ());
   }
 
   std::string
   Database::getMostRecentErrMsg ()
   {
-    _connection->ensureValid() ;
+    _connection->ensureValid ();
     return std::string (sqlite3_errmsg (_connection->db ()));
   }
-
 
   std::size_t
   Database::getTotalChanges ()
   {
-    _connection->ensureValid() ;
-    return static_cast<std::size_t>(sqlite3_total_changes (_connection->db ()));
+    _connection->ensureValid ();
+    return static_cast<std::size_t> (
+        sqlite3_total_changes (_connection->db ()));
   }
 
   std::size_t
   Database::getRecentlyChanged ()
   {
-    _connection->ensureValid() ;
-    return static_cast<std::size_t>(sqlite3_changes (_connection->db ()));
+    _connection->ensureValid ();
+    return static_cast<std::size_t> (sqlite3_changes (_connection->db ()));
   }
 
   int64_t
   Database::getLastInsertRowid ()
   {
-    _connection->ensureValid() ;
+    _connection->ensureValid ();
     return sqlite3_last_insert_rowid (_connection->db ());
   }
 
@@ -227,7 +226,7 @@ namespace sl3
   void
   Database::Transaction::commit ()
   {
-    if(_db)
+    if (_db)
       {
         _db->execute ("COMMIT TRANSACTION");
         _db = nullptr;

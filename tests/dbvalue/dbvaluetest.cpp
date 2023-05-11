@@ -222,9 +222,9 @@ SCENARIO ("using value, basics")
         {
           std::vector<Type> otherTypes;
           std::copy_if (std::begin (types),
-                   std::end (types),
-                   std::back_inserter (otherTypes),
-                   [&dbval] (Type t) { return t != dbval.dbtype (); });
+                        std::end (types),
+                        std::back_inserter (otherTypes),
+                        [&dbval] (Type t) { return t != dbval.dbtype (); });
 
           THEN ("getting defaults of other types throws")
           {

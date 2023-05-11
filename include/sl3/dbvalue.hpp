@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -15,7 +15,6 @@
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 #include <sl3/value.hpp>
-
 
 // todo after a wile, type and storage type become confusing
 // find better name, type should be value type,
@@ -319,7 +318,6 @@ namespace sl3
      */
     Type dbtype () const;
 
-
     /**
      * \brief Returns the type of the underlying Value
      *
@@ -330,7 +328,6 @@ namespace sl3
      * \return the type the value actual holds
      */
     Type type () const;
-
 
     /**
      * \brief Check if assignment would be OK
@@ -358,7 +355,6 @@ namespace sl3
     friend class DbValues;
 
     void assign (const DbValue& other);
-
   };
 
   /**
@@ -425,7 +421,6 @@ namespace sl3
    * \return the comparison result
    */
   bool dbval_lt (const DbValue& a, const DbValue& b) noexcept;
-
 
 }
 
