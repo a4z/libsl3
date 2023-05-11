@@ -46,40 +46,36 @@ namespace sl3
   bool
   is_less (const T1& a, const T2& b)
   {
-    using common_type = std::common_type_t<T1, T2> ;
-    return std::less<common_type>{}(
-        static_cast<common_type> (a),
-        static_cast<common_type> (b));
+    using common_type = std::common_type_t<T1, T2>;
+    return std::less<common_type>{}(static_cast<common_type> (a),
+                                    static_cast<common_type> (b));
   }
 
   template <typename T1, typename T2>
   bool
   is_greater (const T1& a, const T2& b)
   {
-    using common_type = std::common_type_t<T1, T2> ;
-    return std::greater<common_type>{}(
-        static_cast<common_type> (a),
-        static_cast<common_type> (b));
+    using common_type = std::common_type_t<T1, T2>;
+    return std::greater<common_type>{}(static_cast<common_type> (a),
+                                       static_cast<common_type> (b));
   }
 
   template <typename T1, typename T2>
   bool
   is_less_equal (const T1& a, const T2& b)
   {
-    using common_type = std::common_type_t<T1, T2> ;
-    return std::less_equal<common_type>{}(
-        static_cast<common_type> (a),
-        static_cast<common_type> (b));
+    using common_type = std::common_type_t<T1, T2>;
+    return std::less_equal<common_type>{}(static_cast<common_type> (a),
+                                          static_cast<common_type> (b));
   }
 
   template <typename T1, typename T2>
   bool
   is_equal (const T1& a, const T2& b)
   {
-    using common_type = std::common_type_t<T1, T2> ;
-    return std::equal_to<common_type>{}(
-        static_cast<common_type> (a),
-        static_cast<common_type> (b));
+    using common_type = std::common_type_t<T1, T2>;
+    return std::equal_to<common_type>{}(static_cast<common_type> (a),
+                                        static_cast<common_type> (b));
   }
 
 }

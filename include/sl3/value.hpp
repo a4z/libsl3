@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -15,10 +15,8 @@
 #include <sl3/error.hpp>
 #include <sl3/types.hpp>
 
-
 namespace sl3
 {
-
 
   /**
    *  \brief
@@ -38,7 +36,7 @@ namespace sl3
      *
      * Creates a Null Value
      */
-    Value () noexcept ;
+    Value () noexcept;
 
     /** \brief Constructor
      *
@@ -226,10 +224,9 @@ namespace sl3
      */
     Type getType () const noexcept;
 
-//    friend bool operator== (const Value& a, const Value& b) noexcept;
-//    friend bool operator< (const Value& a, const Value& b) noexcept;
+    //    friend bool operator== (const Value& a, const Value& b) noexcept;
+    //    friend bool operator< (const Value& a, const Value& b) noexcept;
     friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
-
 
     friend bool value_type_eq (const Value& a, const Value& b) noexcept;
     friend bool value_type_lt (const Value& a, const Value& b) noexcept;
@@ -244,8 +241,7 @@ namespace sl3
      *
      *  \param other value to swap with
      */
-    void swap(Value& other) noexcept;
-
+    void swap (Value& other) noexcept;
 
   private:
     Type _type{Type::Null};
@@ -285,8 +281,6 @@ namespace sl3
    */
   bool value_type_eq (const Value& a, const Value& b) noexcept;
 
-
-
   /**
    * \brief less than, including type info
    *
@@ -308,7 +302,6 @@ namespace sl3
    * \returns true if given Value a is less than given Value b
    */
   bool value_type_lt (const Value& a, const Value& b) noexcept;
-
 
   /**
    * \brief equality, ignoring type info
@@ -343,16 +336,17 @@ namespace sl3
   void swap (Value& a, Value& b) noexcept;
 
   /// Define a constant for a Value that is null
-  //static const Value NullValue{};
+  // static const Value NullValue{};
 }
 
 namespace std
-{  // only allowed to extend namespace std with specializations
+{ // only allowed to extend namespace std with specializations
 
-  template<> // specialization
-  inline void swap<sl3::Value>(sl3::Value& lhs, sl3::Value& rhs)
+  template <> // specialization
+  inline void
+  swap<sl3::Value> (sl3::Value& lhs, sl3::Value& rhs)
   {
-    sl3::swap(lhs, rhs) ;
+    sl3::swap (lhs, rhs);
   }
 }
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- ------------- Copyright (c) 2009-2017 H a r a l d  A c h i t z ---------------
+ ------------- Copyright (c) 2009-2023 H a r a l d  A c h i t z ---------------
  ---------- < h a r a l d dot a c h i t z at g m a i l dot c o m > ------------
  ---- This Source Code Form is subject to the terms of the Mozilla Public -----
  ---- License, v. 2.0. If a copy of the MPL was not distributed with this -----
@@ -47,10 +47,10 @@ namespace sl3
              const std::string& sql,
              DbValues           parameters);
 
-    Command ()               = delete;
-    Command (const Command&) = delete;
+    Command ()                         = delete;
+    Command (const Command&)           = delete;
     Command operator= (const Command&) = delete;
-    Command operator= (Command&&) = delete;
+    Command operator= (Command&&)      = delete;
 
   public:
     /**
@@ -120,7 +120,7 @@ namespace sl3
      * \return false if processing the query result shall stop
      *       \n true otherwise
      */
-    using Callback = std::function<bool(Columns)>;
+    using Callback = std::function<bool (Columns)>;
 
     /**
      * \brief Execute the command
@@ -130,7 +130,6 @@ namespace sl3
      *
      */
     void execute ();
-
 
     /**
      * \brief Execute the command
@@ -143,25 +142,25 @@ namespace sl3
     void execute (const DbValues& parameters);
 
     /**
-      * \brief Execute the command applying given callback
-      *
-      * Applies given parameters and run the current command.
-      *
-      * \throw sl3::ErrTypeMisMatch given parameters are of the wrong size.
-      * \param cb a callback
-      * \param parameters a list of parameters
-      */
+     * \brief Execute the command applying given callback
+     *
+     * Applies given parameters and run the current command.
+     *
+     * \throw sl3::ErrTypeMisMatch given parameters are of the wrong size.
+     * \param cb a callback
+     * \param parameters a list of parameters
+     */
     void execute (RowCallback& cb, const DbValues& parameters = {});
 
     /**
-      * \brief Execute the command applying given callback
-      *
-      *  Applies given parameters and run the current command.
-      *
-      * \throw sl3::ErrTypeMisMatch given parameters are of the wrong size.
-      * \param cb a callback
-      * \param parameters a list of parameters
-      */
+     * \brief Execute the command applying given callback
+     *
+     *  Applies given parameters and run the current command.
+     *
+     * \throw sl3::ErrTypeMisMatch given parameters are of the wrong size.
+     * \param cb a callback
+     * \param parameters a list of parameters
+     */
     void execute (Callback cb, const DbValues& parameters = {});
 
     /**
