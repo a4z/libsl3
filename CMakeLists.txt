@@ -15,9 +15,6 @@ math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE
 
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
-
-set( M_THREADSAFE 1 CACHE STRING "defines SQLITE_THREADSAFE=<0 or 1 or 2>")
-
 project(libsl3
     VERSION ${sl3_VERSION}
     LANGUAGES C CXX

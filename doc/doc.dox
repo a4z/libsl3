@@ -1,22 +1,64 @@
 
-
-
 /*!
-\mainpage A C++ wrapper for SQLite3
-
+\mainpage A C++ interface for SQLite
 
 \tableofcontents
 
-  libsl3 allows efficient communication with
-  <a href="https://www.sqlite.org">SQLite3</a>  databases in a natural way,
-  which is SQL. <BR>
-  The library does not try to be a ORM and does also not introduce some SQL like
-  C++ syntax for communication with a sqlite database. <BR>
-  Read from and write to a database is supported via SQL
-  and prepared commands, aka stored procedures. <BR>
-  The SQLite duck typing concept is fully supported but there is also a way to add
-  type checking to the communication with a database. <BR>
+libsl3 enables efficient communication with <a href="https://www.sqlite.org">SQLite3</a> databases using the natural approach, which is SQL.<BR>
+The library does not attempt to function as an ORM (Object-Relational Mapping) and does not introduce C++ syntax resembling SQL for interacting with a SQLite database. <BR>
+Reading from and writing to a database is accomplished through SQL and prepared commands, also known as stored procedures.<BR>
+The library fully supports the SQLite duck typing concept, but it also offers a means to incorporate type checking when communicating with a database.
 
+
+\section History
+
+libsl3 stared as a C++98 project long time ago. <BR>
+Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.<BR>
+
+Today, libsl3 it's still around. A C++ interface for SQLite.
+
+\section Installation
+
+Get you copy of the source code from the <a href="https://github.com/a4z/libsl3">libsl3 GitHub repository</a>.
+
+The project has the following dependencies:
+\li Required: <a href="https://cmake.org">CMake</a> for building the library
+\li Optional: <a href="https://www.doxygen.nl">doxygen</a> for buliding the documentation
+\li Optional: <a href="https://www.sqlite.org">SQLite3</a>, sqlite is included in the source code
+\li Internal: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
+
+\subsection build Building the library
+
+The library can be build with cmake. No surprises here.
+
+On Linux, the configure and build process might be as follows:
+
+\code
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake --build build --parallel
+\endcode
+
+\paragraph cmake_opts CMake options to control the build process.
+
+\li \c USE_INTERNAL_SQLITE3:<BR>
+If set to ON, the internal sqlite3 source code will be used.<BR>
+If set to OFF, the system sqlite3 will be used.<BR>
+Default is ON.
+
+
+If the internal sqlite is choosen, ther eare
+<a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a> available.
+
+\paragraph int_sqlite Advandages using the internal sqlite3
+
+\li No external dependencie.
+\li sqlite3 is used in the tested version
+\li consuming libsl3 becomes easier
+
+\paragraph ext_sqlite Disadvandages using the internal sqlite3
+
+\li A bigger library
+\li Since sqlite will be compiled with the librayr, slighlty longer build times
 
 
 \section overview Overview
@@ -78,16 +120,12 @@ See \ref dbvalue for more information.
 
 \note
 Text is a UTF-8 string since this is a good default and keeps things simple.<BR>
-If UTF-16 string types is wanted this needs to be implement
-self. The same is true for the special endianess functions sqlite provides.<BR>
-There are 2 ways to do with writing a own sl3::RowCallback or a
-sl3::Command::Callback.
+If UTF-16 string types is wanted this needs to be implement self.
+The same is true for the special endianess functions sqlite provides.<BR>
+There are 2 ways to do with writing an own sl3::RowCallback or a sl3::Command::Callback.
 See \ref rowcallback from more infomration.<BR>
-If you think on of these features should be supported by the library please
-file a feature request in the issue tracker.
-
+If you think on of these features should be supported by the library please file a feature request in the issue tracker.
 <BR>
-
 
 
 \section dbvalue sl3::DbValue
