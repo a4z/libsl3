@@ -27,6 +27,9 @@ The project has the following dependencies:
 \li Optional: <a href="https://www.sqlite.org">SQLite3</a>, sqlite is included in the source code
 \li Internal: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
 
+If doxygen is not found, it will not be possible to build the documentation.
+doctest if fetched on demand, except if \c BUILD_TESTING is set to OFF.
+
 \subsection build Building the library
 
 The library can be build with cmake. No surprises here.
@@ -45,8 +48,7 @@ If set to ON, the internal sqlite3 source code will be used.<BR>
 If set to OFF, the system sqlite3 will be used.<BR>
 Default is ON.
 
-
-If the internal sqlite is choosen, ther eare
+For the internal sqlite distribution there are
 <a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a> available.
 
 \paragraph int_sqlite Advandages using the internal sqlite3

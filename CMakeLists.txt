@@ -33,12 +33,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
 
+include(CTest)
 include( macros )
 include( setup_compiler )
 SET (USE_INTERNAL_SQLITE3 TRUE CACHE BOOL
     "use buildin sqlite3 ON, use system sqlite3 header/lib, OFF" )
 
 include( setup_doc )
+
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}")
@@ -111,8 +113,9 @@ if(BUILD_SHARED_LIBS)
     )
 endif(BUILD_SHARED_LIBS)
 
-enable_testing()
-add_subdirectory(tests)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif(BUILD_TESTING)
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
