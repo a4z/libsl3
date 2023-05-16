@@ -12,9 +12,8 @@ The library fully supports the SQLite duck typing concept, but it also offers a 
 
 \section History
 
-libsl3 stared as a C++98 project long time ago. <BR>
-Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.<BR>
-
+libsl3 stared as a C++98 project long time ago.
+Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.
 Today, libsl3 it's still around. A C++ interface for SQLite.
 
 \section Installation
@@ -41,7 +40,7 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
 cmake --build build --parallel
 \endcode
 
-\paragraph cmake_opts CMake options to control the build process.
+<b>CMake options to control the build process:</b>
 
 \li \c USE_INTERNAL_SQLITE3:<BR>
 If set to ON, the internal sqlite3 source code will be used.<BR>
@@ -51,13 +50,13 @@ Default is ON.
 For the internal sqlite distribution there are
 <a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a> available.
 
-\paragraph int_sqlite Advandages using the internal sqlite3
+<b>Advandages using the internal sqlite3</b>
 
 \li No external dependencie.
 \li sqlite3 is used in the tested version
 \li consuming libsl3 becomes easier
 
-\paragraph ext_sqlite Disadvandages using the internal sqlite3
+<b>Disadvandages using the internal sqlite3</b>
 
 \li A bigger library
 \li Since sqlite will be compiled with the librayr, slighlty longer build times
@@ -65,18 +64,18 @@ For the internal sqlite distribution there are
 
 \section overview Overview
 
-  A database is represented via sl3::Database. <BR>
-  A database can execute SQL strings to read or write data. <BR>
+A database is represented via sl3::Database. <BR>
+A database can execute SQL strings to read or write data. <BR>
 
-  A sl3::Command is a compiled SQL statement which can contain parameters. <BR>
-  Parameters are sl3::DbValues, a sl3::Container of sl3::DbValue instances. <BR>
+A sl3::Command is a compiled SQL statement which can contain parameters. <BR>
+Parameters are sl3::DbValues, a sl3::Container of sl3::DbValue instances. <BR>
 
-  sl3::DbValues can also be used to receive data from a database. <BR>
-  Requesting data from a database will return a sl3::Dataset with rows
-  of sl3::DbValues where each field is a \ref dbvalue.
+sl3::DbValues can also be used to receive data from a database. <BR>
+Requesting data from a database will return a sl3::Dataset with rows
+of sl3::DbValues where each field is a \ref dbvalue.
 
-  An other, and fully customizable way to receive data from a database is
-  covered in the \ref rowcallback section.
+Another and fully customizable way to receive data from a database is
+covered in the \ref rowcallback section.
 
 
 \subsection overview_example A first example
@@ -124,38 +123,40 @@ See \ref dbvalue for more information.
 Text is a UTF-8 string since this is a good default and keeps things simple.<BR>
 If UTF-16 string types is wanted this needs to be implement self.
 The same is true for the special endianess functions sqlite provides.<BR>
-There are 2 ways to do with writing an own sl3::RowCallback or a sl3::Command::Callback.
+There are 2 ways to do with writing an own sl3::RowCallback or a
+sl3::Command::Callback.
 See \ref rowcallback from more infomration.<BR>
-If you think on of these features should be supported by the library please file a feature request in the issue tracker.
+If you think on of these features should be supported by the library please file
+a feature request in the issue tracker.
 <BR>
 
 
 \section dbvalue sl3::DbValue
 
-  This class can be used to read from and write to a sl3::Database. <BR>
-  A sl3::DbValues can hold different types. It can be defined if any type
-  is allowed for an instance or only a certain one.<BR>
+This class can be used to read from and write to a sl3::Database. <BR>
+A sl3::DbValues can hold different types. It can be defined if any type
+is allowed for an instance or only a certain one.<BR>
 
-  There are two sl3::Type properties.
-  One defines the type rule, the other the type value.
+There are two sl3::Type properties.
+One defines the type rule, the other the type value.
 
-    - sl3::DbValue::dbtype: The type rule<BR>
-    This property is assigned at creation and can not be change <BR>
-    If the type is sl3::Type::Variant the instance can hold any type,
-    otherwise only the specified type is allowed, one of: <BR>
-    sl3::Type::Int, sl3::Type::Real, sl3::Type::Text, sl3::Type::Blob
-    <BR>
-    <BR>
-    - sl3::DbValue::getStorageType: The current value type<BR>
-    This property depends on the actual value<BR>
-    If the type is Type::Variant values of any type can be used,
-    otherwise it has to be the type specified. <BR>
-    If a sl3::DbValue::isNull the storage type is also sl3::Type::Null.
+- sl3::DbValue::dbtype: The type rule<BR>
+This property is assigned at creation and can not be change <BR>
+If the type is sl3::Type::Variant the instance can hold any type,
+otherwise only the specified type is allowed, one of: <BR>
+sl3::Type::Int, sl3::Type::Real, sl3::Type::Text, sl3::Type::Blob
+<BR>
+<BR>
+- sl3::DbValue::getStorageType: The current value type<BR>
+This property depends on the actual value<BR>
+If the type is Type::Variant values of any type can be used,
+otherwise it has to be the type specified. <BR>
+If a sl3::DbValue::isNull the storage type is also sl3::Type::Null.
 
 
-  Both properties are used to validate reads and writes at runtime. <BR>
-  If a value is set or read that is omitted by the type property
-  an sl3::ErrTypeMisMatch exception is thrown.
+Both properties are used to validate reads and writes at runtime. <BR>
+If a value is set or read that is omitted by the type property
+an sl3::ErrTypeMisMatch exception is thrown.
 
 
 
@@ -174,15 +175,15 @@ There are getters for each type
 - sl3::DbValue::getText
 - sl3::DbValue::getBlob
 
-There are 2 version for this function, with and without a default value as
-argument.
+There are 2 version for each of this function. With and without a default value
+as argument.
 <BR>
-The version without default value will throw an sl3::ErrNullValueAccess
+The version without a default value will throw a sl3::ErrNullValueAccess
 exception is case that sl3::DbValue::isNull is true for the instance. <BR>
-The version with a default value as argument  will return the passed argument
-in  case that the current sl3::DbValue::isNull.
+The version with a default value as argument will return the passed argument
+in case that the current sl3::DbValue::isNull.
 
-If a type getter is used for a wrong the storage type a sl3::ErrTypeMisMatch
+If a type getter is used for a wrong storage type a sl3::ErrTypeMisMatch
 exception is thrown.
 
 - sl3::DbValue::get
@@ -262,16 +263,13 @@ running this program will print
 
 \subsection type_example_3  Ensure types for a sl3::Dataset
 
-  Of course it might be unwanted to get different types for one column into
-  a sl3::Dataset. <BR>
-  This can be ensured by passing the allowed sl3::Types to the
-  sl3::Database::select call. <BR>
-  If the wanted types are not these which are in the table, an sl3::TypeMisMatch
-  exception is thrown.
+It might be unwanted to get different types for one column into a sl3::Dataset. <BR>
+This can be ensured by passing the allowed sl3::Types to the
+sl3::Database::select call. <BR>
+If the wanted types are not those in the table, an sl3::TypeMisMatch
+exception is thrown.
 
 \include main5.cpp
-
-
 
 this code will throw an exception, as expected and print
 \code
@@ -282,13 +280,13 @@ sl3::TypeMisMatch:Int not one of required types
 
 \section rowcallback RowCallback and Callback functions
 
-  A custom way to handle query results is to usea
-  a sl3::RowCallback or the sl3::Commad::Callback function. <BR>
-  They can be passed to the sl3::Database::execute and sl3::Commad::execute
-  function.<BR>
-  The callback will be called with a sl3::Columns representing the current row
-  for each row in the query result.<BR>
-  The callback returns if it wants proceed to be called or not.
+A custom way to handle query results is to usea
+a sl3::RowCallback or the sl3::Commad::Callback function. <BR>
+They can be passed to the sl3::Database::execute and sl3::Commad::execute
+function.<BR>
+The callback will be called with a sl3::Columns representing the current row
+for each row in the query result.<BR>
+The callback returns if it wants proceed to be called or not.
 
 \subsection columns sl3::Columns
 

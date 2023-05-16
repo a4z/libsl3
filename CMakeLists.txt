@@ -60,7 +60,6 @@ SET ( sl3_HDR
     include/sl3/rowcallback.hpp
     include/sl3/types.hpp
     include/sl3/value.hpp
-
 )
 #-------------------------------------------------------------------------------
 SET ( sl3_SRCHDR
@@ -124,6 +123,7 @@ include(CMakeLocalOpts.cmake OPTIONAL)
 #only add install target if this is the top level project
 if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
+    INSTALL(FILES include/sl3.hpp DESTINATION include/sl3)
     INSTALL(TARGETS ${sl3_install_targets}
       RUNTIME DESTINATION bin
       LIBRARY DESTINATION lib${LIB_SUFFIX}

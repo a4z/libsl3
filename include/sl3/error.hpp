@@ -196,9 +196,9 @@ namespace sl3
   };
 
   /**
-   * \brief Shortcut
+   * \brief Alias for ErrType<ErrCode::SQL3Error>
    *
-   * Assign a name to an ErrType with ErrCode::SQL3Error.
+   * A short alias for an ErrType<ErrCode::SQL3Error>
    */
   using SQLite3Error = ErrType<ErrCode::SQL3Error>;
 

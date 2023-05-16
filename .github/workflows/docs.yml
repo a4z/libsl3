@@ -3,6 +3,8 @@ name: Deploy doxygen docs
 
 on:
   push:
+    tags:
+      - 'v*'
     branches: ["main", "docsupdate"]
 
   workflow_dispatch:
@@ -40,7 +42,8 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/tags/v')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
