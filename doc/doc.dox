@@ -4,7 +4,7 @@
 
 \tableofcontents
 
-libsl3 enables efficient communication with <a href="https://www.sqlite.org">SQLite3</a> databases using the natural approach, which is SQL.<BR>
+libsl3 enables efficient communication with <a href="https://www.sqlite.org">SQLite3</a> databases using the natural approach, SQL.<BR>
 The library does not attempt to function as an ORM (Object-Relational Mapping) and does not introduce C++ syntax resembling SQL for interacting with a SQLite database. <BR>
 Reading from and writing to a database is accomplished through SQL and prepared commands, also known as stored procedures.<BR>
 The library fully supports the SQLite duck typing concept, but it also offers a means to incorporate type checking when communicating with a database.
@@ -16,6 +16,8 @@ libsl3 stared as a C++98 project long time ago.
 Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.
 Today, libsl3 it's still around. A C++ interface for SQLite.
 
+
+
 \section Installation
 
 Get you copy of the source code from the <a href="https://github.com/a4z/libsl3">libsl3 GitHub repository</a>.
@@ -26,7 +28,10 @@ The project has the following dependencies:
 \li Optional: <a href="https://www.sqlite.org">SQLite3</a>, sqlite is included in the source code
 \li Internal: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
 
+The minimum required C++ standard is C++17.
+
 If doxygen is not found, it will not be possible to build the documentation.
+
 doctest if fetched on demand, except if \c BUILD_TESTING is set to OFF.
 
 \subsection build Building the library
@@ -56,10 +61,13 @@ For the internal sqlite distribution there are
 \li sqlite3 is used in the tested version
 \li consuming libsl3 becomes easier
 
+Programs consuming libsl3 do not need to link against sqlite3.
+
 <b>Disadvandages using the internal sqlite3</b>
 
 \li A bigger library
-\li Since sqlite will be compiled with the librayr, slighlty longer build times
+\li Slighlty longer build time for building libsl3
+(not for programs consuming libsl3)
 
 
 \section overview Overview
@@ -97,8 +105,6 @@ sl3::Database encapsulates a sqlite database. <BR>
 It can be directly used, but it has also a virtual destructor and can be used
 as a base class.
 
-<BR>
-
 \section value_types Types in libsl3
 
 The types in libsl3 are those which are available in
@@ -118,7 +124,6 @@ In sqlite a clomun can hold different types and libsl3 supports this concept.
 
 See \ref dbvalue for more information.
 
-
 \note
 Text is a UTF-8 string since this is a good default and keeps things simple.<BR>
 If UTF-16 string types is wanted this needs to be implement self.
@@ -128,8 +133,6 @@ sl3::Command::Callback.
 See \ref rowcallback from more infomration.<BR>
 If you think on of these features should be supported by the library please file
 a feature request in the issue tracker.
-<BR>
-
 
 \section dbvalue sl3::DbValue
 
@@ -153,12 +156,9 @@ If the type is Type::Variant values of any type can be used,
 otherwise it has to be the type specified. <BR>
 If a sl3::DbValue::isNull the storage type is also sl3::Type::Null.
 
-
 Both properties are used to validate reads and writes at runtime. <BR>
 If a value is set or read that is omitted by the type property
 an sl3::ErrTypeMisMatch exception is thrown.
-
-
 
 \subsection value_types_and_null Using sl3::DbValues
 
@@ -205,7 +205,6 @@ sl3::TypeMisMatch:Int!=Text
 example
 \endcode
 
-<BR>
 
 \section command  sl3::Command
 
