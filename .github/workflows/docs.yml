@@ -5,7 +5,7 @@ on:
   push:
     tags:
       - 'v*'
-    branches: ["main", "docsupdate"]
+    branches: ["main"]
 
   workflow_dispatch:
 
@@ -42,8 +42,9 @@ jobs:
 
   deploy:
     needs: build
-    # if: github.ref == 'refs/heads/main'
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main'
+    # todo, switch to update pages only for new releases
+    # if: startsWith(github.ref, 'refs/tags/v')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
