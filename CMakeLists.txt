@@ -15,9 +15,6 @@ math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE
 
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
 
-
-set( M_THREADSAFE 1 CACHE STRING "defines SQLITE_THREADSAFE=<0 or 1 or 2>")
-
 project(libsl3
     VERSION ${sl3_VERSION}
     LANGUAGES C CXX
@@ -36,12 +33,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
 
+include(CTest)
 include( macros )
 include( setup_compiler )
 SET (USE_INTERNAL_SQLITE3 TRUE CACHE BOOL
     "use buildin sqlite3 ON, use system sqlite3 header/lib, OFF" )
 
 include( setup_doc )
+
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}")
@@ -61,7 +60,6 @@ SET ( sl3_HDR
     include/sl3/rowcallback.hpp
     include/sl3/types.hpp
     include/sl3/value.hpp
-
 )
 #-------------------------------------------------------------------------------
 SET ( sl3_SRCHDR
@@ -114,8 +112,9 @@ if(BUILD_SHARED_LIBS)
     )
 endif(BUILD_SHARED_LIBS)
 
-enable_testing()
-add_subdirectory(tests)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif(BUILD_TESTING)
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
@@ -124,6 +123,7 @@ include(CMakeLocalOpts.cmake OPTIONAL)
 #only add install target if this is the top level project
 if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
+    INSTALL(FILES include/sl3.hpp DESTINATION include/sl3)
     INSTALL(TARGETS ${sl3_install_targets}
       RUNTIME DESTINATION bin
       LIBRARY DESTINATION lib${LIB_SUFFIX}

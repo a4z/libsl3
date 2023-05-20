@@ -8,12 +8,17 @@ include_guard(GLOBAL)
 include(FetchContent)
 
 FetchContent_Declare(
-        DocTest
+        doctest
         SYSTEM
         GIT_REPOSITORY "https://github.com/onqtam/doctest"
         GIT_TAG "v2.4.11"
 )
-FetchContent_MakeAvailable(DocTest)
+# FetchContent_MakeAvailable(DocTest)
+# ^^ would add this to make install, and this is unwanted
+if(NOT doctest_POPULATED)
+  FetchContent_Populate(doctest)
+  add_subdirectory(${doctest_SOURCE_DIR} ${doctest_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 set(CON_DOCTEST doctest)
 

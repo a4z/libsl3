@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = libsl3
 PROJECT_NUMBER         = ${sl3_VERSION}
-PROJECT_BRIEF          = "The convenient C++11 interface for SQLite 3.x"
+PROJECT_BRIEF          = "A C++ interface for SQLite"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = "${PROJECT_BINARY_DIR}/doc/"
 CREATE_SUBDIRS         = NO
