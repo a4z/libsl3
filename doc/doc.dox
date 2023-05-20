@@ -28,7 +28,7 @@ The project has the following dependencies:
 \li Optional: <a href="https://www.doxygen.nl">doxygen</a> for buliding the documentation
 \li Optional: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
 
-If doxygen is not found, it will not be possible to build the documentation.
+If doxygen is not found it will not be possible to build the documentation.
 
 doctest is fetched on demand, except if \c BUILD_TESTING is set to OFF.
 
@@ -36,7 +36,7 @@ doctest is fetched on demand, except if \c BUILD_TESTING is set to OFF.
 
 The library can be build with CMake. No surprises here.
 
-On Linux, the configure and build process might be as follows:
+On Linux, the configure and build process might appear as follows:
 
 \code
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
