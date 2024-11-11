@@ -5,7 +5,7 @@ SQLite database based on its natural language, which is SQL.
 
 libsl3 originated back at a time when C++11 was new.
 It has remained stable to support existing users for quite a while, over a decade.
-With the arrival of C++23, development has been restarted. The minimum required C++ standard is now C++17.
+With the arrival of C++23, development has restarted, but due to a lack of time, not much has happened so far. The minimum required C++ standard is now C++17.
 The goal is to keep the interface stable, but using a newer C++ standard might justify some breaking changes.
 
 For people seeking the old version, release v1.1.31001 preserves the original C++11 state with CMake 2.8 support.
