@@ -30,6 +30,8 @@ jobs:
         with:
           cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
           ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
+      - name: Get actual vcpkg ports
+        run: cd $VCPKG_INSTALLATION_ROOT && git pull
       - name: Checkout
         uses: actions/checkout@v4
       # For doc gen present should not be used, since the multi config is not needed, but keep that for now
