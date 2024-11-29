@@ -1,0 +1,23 @@
+{
+  "version": 8,
+  "include": ["base.json"],
+  "configurePresets": [
+    {
+      "name": "xcode",
+      "generator": "Xcode",
+      "inherits": "base"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "xcode",
+      "configurePreset": "xcode",
+      "configuration": "Debug"
+    },
+    {
+      "name": "xcode-release",
+      "configurePreset": "xcode",
+      "configuration": "Release"
+    }
+  ]
+}

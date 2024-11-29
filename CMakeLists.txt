@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.29)
 
 
 set(sl3_MAJOR_VERSION 1)
@@ -21,25 +21,26 @@ project(libsl3
 )
 
 
-if(PROJECT_IS_TOP_LEVEL)
-    # make git ignore the build directory
-    file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(commonCompilerWarnings CONFIG REQUIRED)
 
-LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
 
-include(CTest)
-include( macros )
-include( setup_compiler )
-SET (USE_INTERNAL_SQLITE3 TRUE CACHE BOOL
-    "use buildin sqlite3 ON, use system sqlite3 header/lib, OFF" )
 
-include( setup_doc )
+# is in toolchain file now
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# done differently now
+LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake/lib")
+
+#optional enable personal test/trial dir
+include(CMakeLocalOpts.cmake OPTIONAL)
+
+
+SET (USE_INTERNAL_SQLITE3 FALSE CACHE BOOL
+    "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" )
+
+# TODO, reactivate that
+#include( setup_doc )
 
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
@@ -88,9 +89,13 @@ target_include_directories(sl3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
 )
-target_link_libraries(sl3
-    PRIVATE default::flags
-)
+# target_link_libraries(sl3
+#     PRIVATE
+#     a4z::commonCompilerWarnings
+
+# )
+
+target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
 
 if (USE_INTERNAL_SQLITE3)
     include( sqlite/setup_sqlite3.cmake )
@@ -102,7 +107,7 @@ endif(USE_INTERNAL_SQLITE3)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
-set(sl3_install_targets ${sl3_install_targets} sl3)
+set(sl3_install_targets sl3)
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(sl3 PROPERTIES
@@ -116,20 +121,8 @@ if(BUILD_TESTING)
     add_subdirectory(tests)
 endif(BUILD_TESTING)
 
-#optional enable personal test/trial dir
-include(CMakeLocalOpts.cmake OPTIONAL)
+include(lib/install)
 
-
-#only add install target if this is the top level project
-if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-    INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
-    INSTALL(FILES include/sl3.hpp DESTINATION include/sl3)
-    INSTALL(TARGETS ${sl3_install_targets}
-      RUNTIME DESTINATION bin
-      LIBRARY DESTINATION lib${LIB_SUFFIX}
-      ARCHIVE DESTINATION lib${LIB_SUFFIX}
-    )
-endif( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-
+include(lib/doxydoc)
 
 

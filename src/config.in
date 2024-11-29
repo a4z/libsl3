@@ -29,6 +29,8 @@
     #define LIBSL3_API
 #endif
 
+#include <cstdint>
+
 //#define LIBSL3_API
 
 /**

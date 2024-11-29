@@ -1,0 +1,59 @@
+{
+  "version": 8,
+  "include": ["base.json"],
+  "configurePresets": [
+    {
+      "name": "msvc22",
+      "inherits": "base",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "TOOLCHAIN_INCLUDES": "toolchain/use-vcpkg"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc22",
+      "configurePreset": "msvc22",
+      "configuration": "Debug",
+      "jobs": 0
+    },
+    {
+      "name": "msvc22-release",
+      "configurePreset": "msvc22",
+      "configuration": "Release",
+      "jobs": 0
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "msvc22",
+      "inherits": "base",
+      "configurePreset": "msvc22"
+    },
+    {
+      "name": "msvc22-release",
+      "inherits": "msvc22",
+      "configuration": "Release"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "msvc22",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "msvc22"
+        },
+        {
+          "type": "build",
+          "name": "msvc22"
+        },
+        {
+          "type": "test",
+          "name": "msvc22"
+        }
+      ]
+    }
+  ]
+}

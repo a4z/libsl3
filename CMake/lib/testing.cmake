@@ -1,26 +1,9 @@
 include_guard(GLOBAL)
 
 
-# this is obviously a requirements, tests...
-# TODO , find that file, in test and tests
+find_package(doctest CONFIG REQUIRED)
 
-
-include(FetchContent)
-
-FetchContent_Declare(
-        doctest
-        SYSTEM
-        GIT_REPOSITORY "https://github.com/onqtam/doctest"
-        GIT_TAG "v2.4.11"
-)
-# FetchContent_MakeAvailable(DocTest)
-# ^^ would add this to make install, and this is unwanted
-if(NOT doctest_POPULATED)
-  FetchContent_Populate(doctest)
-  add_subdirectory(${doctest_SOURCE_DIR} ${doctest_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
-
-set(CON_DOCTEST doctest)
+set(CON_DOCTEST doctest::doctest)
 
 add_library(doctest_main OBJECT ${PROJECT_SOURCE_DIR}/tests/test_main.cpp)
 
@@ -39,7 +22,11 @@ function (add_doctest NAME)
 
     add_executable(sl3test-${NAME} ${D_TEST_SOURCES} $<TARGET_OBJECTS:doctest_main>)
     # use naming what we had for now
-    target_link_libraries(sl3test-${NAME} sl3 ${CON_DOCTEST} default::flags)
+    target_link_libraries(sl3test-${NAME} PRIVATE sl3 ${CON_DOCTEST}
+       # a4z::commonCompilerWarnings
+    # "$<BUILD_INTERFACE:a4z:commonCompilerWarnings>"
+    )
+    target_link_libraries(sl3test-${NAME} PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
 
     if(NOT D_TEST_TIMEOUT)
         set(D_TEST_TIMEOUT 3)
@@ -50,6 +37,12 @@ function (add_doctest NAME)
 
     # use naming what we had for now
     add_test(NAME sl3test_${NAME} COMMAND sl3test-${NAME})
+    # with clang, we use this to get coverage
+    if(COVERAGE_TOOL STREQUAL "llvm-profdata")
+        # important, the profile file shall have the same name as the test binary, not the test name (cmake test name)
+        set_tests_properties(sl3test_${NAME} PROPERTIES ENVIRONMENT "LLVM_PROFILE_FILE=sl3test-${NAME}.profraw")
+    endif()
+
 
     set_tests_properties(sl3test_${NAME}
         PROPERTIES

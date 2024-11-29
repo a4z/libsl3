@@ -11,28 +11,32 @@ jobs:
       matrix:
         build:
           - {
-            os: ubuntu-22.04,
-            preset: default
+            os: ubuntu-latest,
+            preset: ninja
           }
           - {
-            os: macos-12,
+            os: macos-latest,
             preset: xcode
           }
           - {
             os: windows-2022,
-            preset: msvc
+            preset: msvc22
           }
     runs-on: ${{ matrix.build.os }}
     steps:
+    - uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
+        ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
-    - run: sudo apt-get update && sudo apt-get install --no-install-recommends ninja-build xsltproc
+    - run: sudo apt-get update && sudo apt-get install --no-install-recommends ninja-build xsltproc doxygen graphviz lcov
       if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
     - name: Configure project
-      run:  cmake --preset ${{ matrix.build.preset }}
+      run:  cmake --preset ${{ matrix.build.preset }} -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
     - name: Build project
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel
     - name: Run unit test

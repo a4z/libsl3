@@ -157,12 +157,12 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            =
 HTML_FOOTER            =
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome.css
-HTML_EXTRA_FILES       = ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-darkmode-toggle.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-fragment-copy-button.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-paragraph-link.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-custom/toggle-alternative-theme.js \
-                         ${PROJECT_SOURCE_DIR}/doc/doxygen-awesome-css-2.2.0/doxygen-awesome-interactive-toc.js
+HTML_EXTRA_STYLESHEET  = @AWESOME_CSS_DIR@/doxygen-awesome.css
+HTML_EXTRA_FILES       = @AWESOME_CSS_DIR@/doxygen-awesome-darkmode-toggle.js \
+                         @AWESOME_CSS_DIR@/doxygen-awesome-fragment-copy-button.js \
+                         @AWESOME_CSS_DIR@/doxygen-awesome-paragraph-link.js \
+                         @AWESOME_CSS_DIR@/doxygen-custom/toggle-alternative-theme.js \
+                         @AWESOME_CSS_DIR@/doxygen-awesome-interactive-toc.js
 DISABLE_INDEX          = NO
 FULL_SIDEBAR           = NO
 GENERATE_TREEVIEW      = NO
