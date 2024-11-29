@@ -36,9 +36,6 @@ jobs:
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
-    - name: Get actual vcpkg ports
-      run: cd $VCPKG_INSTALLATION_ROOT && git pull
-      if: !startsWith(matrix.build.os, 'macos')
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} ${{ matrix.build.cmake_args }}
     - name: Build project
