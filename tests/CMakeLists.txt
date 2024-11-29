@@ -1,7 +1,7 @@
 
 # add_library(doctest_main OBJECT test_main.cpp )
 
-include(testing)
+include(lib/testing)
 
 add_subdirectory(commands)
 add_subdirectory(database)

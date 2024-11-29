@@ -13,7 +13,7 @@ jobs:
           - {
             os: ubuntu-latest,
             preset: ninja,
-            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg.cmake
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg
           }
           - {
             os: macos-latest,
@@ -23,7 +23,7 @@ jobs:
           - {
             os: windows-2022,
             preset: msvc22,
-            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg.cmake
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg
           }
     runs-on: ${{ matrix.build.os }}
     steps:
