@@ -23,7 +23,7 @@ project(libsl3
 
 
 find_package(commonCompilerWarnings CONFIG REQUIRED)
-
+#find_package(sqlite CONFIG REQUIRED)
 
 
 # is in toolchain file now
@@ -102,7 +102,7 @@ if (USE_INTERNAL_SQLITE3)
 else(USE_INTERNAL_SQLITE3)
     find_package(SQLite3 REQUIRED)
     target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
-    target_include_directories(sl3 PRIVATE ${SQLite3_INCLUDE_DIRS})
+    target_include_directories(sl3 SYSTEM BEFORE PRIVATE ${SQLite3_INCLUDE_DIRS})
 endif(USE_INTERNAL_SQLITE3)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
