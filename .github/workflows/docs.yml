@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
       # For doc gen present should not be used, since the multi config is not needed, but keep that for now
       - name: Run workflow to get coverage docs
-        run:  cmake --workflow ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
+        run:  cmake --workflow ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov'
       - name: Build documentation
         run:  cmake --build --preset ninja --parallel --target doc
       - name: Build coverage docs

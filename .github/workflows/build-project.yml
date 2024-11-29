@@ -12,15 +12,18 @@ jobs:
         build:
           - {
             os: ubuntu-latest,
-            preset: ninja
+            preset: ninja,
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg.cmake
           }
           - {
             os: macos-latest,
-            preset: xcode
+            preset: xcode,
+            cmake_args: -DPROJECT_ADDONS='add-on/fetch-dependencies'
           }
           - {
             os: windows-2022,
-            preset: msvc22
+            preset: msvc22,
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg.cmake
           }
     runs-on: ${{ matrix.build.os }}
     steps:
