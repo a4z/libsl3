@@ -39,7 +39,7 @@ jobs:
     - run: sudo apt-get update && sudo apt-get install --no-install-recommends ninja-build xsltproc doxygen graphviz lcov
       if:  ${{ startsWith(matrix.build.os,'ubuntu') }}
     - name: Configure project
-      run:  cmake --preset ${{ matrix.build.preset }} -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
+      run:  cmake --preset ${{ matrix.build.preset }} ${{ matrix.build.cmake_args }}
     - name: Build project
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel
     - name: Run unit test
