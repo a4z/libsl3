@@ -8,3 +8,4 @@ else()
 endif()
 
 include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
+include_directories(SYSTEM ${VCPKG_INCLUDE_DIR})
