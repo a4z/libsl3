@@ -32,6 +32,8 @@ jobs:
           ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install lcov
+        run: sudo apt-get install lcov
       # For doc gen present should not be used, since the multi config is not needed, but keep that for now
       - name: Run workflow to get coverage docs
         run:  cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov'

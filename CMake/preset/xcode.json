@@ -19,5 +19,36 @@
       "configurePreset": "xcode",
       "configuration": "Release"
     }
+  ],
+  "testPresets": [
+    {
+      "name": "xcode",
+      "inherits": "base",
+      "configurePreset": "xcode"
+    },
+    {
+      "name": "xcode-release",
+      "inherits": "xcode",
+      "configuration": "Release"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "xcode",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "xcode"
+        },
+        {
+          "type": "build",
+          "name": "xcode"
+        },
+        {
+          "type": "test",
+          "name": "xcode"
+        }
+      ]
+    }
   ]
 }
