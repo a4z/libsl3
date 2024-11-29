@@ -10,7 +10,7 @@
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": "ON",
         "ACTIVE_PRESET_NAME": "${presetName}",
-        "CMAKE_MODULE_PATH": "${sourceDir}/cmake",
+        "CMAKE_MODULE_PATH": "${sourceDir}/CMake",
         "CMAKE_PROJECT_INCLUDE": "project-setup"
       },
       "environment": {
