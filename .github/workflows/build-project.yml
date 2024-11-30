@@ -27,10 +27,10 @@ jobs:
           }
     runs-on: ${{ matrix.build.os }}
     steps:
-    - name: Install SQLite on macOS
+    - name: Cleanup for SQLite on macOS
       run: |
-        brew install sqlite
         sudo rm -rf /Library/Frameworks/Mono.framework
+      # There is a sqlite header in a different version than the lib found in the system
       if: startsWith(matrix.build.os, 'macos')
     - uses: lukka/get-cmake@latest
       with:
@@ -44,7 +44,7 @@ jobs:
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} ${{ matrix.build.cmake_args }}
     - name: Build project
-      run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel
+      run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel --verbose
     - name: Run unit test
       run:  ctest --preset ${{ matrix.build.preset }}-release --parallel
 
