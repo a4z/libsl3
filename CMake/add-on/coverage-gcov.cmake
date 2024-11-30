@@ -23,15 +23,10 @@ endif()
 
 set(COVERAGE_BRANCHES "--rc branch_coverage=1")
 # these warnings are ridiculous, they depend on the lcov genhtml version
-set(COVERAGE_WARNINGS "--ignore-errors gcov --ignore-errors mismatch")
+set(COVERAGE_WARNINGS "--ignore-errors gcov --ignore-errors mismatch --ignore-errors unused")
 set(GENHTML_WARNINGS "")
-if(APPLE)
-    set(COVERAGE_WARNINGS "--ignore-errors gcov --ignore-errors unused --ignore-errors inconsistent --ignore-errors range --ignore-errors empty")
-    set(GENHTML_WARNINGS "--ignore-errors inconsistent --ignore-errors empty")
-endif()
 
 set(COVERAGE_TOOL "lcov")
-
 
 separate_arguments(COVERAGE_BRANCHES)
 separate_arguments(COVERAGE_WARNINGS)
