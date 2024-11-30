@@ -27,6 +27,9 @@ jobs:
           }
     runs-on: ${{ matrix.build.os }}
     steps:
+    - name: Install SQLite on macOS
+      run: brew install sqlite
+      if: startsWith(matrix.build.os, 'macos')
     - uses: lukka/get-cmake@latest
       with:
         cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
