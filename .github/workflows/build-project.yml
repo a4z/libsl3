@@ -31,6 +31,7 @@ jobs:
       run: |
         brew install sqlite
         brew link --force sqlite3
+        rm -rf /Library/Frameworks/Mono.framework
       if: startsWith(matrix.build.os, 'macos')
     - uses: lukka/get-cmake@latest
       with:
