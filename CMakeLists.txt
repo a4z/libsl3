@@ -89,21 +89,22 @@ target_include_directories(sl3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
 )
-# target_link_libraries(sl3
-#     PRIVATE
-#     a4z::commonCompilerWarnings
 
-# )
-
+# TODO, make this only when a top level project
 target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
 
-if (USE_INTERNAL_SQLITE3)
-    include( sqlite/setup_sqlite3.cmake )
-else(USE_INTERNAL_SQLITE3)
-    find_package(SQLite3 REQUIRED)
-    target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
-    target_include_directories(sl3 SYSTEM BEFORE PRIVATE ${SQLite3_INCLUDE_DIRS})
-endif(USE_INTERNAL_SQLITE3)
+# if (USE_INTERNAL_SQLITE3)
+#     include( sqlite/setup_sqlite3.cmake )
+# else(USE_INTERNAL_SQLITE3)
+#     find_package(SQLite3 REQUIRED)
+#     # target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
+#     # target_include_directories(sl3 SYSTEM BEFORE PRIVATE ${SQLite3_INCLUDE_DIRS})
+#     # target_link_libraries(sl3 PUBLIC SQLite::SQLite3)
+# endif(USE_INTERNAL_SQLITE3)
+
+
+include( lib/find_sqlite )
+target_link_libraries(sl3 PUBLIC ${SQLITE_LINK_NAME})
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 

@@ -3,6 +3,27 @@
 
 #include <string>
 
+// believe it or not, this is actually usefull,
+// there are often many different version of sqlite on a system
+// and which one cmake picks up depends ... so you want to know about that
+
+/*
+
+this happened on Mac CI,
+
+/Users/runner/work/libsl3/libsl3/tests/version/versiontest.cpp:6:
+  Scenario: check sqlite versions for library and app
+     Given: cmake genertated config
+      When: comparing the compile/runtime version numbers
+      Then: they are the same
+
+/Users/runner/work/libsl3/libsl3/tests/version/versiontest.cpp:27: ERROR: CHECK_EQ( sl3::sqliteCompiledVersionNumber (), sl3::sqliteRuntimeVersionNumber () ) is NOT correct!
+  values: CHECK_EQ( 3026000, 3043002 )
+
+*/
+
+
+
 SCENARIO ("check sqlite versions for library and app")
 {
   // this can be used as an example to add into your project
