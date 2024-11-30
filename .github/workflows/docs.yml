@@ -46,7 +46,7 @@ jobs:
       - name: Build coverage docs
         run:  cmake --build --preset ninja --target coverage
       - name: Add coverage to docs
-        run:  mv build/Linux/ninja/coverage/html build/Linux/ninja/doc/html/coverage
+        run:  mv build/Linux/ninja/coverage/ build/Linux/ninja/doc/html/coverage
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
