@@ -31,7 +31,6 @@ jobs:
       run: |
         brew install sqlite
         brew link --force sqlite3
-        rm -rf /Library/Frameworks/Mono.framework
       if: startsWith(matrix.build.os, 'macos')
     - uses: lukka/get-cmake@latest
       with:
@@ -44,6 +43,9 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} ${{ matrix.build.cmake_args }}
+      env:
+        LDFLAGS: ${{ startsWith(matrix.build.os, 'macos') && '-L/opt/homebrew/opt/sqlite/lib' || '' }}
+        CPPFLAGS: ${{ startsWith(matrix.build.os, 'macos') && '-I/opt/homebrew/opt/sqlite/include' || '' }}
     - name: Build project
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel
     - name: Run unit test
