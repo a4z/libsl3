@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: ssciwr/doxygen-install@v1
         with:
@@ -36,7 +36,7 @@ jobs:
         run: sudo apt-get install lcov
       # For doc gen present should not be used, since the multi config is not needed, but keep that for now
       - name: Run workflow to get coverage docs
-        run:  cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF'
+        run:  cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov' -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
       - name: Build project
         run:  cmake --build --preset ninja --parallel
       - name: Run tests
