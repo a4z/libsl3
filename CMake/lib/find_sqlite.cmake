@@ -43,12 +43,11 @@ Or someone whats to rely whats on the system (root fs on x compile for yocto)
 
 
 include(lib/debug)
-print_all_variables()
+#print_all_variables()
 
 if (USE_INTERNAL_SQLITE3)
     include( sqlite/setup_sqlite3.cmake )
 else(USE_INTERNAL_SQLITE3)
-
   if (_VCPKG_INSTALLED_DIR)
     find_package(unofficial-sqlite3 REQUIRED)
     set(SQLITE_LINK_NAME unofficial::sqlite3::sqlite3)
@@ -56,8 +55,8 @@ else(USE_INTERNAL_SQLITE3)
     find_package(SQLite3 REQUIRED)
     set(SQLITE_LINK_NAME SQLite::SQLite3)
   endif()
-
-
 endif(USE_INTERNAL_SQLITE3)
 
+print_variable(SQLite3_INCLUDE_DIR)
+print_variable(SQLite3_LIBRARY)
 

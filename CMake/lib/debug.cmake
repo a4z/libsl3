@@ -11,3 +11,11 @@ endfunction()
 
 # Call the function to print all variables
 # print_all_variables()
+
+function(print_variable var_name)
+  if(DEFINED ${var_name})
+    message(STATUS "${var_name}=${${var_name}}")
+  else()
+    message(STATUS "${var_name} is not defined")
+  endif()
+endfunction()
