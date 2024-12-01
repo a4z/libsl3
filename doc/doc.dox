@@ -9,20 +9,20 @@ The library does not attempt to function as an ORM (Object-Relational Mapping) a
 Reading from and writing to a database is accomplished through SQL and prepared commands, also known as stored procedures.<BR>
 The library fully supports the SQLite duck typing concept, but it also offers a means to incorporate type checking when communicating with a database.
 
-
 \section History
 
 libsl3 stared as a C++98 project long time ago.
 Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.
 Today, libsl3 it's still around. A C++ interface for SQLite.
 
+Today, active development is on pause, but the library is still maintained and updated of required.
 
 \section Installation
 
 Get you copy of the source code from the <a href="https://github.com/a4z/libsl3">libsl3 GitHub repository</a>.
 
 The project has the following dependencies:
-\li The minimum required C++ standard is C++17
+\li The minimum required C++ standard is C++17 (planned to go to 20 soon)
 \li Required: <a href="https://cmake.org">CMake</a> for building the library
 \li Optional: <a href="https://www.sqlite.org">SQLite3</a>, sqlite is included in the source code
 \li Optional: <a href="https://www.doxygen.nl">doxygen</a> for buliding the documentation
@@ -36,12 +36,38 @@ doctest is fetched on demand, except if \c BUILD_TESTING is set to OFF.
 
 The library can be build with CMake. No surprises here.
 
-On Linux, the configure and build process might appear as follows:
+If you use vcpkg, the most easy way to build the library is:
 
 \code
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
-cmake --build build --parallel
+cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
+cmake --build --preset ninja
+ctest --preset ninja
 \endcode
+
+There is also a xcode preset for MacOS, and a msv22 preset for Windows.
+
+MacOS:
+\code
+cmake --preset xcode -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
+cmake --build --preset xcode
+ctest --preset xcode
+\endcode
+
+Windows:
+\code
+cmake --preset msvc22 -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg
+cmake --build --preset msvc22
+ctest --preset msvc22
+\endcode
+
+In case you do not have vcpkg installed, the most simple way to get started is
+
+\code
+cmake --preset ninja -DPROJECT_ADDONS=add-on/fetch-dependencies -DUSE_INTERNAL_SQLITE3=ON
+\endcode
+
+If you have sqlite3 installed on your system, you can use it by omitting -DUSE_INTERNAL_SQLITE3=ON
+
 
 <b>CMake options to control the build process:</b>
 
@@ -54,25 +80,23 @@ Default is ON.
 If set to ON, test targets will be added .<BR>
 Default is ON.
 
-\li \c BUILD_DOCUMENTATION:<BR>
-If set to ON, the \c doc target will be added .<BR>
-This requires doxygen to be found on the system.<BR>
+Existing tests try to cover as much as possible, see the <a href=coverage/index.html>coverage report</a> for details."
 
 For the internal sqlite distribution there are
 <a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a> available.
 
-<b>Advandages using the internal sqlite3</b>
+<b>Advantages using the internal sqlite3</b>
 
-\li No external dependencie.
+\li No external dependencies.
 \li sqlite3 is used in the tested version
 \li consuming libsl3 becomes easier
 
 Programs consuming libsl3 do not need to link against sqlite3.
 
-<b>Disadvandages using the internal sqlite3</b>
+<b>Disadvantages using the internal sqlite3</b>
 
 \li A bigger library
-\li Slighlty longer build time for building libsl3
+\li Slightly longer build time for building libsl3
 (not for programs consuming libsl3)
 
 
@@ -125,7 +149,7 @@ since a database value can also be NULL there is a type for it.
 - sl3::Type::Null , a null value.
 
 There is one additional sl3::Type.  <BR>
-In sqlite a clomun can hold different types and libsl3 supports this concept.
+In sqlite a column can hold different types and libsl3 supports this concept.
 - sl3::Type::Variant , any value type.
 
 See \ref dbvalue for more information.
@@ -133,10 +157,10 @@ See \ref dbvalue for more information.
 \note
 Text is a UTF-8 string since this is a good default and keeps things simple.<BR>
 If UTF-16 string types is wanted this needs to be implement self.
-The same is true for the special endianess functions sqlite provides.<BR>
+The same is true for the special endianness functions sqlite provides.<BR>
 There are 2 ways to do with writing an own sl3::RowCallback or a
 sl3::Command::Callback.
-See \ref rowcallback from more infomration.<BR>
+See \ref rowcallback from more information.<BR>
 If you think on of these features should be supported by the library please file
 a feature request in the issue tracker.
 
@@ -285,9 +309,9 @@ sl3::TypeMisMatch:Int not one of required types
 
 \section rowcallback RowCallback and Callback functions
 
-A custom way to handle query results is to usea
-a sl3::RowCallback or the sl3::Commad::Callback function. <BR>
-They can be passed to the sl3::Database::execute and sl3::Commad::execute
+A custom way to handle query results is to use
+a sl3::RowCallback or the sl3::Command::Callback function. <BR>
+They can be passed to the sl3::Database::execute and sl3::Command::execute
 function.<BR>
 The callback will be called with a sl3::Columns representing the current row
 for each row in the query result.<BR>

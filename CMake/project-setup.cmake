@@ -1,5 +1,5 @@
-include_guard(GLOBAL)
-
+include_gua
+# Keep this here for now, but add a CI test that builds with 20 or 17
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 23)

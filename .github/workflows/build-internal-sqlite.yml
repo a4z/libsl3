@@ -1,4 +1,4 @@
-name: build project
+name: build with internal SQLite
 on:
   push:
     branches:
