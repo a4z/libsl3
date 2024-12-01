@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.29)
 
 
 set(sl3_MAJOR_VERSION 1)
@@ -6,8 +6,8 @@ set(sl3_MINOR_VERSION 2)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
-set(internal_SQLITE_MINOR_V 41)
-set(internal_SQLITE_PATCH_V  2)
+set(internal_SQLITE_MINOR_V 47)
+set(internal_SQLITE_PATCH_V  1)
 
 # sqlite uses (X*1000000 + Y*1000 + Z),
 # but minor patch used since major is always 3
@@ -21,25 +21,26 @@ project(libsl3
 )
 
 
-if(PROJECT_IS_TOP_LEVEL)
-    # make git ignore the build directory
-    file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
-endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(commonCompilerWarnings CONFIG REQUIRED)
+#find_package(sqlite CONFIG REQUIRED)
 
-LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/CMake")
 
-include(CTest)
-include( macros )
-include( setup_compiler )
-SET (USE_INTERNAL_SQLITE3 TRUE CACHE BOOL
-    "use buildin sqlite3 ON, use system sqlite3 header/lib, OFF" )
+# is in toolchain file now
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include( setup_doc )
+# done differently now
+LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake/lib")
+
+#optional enable personal test/trial dir
+include(CMakeLocalOpts.cmake OPTIONAL)
+
+
+SET (USE_INTERNAL_SQLITE3 FALSE CACHE BOOL
+    "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" )
+
+# TODO, reactivate that
+#include( setup_doc )
 
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
@@ -88,21 +89,26 @@ target_include_directories(sl3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
 )
-target_link_libraries(sl3
-    PRIVATE default::flags
-)
 
-if (USE_INTERNAL_SQLITE3)
-    include( sqlite/setup_sqlite3.cmake )
-else(USE_INTERNAL_SQLITE3)
-    find_package(SQLite3 REQUIRED)
-    target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
-    target_include_directories(sl3 PRIVATE ${SQLite3_INCLUDE_DIRS})
-endif(USE_INTERNAL_SQLITE3)
+# TODO, make this only when a top level project
+target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
+
+# if (USE_INTERNAL_SQLITE3)
+#     include( sqlite/setup_sqlite3.cmake )
+# else(USE_INTERNAL_SQLITE3)
+#     find_package(SQLite3 REQUIRED)
+#     # target_link_libraries(sl3 PUBLIC ${SQLite3_LIBRARIES})
+#     # target_include_directories(sl3 SYSTEM BEFORE PRIVATE ${SQLite3_INCLUDE_DIRS})
+#     # target_link_libraries(sl3 PUBLIC SQLite::SQLite3)
+# endif(USE_INTERNAL_SQLITE3)
+
+
+include( lib/find_sqlite )
+target_link_libraries(sl3 PUBLIC ${SQLITE_LINK_NAME})
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
-set(sl3_install_targets ${sl3_install_targets} sl3)
+set(sl3_install_targets sl3)
 
 if(BUILD_SHARED_LIBS)
     set_target_properties(sl3 PROPERTIES
@@ -116,20 +122,12 @@ if(BUILD_TESTING)
     add_subdirectory(tests)
 endif(BUILD_TESTING)
 
-#optional enable personal test/trial dir
-include(CMakeLocalOpts.cmake OPTIONAL)
+include(lib/install)
 
+include(lib/doxydoc)
 
-#only add install target if this is the top level project
-if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-    INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
-    INSTALL(FILES include/sl3.hpp DESTINATION include/sl3)
-    INSTALL(TARGETS ${sl3_install_targets}
-      RUNTIME DESTINATION bin
-      LIBRARY DESTINATION lib${LIB_SUFFIX}
-      ARCHIVE DESTINATION lib${LIB_SUFFIX}
-    )
-endif( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+include(CMakePrintSystemInformation)
 
-
+include(CMakePrintHelpers)
+cmake_print_variables(CMAKE_SYSTEM_AND_CXX_COMPILER_INFO_FILE)
 

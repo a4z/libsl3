@@ -31,9 +31,9 @@ main ()
   assert (row[2].type () == Type::Real);
 
   // of course there is also iterator access
-  for (const auto& row : ds)
+  for (const auto& r : ds)
     {
-      for (const auto& field : row)
+      for (const auto& field : r)
         {
           std::cout << field << " ";
         }

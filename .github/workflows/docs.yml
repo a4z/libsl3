@@ -6,6 +6,7 @@ on:
     tags:
       - 'v*'
     branches: ["main"]
+  pull_request:
 
   workflow_dispatch:
 
@@ -20,24 +21,36 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: ssciwr/doxygen-install@v1
         with:
-          version: "1.9.6"
-      - name: Install requirements
-        run: sudo apt-get install -y ninja-build
-      - name: Checkout
-        uses: actions/checkout@v3
-      # For doc gen present should not be used, since the multi config is not needed, but keep that for now
-      - name: Configure project
-        run:  cmake -S . -B build/default
-      - name: Build documentation
-        run:  cmake --build build/default --parallel --target doc
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v1
+          version: "1.12.0"
+      - uses: lukka/get-cmake@latest
         with:
-          path: 'build/default/doc/html/'
+          cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
+          ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install lcov
+        run: sudo apt-get install lcov
+      # For doc gen present should not be used, since the multi config is not needed, but keep that for now
+      - name: Run workflow to get coverage docs
+        run:  cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov' -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
+      - name: Build project
+        run:  cmake --build --preset ninja --parallel
+      - name: Run tests
+        run:  ctest --preset ninja --parallel
+      - name: Build documentation
+        run:  cmake --build --preset ninja --parallel --target doc
+      - name: Build coverage docs
+        run:  cmake --build --preset ninja --target coverage
+      - name: Add coverage to docs
+        run:  mv build/Linux/ninja/coverage/ build/Linux/ninja/doc/html/coverage
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'build/Linux/ninja/doc/html/'
 
 
   deploy:
@@ -51,9 +64,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

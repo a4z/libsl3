@@ -1,0 +1,34 @@
+{
+  "version": 8,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${hostSystemName}/${presetName}",
+      "toolchainFile": "${fileDir}/../toolchain/router.cmake",
+      "cacheVariables": {
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON",
+        "ACTIVE_PRESET_NAME": "${presetName}",
+        "CMAKE_MODULE_PATH": "${sourceDir}/CMake",
+        "CMAKE_PROJECT_INCLUDE": "project-setup"
+      },
+      "environment": {
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "configurePreset": "base",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    }
+  ]
+}
