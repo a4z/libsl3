@@ -23,6 +23,8 @@ if(DEFINED TOOLCHAIN_INCLUDES)
   endforeach()
 endif()
 
+message(STATUS "-- Done with the toolchain router")
+
 # TODO, do I want to allow env variables also?
 # probably not since that might confuse
 # if(DEFINED ENV{TOOLCHAIN_ADDONS})

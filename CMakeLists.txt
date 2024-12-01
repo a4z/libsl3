@@ -126,4 +126,8 @@ include(lib/install)
 
 include(lib/doxydoc)
 
+include(CMakePrintSystemInformation)
+
+include(CMakePrintHelpers)
+cmake_print_variables(CMAKE_SYSTEM_AND_CXX_COMPILER_INFO_FILE)
 

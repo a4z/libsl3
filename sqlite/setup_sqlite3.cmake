@@ -16,14 +16,13 @@ include_guard(GLOBAL)
 #   SQLITE_ENABLE_JSON1   default on, but might change
 
 
-# NOTE file myMacros.cmake must be included bevor this file !!
-
-
 # TODO covert the legacy BOOL to ON/OFF options
 
 
 include_directories( BEFORE SYSTEM sqlite)
 set( SQLITE3_FILES sqlite/sqlite3.h sqlite/sqlite3ext.h sqlite/sqlite3.c )
+
+# No warnings for sqlite3.c
 if(CMAKE_LANG_COMPILER_ID STREQUAL "MSVC")
   set(OPTION_PREFIX "/")
 else()
@@ -34,17 +33,16 @@ set_source_files_properties(sqlite/sqlite3.c  PROPERTIES COMPILE_FLAGS "${OPTION
 set( SQLITE_THREADSAFE "1" CACHE STRING "defines SQLITE_THREADSAFE=<0 or 1 or 2>")
 set(SQLITE_OMIT_LOAD_EXTENSION ON CACHE BOOL "defines SQLITE_OMIT_LOAD_EXTENSION if ON")
 
-
 # TODO add FTS 4 and 5
 set( SQLITE_ENABLE_FTS3 ${SQLITE_ENABLE_FTS3} CACHE BOOL "defines SQLITE_ENABLE_FTS3 if on")
+set( SQLITE_ENABLE_FTS3 ${SQLITE_ENABLE_FTS4} CACHE BOOL "defines SQLITE_ENABLE_FTS3 if on")
+set( SQLITE_ENABLE_FTS3 ${SQLITE_ENABLE_FTS5} CACHE BOOL "defines SQLITE_ENABLE_FTS3 if on")
 
 set( SQLITE_ENABLE_FTS3_PARENTHESIS OFF CACHE BOOL
     "defines SQLITE_ENABLE_FTS3_PARENTHESIS if on")
 
 set( SQLITE_SOUNDEX ${SQLITE_SOUNDEX} CACHE BOOL "defines SQLITE_SOUNDEX if on")
-
 set( SQLITE_ENABLE_ICU OFF CACHE BOOL "defines SQLITE_ENABLE_ICU if on")
-
 #   <0 through 3> 0 always files / 1 files - allow PRAGMA temp_store, 2 memory allow PRAGMA temp_store , 3 always memory
 set(SQLITE_TEMP_STORE 1 CACHE STRING "defines SQLITE_TEMP_STORE=<0 or 1 or 2>")
 
@@ -96,6 +94,11 @@ if ( SQLITE_ENABLE_FTS4 )
     list( APPEND mysqlt3_DEFINES  SQLITE_ENABLE_FTS4 )
 endif ( SQLITE_ENABLE_FTS4 )
 
+if ( SQLITE_ENABLE_FTS5 )
+    list( APPEND mysqlt3_DEFINES  SQLITE_ENABLE_FTS5 )
+endif ( SQLITE_ENABLE_FTS5 )
+
+
 
 if ( SQLITE_ENABLE_FTS3_PARENTHESIS )
     list( APPEND mysqlt3_DEFINES  SQLITE_ENABLE_FTS3_PARENTHESIS )
@@ -109,13 +112,10 @@ if ( SQLITE_ENABLE_ICU )
     list( APPEND mysqlt3_DEFINES  SQLITE_ENABLE_ICU )
 endif ( SQLITE_ENABLE_ICU )
 
-# PREFIX_COMPILER_DEFINES(mysqlt3_DEFINES)
-
 if(WIN32)
-    #message(STATUS "**WIN32 " )
+        # TODO, since WSL, MSYS and Cygwin might not be that relevant anymore
         if(NOT MSYS) #and not cygwin ?
                 set(sl3_sqlite3LIBS "")
-                #someething other spezial for windwos?
         endif(NOT MSYS)
 endif(WIN32)
 
