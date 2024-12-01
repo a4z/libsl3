@@ -80,7 +80,6 @@ Default is ON.
 If set to ON, test targets will be added .<BR>
 Default is ON.
 
-Existing tests try to cover as much as possible, see the <a href=coverage/index.html>coverage report</a> for details."
 
 For the internal sqlite distribution there are
 <a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a> available.
@@ -98,6 +97,11 @@ Programs consuming libsl3 do not need to link against sqlite3.
 \li A bigger library
 \li Slightly longer build time for building libsl3
 (not for programs consuming libsl3)
+
+\section Testing
+
+All the tests can be found in the tests subdirectory. <BR>
+Existing tests try to cover as much as possible, see the <a href=coverage/index.html>coverage report</a> for details.
 
 
 \section overview Overview
