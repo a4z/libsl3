@@ -10,9 +10,6 @@
       "name": "doctest",
       "version>=": "2.4.11"
     },
-
     "sqlite3"
-
-
   ]
 }

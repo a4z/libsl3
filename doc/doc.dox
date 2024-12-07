@@ -14,8 +14,7 @@ The library fully supports the SQLite duck typing concept, but it also offers a 
 libsl3 stared as a C++98 project long time ago.
 Later, when C++11 was new, it became <i>a modern C++11 interface to sqlite</i>.
 Today, libsl3 it's still around. A C++ interface for SQLite.
-
-Today, active development is on pause, but the library is still maintained and updated of required.
+Active development happens rarely but the library is still maintained and updated if required.
 
 \section Installation
 
