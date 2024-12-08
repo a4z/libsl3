@@ -18,6 +18,42 @@ Active development happens rarely but the library is still maintained and update
 
 \section Installation
 
+libsl3 can be build and consumed without any external dependencies. But you might want to use sqlite3 installations from your system.
+
+\subsection consume Consuming sl3 in a CMake project
+
+An easy way is consuming sl3 via CMake's 'FetchContent'
+
+\code
+cmake_minimum_required(VERSION 3.29)
+
+project(consume_sl3)
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 20)
+
+include(FetchContent)
+FetchContent_Declare(
+  sl3
+  GIT_REPOSITORY https://github.com/a4z/libsl3.git
+  GIT_TAG        main
+  OVERRIDE_FIND_PACKAGE
+)
+SET(BUILD_TESTING OFF)
+SET(sl3_USE_INTERNAL_SQLITE3 ON)
+SET(sl3_USE_COMMON_COMPILER_WARNINGS OFF)
+
+find_package(sl3 CONFIG REQUIRED)
+
+add_executable(consume_sl3 main.cpp)
+target_link_libraries(consume_sl3 PRIVATE sl3)
+\endcode
+
+If you want to use the system sqlite3 installation, you can omit the line
+`SET(sl3_USE_INTERNAL_SQLITE3 ON)`
+
+\section build_from_source Building sl3 from source
+
 Get you copy of the source code from the <a href="https://github.com/a4z/libsl3">libsl3 GitHub repository</a>.
 
 The project has the following dependencies:
@@ -27,11 +63,19 @@ The project has the following dependencies:
 \li Optional: <a href="https://www.doxygen.nl">doxygen</a> for buliding the documentation
 \li Optional: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
 
+\subsection deal_dependencies Dependency management
+
+There are 3 options to deal with dependencies.
+
+\li Ignore them, and turn them off. (No testing and internal sqlite3)
+\li Use vcpkg, a package manager for C++ libraries
+\li Use CMake's FetchContent to fetch the dependencies
+
 If doxygen is not found it will not be possible to build the documentation.
 
-doctest is fetched on demand, except if \c BUILD_TESTING is set to OFF.
+See below for how to use either vcpkg or FetchContent.
 
-\subsection build Building the library
+\subsection build Building the library (developer mode)
 
 The library can be build with CMake. No surprises here.
 
@@ -62,20 +106,20 @@ ctest --preset msvc22
 In case you do not have vcpkg installed, the most simple way to get started is
 
 \code
-cmake --preset ninja -DPROJECT_ADDONS=add-on/fetch-dependencies -DUSE_INTERNAL_SQLITE3=ON
+cmake --preset ninja -DPROJECT_ADDONS=add-on/fetch-dependencies -Dsl3_USE_INTERNAL_SQLITE3=ON
 \endcode
 
-If you have sqlite3 installed on your system, you can use it by omitting -DUSE_INTERNAL_SQLITE3=ON
+If you have sqlite3 installed on your system, you can use it by omitting -Dsl3_USE_INTERNAL_SQLITE3=ON
 
 
 <b>CMake options to control the build process:</b>
 
-\li \c USE_INTERNAL_SQLITE3:<BR>
+\li \c sl3_USE_INTERNAL_SQLITE3:<BR>
 If set to ON, the internal sqlite3 source code will be used.<BR>
 If set to OFF, the system sqlite3 will be used.<BR>
 Default is ON.
 
-\li \c BUILD_TESTING:<BR>
+\li \c sl3_BUILD_TESTING:<BR>
 If set to ON, test targets will be added .<BR>
 Default is ON.
 
@@ -97,13 +141,13 @@ Programs consuming libsl3 do not need to link against sqlite3.
 \li Slightly longer build time for building libsl3
 (not for programs consuming libsl3)
 
-\section Testing
+\subsection Testing
 
 All the tests can be found in the tests subdirectory. <BR>
 Existing tests try to cover as much as possible, see the <a href=coverage/index.html>coverage report</a> for details.
 
 
-\section overview Overview
+\section overview Usage Overview
 
 A database is represented via sl3::Database. <BR>
 A database can execute SQL strings to read or write data. <BR>

@@ -25,13 +25,13 @@ Quickly summarized, there are dependencies, but they are all either development 
 
 To build libsl3 without any dependencies, run
 
-    cmake -S . -B build -DBUILD_TESTING=OFF -DUSE_INTERNAL_SQLITE3=ON -DCOMMON_COMPILER_WARNINGS=OFF
+    cmake -S . -B build -DBUILD_TESTING=OFF -Dsl3_USE_INTERNAL_SQLITE3=ON -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
 
 This will build libsl3 with the internal sqlite distribution.
 
 For using sqlite from the system, run
 
-    cmake -S . -B build -DBUILD_TESTING=OFF -DCOMMON_COMPILER_WARNINGS=OFF
+    cmake -S . -B build -DBUILD_TESTING=OFF -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
 
 For more information, visit the documentation. (TODO, link)
 

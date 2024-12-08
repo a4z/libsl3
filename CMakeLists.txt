@@ -29,17 +29,17 @@ LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
 include(CMakeLocalOpts.cmake OPTIONAL)
 
 
-option(USE_INTERNAL_SQLITE3 "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" OFF)
-option(COMMON_COMPILER_WARNINGS "Build using shared libraries" ON)
+option(sl3_USE_INTERNAL_SQLITE3 "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" OFF)
+option(sl3_USE_COMMON_COMPILER_WARNINGS "Build using shared libraries" ON)
 
-if (COMMON_COMPILER_WARNINGS)
+if (sl3_USE_COMMON_COMPILER_WARNINGS)
     find_package(commonCompilerWarnings CONFIG REQUIRED)
     set(LIBWARNINGS a4z::commonCompilerWarnings)
-else(COMMON_COMPILER_WARNINGS)
+else(sl3_USE_COMMON_COMPILER_WARNINGS)
     add_library(all_warnings_off INTERFACE)
     set(LIBWARNINGS all_warnings_off)
-    message(STATUS "COMMON_COMPILER_WARNINGS is OFF")
-endif(COMMON_COMPILER_WARNINGS)
+    message(STATUS "sl3_USE_COMMON_COMPILER_WARNINGS is OFF")
+endif(sl3_USE_COMMON_COMPILER_WARNINGS)
 
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
@@ -106,9 +106,9 @@ if(BUILD_SHARED_LIBS)
     )
 endif(BUILD_SHARED_LIBS)
 
-if(BUILD_TESTING)
+if(sl3_BUILD_TESTING)
     add_subdirectory(tests)
-endif(BUILD_TESTING)
+endif(sl3_BUILD_TESTING)
 
 include(lib/install)
 include(lib/doxydoc)

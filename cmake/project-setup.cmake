@@ -14,6 +14,7 @@ if(PROJECT_IS_TOP_LEVEL)
     # make git ignore the build directory
     file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
     include(CTest)
+    option(sl3_BUILD_TESTING "Build the tests" ${BUILD_TESTING})
 endif()
 
 
