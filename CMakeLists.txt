@@ -22,25 +22,24 @@ project(libsl3
 
 
 
-find_package(commonCompilerWarnings CONFIG REQUIRED)
-#find_package(sqlite CONFIG REQUIRED)
-
-
-# is in toolchain file now
-# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 # done differently now
-LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake/lib")
+LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
 
 
-SET (USE_INTERNAL_SQLITE3 FALSE CACHE BOOL
-    "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" )
+option(USE_INTERNAL_SQLITE3 "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" OFF)
+option(COMMON_COMPILER_WARNINGS "Build using shared libraries" ON)
 
-# TODO, reactivate that
-#include( setup_doc )
+if (COMMON_COMPILER_WARNINGS)
+    find_package(commonCompilerWarnings CONFIG REQUIRED)
+    set(LIBWARNINGS a4z::commonCompilerWarnings)
+else(COMMON_COMPILER_WARNINGS)
+    add_library(all_warnings_off INTERFACE)
+    set(LIBWARNINGS all_warnings_off)
+    message(STATUS "COMMON_COMPILER_WARNINGS is OFF")
+endif(COMMON_COMPILER_WARNINGS)
 
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
@@ -91,7 +90,7 @@ target_include_directories(sl3 PUBLIC
 )
 
 # TODO, make this only when a top level project
-target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
+target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:${LIBWARNINGS}>)
 
 # if (USE_INTERNAL_SQLITE3)
 #     include( sqlite/setup_sqlite3.cmake )
@@ -123,7 +122,6 @@ if(BUILD_TESTING)
 endif(BUILD_TESTING)
 
 include(lib/install)
-
 include(lib/doxydoc)
 
 # include(CMakePrintSystemInformation)

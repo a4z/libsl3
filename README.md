@@ -13,6 +13,28 @@ For people seeking the old version, release v1.1.31001 preserves the original C+
 **The full documentation for libsl3 can be found here:** <br>
 https://a4z.github.io/libsl3/
 
+## Build
+
+Quickly summarized, there are dependencies, but they are all either development dependencies or optional
+
+- sqlite3
+- doctest
+- commonCompilerWarnings
+
+### Consume via CMake
+
+To build libsl3 without any dependencies, run
+
+    cmake -S . -B build -DBUILD_TESTING=OFF -DUSE_INTERNAL_SQLITE3=ON -DCOMMON_COMPILER_WARNINGS=OFF
+
+This will build libsl3 with the internal sqlite distribution.
+
+For using sqlite from the system, run
+
+    cmake -S . -B build -DBUILD_TESTING=OFF -DCOMMON_COMPILER_WARNINGS=OFF
+
+For more information, visit the documentation. (TODO, link)
+
 ## A short usage example
 
 ```cpp

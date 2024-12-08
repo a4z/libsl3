@@ -22,11 +22,13 @@ function (add_doctest NAME)
 
     add_executable(sl3test-${NAME} ${D_TEST_SOURCES} $<TARGET_OBJECTS:doctest_main>)
     # use naming what we had for now
-    target_link_libraries(sl3test-${NAME} PRIVATE sl3 ${CON_DOCTEST}
-       # a4z::commonCompilerWarnings
-    # "$<BUILD_INTERFACE:a4z:commonCompilerWarnings>"
+    target_link_libraries(sl3test-${NAME}
+        PRIVATE
+            sl3
+            ${CON_DOCTEST}
+            $<BUILD_INTERFACE:${LIBWARNINGS}>
     )
-    target_link_libraries(sl3test-${NAME} PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
+    #target_link_libraries(sl3test-${NAME} PRIVATE $<BUILD_INTERFACE:a4z::commonCompilerWarnings>)
 
     if(NOT D_TEST_TIMEOUT)
         set(D_TEST_TIMEOUT 3)
