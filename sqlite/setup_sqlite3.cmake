@@ -129,7 +129,7 @@ target_link_libraries( sl3 PUBLIC ${CMAKE_THREAD_LIBS_INIT} )
 #message(STATUS "**DEFINES ARE: "${mysqlt3_DEFINES} )
 #message(STATUS "**LIBRARIES ARE: "${sl3_sqlite3LIBS} )
 
-# else (USE_INTERNAL_SQLITE3)
+# else (sl3_USE_INTERNAL_SQLITE3)
 #         INCLUDE(FindPkgConfig)
 
 #         # TODO define a minimum version 3.3.8

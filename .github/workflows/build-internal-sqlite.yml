@@ -37,7 +37,7 @@ jobs:
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
     - name: Configure project
-      run:  cmake --preset ${{ matrix.build.preset }} -DPROJECT_ADDONS='add-on/fetch-dependencies' -DUSE_INTERNAL_SQLITE3=ON
+      run:  cmake --preset ${{ matrix.build.preset }} -DPROJECT_ADDONS='add-on/fetch-dependencies' -Dsl3_USE_INTERNAL_SQLITE3=ON
     - name: Build project
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel --verbose
     - name: Run unit test
