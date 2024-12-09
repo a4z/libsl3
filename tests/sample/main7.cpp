@@ -11,17 +11,15 @@
   also, the problem with std::endl seems odd, maybe an alpine arm issue
 */
 
-
 int
 main ()
 {
   using namespace sl3;
   // for memory sanitizer, this is needed at least on alpine arm
-  std::cout << std::endl ;
+  std::cout << std::endl;
   std::cout.flush ();
 
   Database db (":memory:");
-
 
   db.execute ("CREATE TABLE tbl(f1 INTEGER, f2 TEXT, f3 REAL);"
               "INSERT INTO tbl (f1, f2, f3) VALUES (1, 'one', 1.1);"
@@ -36,6 +34,4 @@ main ()
               << std::endl;
     return true;
   });
-
-
 }

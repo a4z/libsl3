@@ -495,4 +495,3 @@ SCENARIO ("getting rows from columns")
     }
   }
 }
-

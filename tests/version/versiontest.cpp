@@ -17,12 +17,11 @@ this happened on Mac CI,
       When: comparing the compile/runtime version numbers
       Then: they are the same
 
-/Users/runner/work/libsl3/libsl3/tests/version/versiontest.cpp:27: ERROR: CHECK_EQ( sl3::sqliteCompiledVersionNumber (), sl3::sqliteRuntimeVersionNumber () ) is NOT correct!
-  values: CHECK_EQ( 3026000, 3043002 )
+/Users/runner/work/libsl3/libsl3/tests/version/versiontest.cpp:27: ERROR:
+CHECK_EQ( sl3::sqliteCompiledVersionNumber (), sl3::sqliteRuntimeVersionNumber
+() ) is NOT correct! values: CHECK_EQ( 3026000, 3043002 )
 
 */
-
-
 
 SCENARIO ("check sqlite versions for library and app")
 {
