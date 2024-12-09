@@ -1,0 +1,47 @@
+{
+  "version": 8,
+  "include": [
+    "cmake/preset/ninja.json"
+
+  ]  ,
+  "configurePresets": [
+    {
+      "name": "memsan",
+      "inherits": "ninja",
+      "cacheVariables": {
+        "TOOLCHAIN_INCLUDES": "toolchain/linux-clang;toolchain/linux-clang-san-mem",
+        "PROJECT_ADDONS": "add-on/fetch-dependencies",
+        "sl3_USE_INTERNAL_SQLITE3": "ON"
+      }
+    },
+    {
+      "name": "memsan-int",
+      "inherits": "ninja",
+      "cacheVariables": {
+        "TOOLCHAIN_INCLUDES": "toolchain/linux-clang;toolchain/linux-clang-san-mem",
+        "PROJECT_ADDONS": "add-on/fetch-dependencies",
+        "sl3_USE_INTERNAL_SQLITE3": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "memsan",
+      "configurePreset": "memsan",
+      "configuration": "Debug"
+    },
+    {
+      "name": "memsan-int",
+      "configurePreset": "memsan-int",
+      "configuration": "Debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "memsan",
+      "inherits": "ninja",
+      "configurePreset": "memsan"
+    }
+  ]
+}
+
