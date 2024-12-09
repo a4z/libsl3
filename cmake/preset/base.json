@@ -6,7 +6,7 @@
       "hidden": true,
       "generator": "Ninja Multi-Config",
       "binaryDir": "${sourceDir}/build/${hostSystemName}/${presetName}",
-      "toolchainFile": "${fileDir}/../toolchain/router.cmake",
+      "toolchainFile": "${sourceDir}/cmake/toolchain/router.cmake",
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": "ON",
         "ACTIVE_PRESET_NAME": "${presetName}",

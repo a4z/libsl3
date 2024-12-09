@@ -78,10 +78,10 @@ namespace sl3
      * \brief Move Constructor
      */
     Dataset (Dataset&&) noexcept (
-        std::is_nothrow_move_constructible<Container<DbValues>>::value&&
-                std::is_nothrow_move_constructible<Types>::value&&
-                std::is_nothrow_move_constructible<
-                    std::vector<std::string>>::value);
+        std::is_nothrow_move_constructible<Container<DbValues>>::value
+        && std::is_nothrow_move_constructible<Types>::value
+        && std::is_nothrow_move_constructible<
+            std::vector<std::string>>::value);
     //  = default; no mscv does not like it
 
     /**

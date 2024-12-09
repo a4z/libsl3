@@ -31,9 +31,9 @@ namespace sl3
   }
 
   Dataset::Dataset (Dataset&& other) noexcept (
-      std::is_nothrow_move_constructible<Container<DbValues>>::value&&
-          std::is_nothrow_move_constructible<Types>::value&& std::
-              is_nothrow_move_constructible<std::vector<std::string>>::value)
+      std::is_nothrow_move_constructible<Container<DbValues>>::value
+      && std::is_nothrow_move_constructible<Types>::value
+      && std::is_nothrow_move_constructible<std::vector<std::string>>::value)
   : Container<std::vector<DbValues>> (std::move (other))
   , _fieldtypes (std::move (other._fieldtypes))
   , _names (std::move (other._names))
