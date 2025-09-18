@@ -2,8 +2,8 @@
 
 # SQLite version configuration - single source of truth
 SQLITE_RELEASE_YEAR = 2025
-SQLITE3_MINOR = 49
-SQLITE3_PATCH = 2
+SQLITE3_MINOR = 50
+SQLITE3_PATCH = 4
 
 module(
     name = "libsl3",
@@ -26,7 +26,7 @@ http_archive(
     build_file = "//third_party:sqlite.BUILD",
     urls = ["https://www.sqlite.org/{}/sqlite-amalgamation-{}.zip".format(SQLITE_RELEASE_YEAR, _sqlite_version_number)],
     strip_prefix = "sqlite-amalgamation-{}".format(_sqlite_version_number),
-    sha256 = "921fc725517a694df7df38a2a3dfede6684024b5788d9de464187c612afb5918",
+    sha256 = "1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032",
 
 )
 

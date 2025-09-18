@@ -47,11 +47,16 @@ bazel aquery --config=debug //tests/version:version_test --output=text
 
 ## Next Steps
 
-1. Investigate and fix version test SQLite version alignment
-2. Add hedron_compile_commands to MODULE.bazel for VS Code IntelliSense
-3. Add Xcode toolchain configuration
-4. Add GCC (brew) toolchain configuration
-5. Test builds with different toolchains
+Note that the order will defined, not as written here.
+
+- Add hedron_compile_commands to MODULE.bazel for VS Code IntelliSense
+- Add a github action that builds bazel
+- Add Xcode toolchain configuration
+- Add GCC (brew) toolchain configuration
+- Test builds with different toolchains
+
+- In the github action, I need a check that both, CMake and SQLite use the same sqlite3 version.
+- Use the sqlite build from the central repo.
 
 ## Architecture
 
