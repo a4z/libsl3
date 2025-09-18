@@ -1,7 +1,8 @@
 """libsl3 - A C++ wrapper for SQLite3"""
 
 # SQLite version configuration - single source of truth
-SQLITE3_MINOR = 47
+SQLITE_RELEASE_YEAR = 2025
+SQLITE3_MINOR = 49
 SQLITE3_PATCH = 2
 
 module(
@@ -18,12 +19,15 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 
 # SQLite dependency - using http_archive since not in BCR
 # URL format: 3MMMPPP where MMM=minor padded to 3 digits, PPP=patch padded to 3 digits
+# For 3.47.2: 3 + 047 + 002 + 00 = 3470200 (not 3047200)
+_sqlite_version_number = 3000000 + SQLITE3_MINOR * 10000 + SQLITE3_PATCH * 100
 http_archive(
     name = "sqlite",
     build_file = "//third_party:sqlite.BUILD",
-    urls = ["https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"],
-    sha256 = "aa73d8748095808471deaa8e6f34aa700e37f2f787f4425744f53fdd15a89c40",
-    strip_prefix = "sqlite-amalgamation-3470200",
+    urls = ["https://www.sqlite.org/{}/sqlite-amalgamation-{}.zip".format(SQLITE_RELEASE_YEAR, _sqlite_version_number)],
+    strip_prefix = "sqlite-amalgamation-{}".format(_sqlite_version_number),
+    sha256 = "921fc725517a694df7df38a2a3dfede6684024b5788d9de464187c612afb5918",
+
 )
 
 # Doctest for testing - using http_archive with its own BUILD file
