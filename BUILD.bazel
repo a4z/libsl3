@@ -1,0 +1,61 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//:version.bzl", "LIBSL3_MAJOR", "LIBSL3_MINOR", "LIBSL3_VERSION", "LIBSL3_PATCH_VERSION", "SQLITE3_MINOR", "SQLITE3_PATCH")
+
+package(default_visibility = ["//visibility:public"])
+
+# Generate config header
+genrule(
+    name = "generate_config",
+    srcs = ["src/config.in"],
+    outs = ["include/sl3/config.hpp"],
+    cmd = """
+        sed -e 's/$${sl3_MAJOR_VERSION}/%s/g' \
+            -e 's/$${sl3_MINOR_VERSION}/%s/g' \
+            -e 's/$${sl3_PATCH_VERSION}/%s/g' \
+            -e 's/$${sl3_VERSION}/%s/g' \
+            -e 's/$${internal_SQLITE_MINOR_V}/%s/g' \
+            -e 's/$${internal_SQLITE_PATCH_V}/%s/g' \
+            $< > $@
+    """ % (LIBSL3_MAJOR, LIBSL3_MINOR, LIBSL3_PATCH_VERSION, LIBSL3_VERSION, SQLITE3_MINOR, SQLITE3_PATCH),
+)
+
+cc_library(
+    name = "sl3",
+    srcs = [
+        "src/sl3/columns.cpp",
+        "src/sl3/command.cpp",
+        "src/sl3/config.cpp",
+        "src/sl3/database.cpp",
+        "src/sl3/dataset.cpp",
+        "src/sl3/dbvalue.cpp",
+        "src/sl3/dbvalues.cpp",
+        "src/sl3/error.cpp",
+        "src/sl3/rowcallback.cpp",
+        "src/sl3/types.cpp",
+        "src/sl3/value.cpp",
+        # Private headers
+        "src/sl3/connection.hpp",
+        "src/sl3/utils.hpp",
+    ],
+    hdrs = [
+        "include/sl3.hpp",
+        "include/sl3/columns.hpp",
+        "include/sl3/command.hpp",
+        "include/sl3/container.hpp",
+        "include/sl3/database.hpp",
+        "include/sl3/dataset.hpp",
+        "include/sl3/dbvalue.hpp",
+        "include/sl3/dbvalues.hpp",
+        "include/sl3/error.hpp",
+        "include/sl3/rowcallback.hpp",
+        "include/sl3/types.hpp",
+        "include/sl3/value.hpp",
+        ":generate_config",
+    ],
+    includes = [
+        "include",
+    ],
+    deps = [
+        "@sqlite//:sqlite3",
+    ],
+)

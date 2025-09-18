@@ -1,0 +1,11 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "version_test",
+    srcs = ["versiontest.cpp"],
+    deps = [
+        "//:sl3",
+        "//tests:doctest_main",
+        "@doctest//doctest",
+    ],
+)

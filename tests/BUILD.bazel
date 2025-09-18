@@ -1,0 +1,16 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# Common test main object
+cc_library(
+    name = "doctest_main",
+    srcs = ["test_main.cpp"],
+    hdrs = ["testing.hpp"],
+    deps = [
+        "@doctest//doctest",
+    ],
+)
+
+# Helper function would go here if Bazel supported it in BUILD files
+# For now, we'll define tests individually in subdirectories

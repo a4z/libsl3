@@ -1,0 +1,35 @@
+"""libsl3 - A C++ wrapper for SQLite3"""
+
+# SQLite version configuration - single source of truth
+SQLITE3_MINOR = 47
+SQLITE3_PATCH = 2
+
+module(
+    name = "libsl3",
+    version = "1.2.{}".format(SQLITE3_MINOR * 1000 + SQLITE3_PATCH),
+)
+
+# Core Bazel modules
+bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "platforms", version = "0.0.11")
+
+# Use http_archive for dependencies not in BCR
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# SQLite dependency - using http_archive since not in BCR
+# URL format: 3MMMPPP where MMM=minor padded to 3 digits, PPP=patch padded to 3 digits
+http_archive(
+    name = "sqlite",
+    build_file = "//third_party:sqlite.BUILD",
+    urls = ["https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"],
+    sha256 = "aa73d8748095808471deaa8e6f34aa700e37f2f787f4425744f53fdd15a89c40",
+    strip_prefix = "sqlite-amalgamation-3470200",
+)
+
+# Doctest for testing - using http_archive with its own BUILD file
+http_archive(
+    name = "doctest",
+    urls = ["https://github.com/doctest/doctest/archive/v2.4.12.tar.gz"],
+    sha256 = "73381c7aa4dee704bd935609668cf41880ea7f19fa0504a200e13b74999c2d70",
+    strip_prefix = "doctest-2.4.12",
+)

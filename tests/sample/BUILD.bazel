@@ -1,0 +1,43 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "sample",
+    srcs = ["main.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample1",
+    srcs = ["main1.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample2",
+    srcs = ["main2.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample3",
+    srcs = ["main3.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample4",
+    srcs = ["main4.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample5",
+    srcs = ["main5.cpp"],
+    deps = ["//:sl3"],
+)
+
+cc_binary(
+    name = "sample6",
+    srcs = ["main6.cpp"],
+    deps = ["//:sl3"],
+)

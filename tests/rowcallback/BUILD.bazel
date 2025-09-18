@@ -1,0 +1,21 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "rowcallback_test",
+    srcs = ["rowcallbacktest.cpp"],
+    deps = [
+        "//:sl3",
+        "//tests:doctest_main",
+        "@doctest//doctest",
+    ],
+)
+
+cc_test(
+    name = "rowcallback_coverage_test",
+    srcs = ["rowcallbacktest_coverage.cpp"],
+    deps = [
+        "//:sl3",
+        "//tests:doctest_main",
+        "@doctest//doctest",
+    ],
+)
