@@ -6,7 +6,6 @@ cc_test(
     deps = [
         "//:sl3",
         "//tests:doctest_main",
-        "@doctest//doctest",
     ],
 )
 
@@ -16,6 +15,5 @@ cc_test(
     deps = [
         "//:sl3",
         "//tests:doctest_main",
-        "@doctest//doctest",
     ],
 )

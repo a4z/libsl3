@@ -1,31 +1,14 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//:config.bzl", "sl3_config")
 
 package(default_visibility = ["//visibility:public"])
 
-# Generate config header using module reflection
-genrule(
+# Generate config header using cross-platform Starlark
+sl3_config(
     name = "generate_config",
-    srcs = ["src/config.in"],
-    outs = ["include/sl3/config.hpp"],
-    cmd = """
-        # Parse module version (format: 1.2.47002) - single source of truth
-        VERSION='%s'
-        MAJOR=$$(echo $$VERSION | cut -d. -f1)
-        MINOR=$$(echo $$VERSION | cut -d. -f2)
-        PATCH=$$(echo $$VERSION | cut -d. -f3)
-
-        # Extract SQLite version from patch (47002 -> minor=47, patch=2)
-        SQLITE_MINOR=$$(( $$PATCH / 1000 ))
-        SQLITE_PATCH=$$(( $$PATCH %% 1000 ))
-
-        sed -e 's/\\$${sl3_MAJOR_VERSION}/'$$MAJOR'/g' \
-            -e 's/\\$${sl3_MINOR_VERSION}/'$$MINOR'/g' \
-            -e 's/\\$${sl3_PATCH_VERSION}/'$$PATCH'/g' \
-            -e 's/\\$${sl3_VERSION}/'$$VERSION'/g' \
-            -e 's/\\$${internal_SQLITE_MINOR_V}/'$$SQLITE_MINOR'/g' \
-            -e 's/\\$${internal_SQLITE_PATCH_V}/'$$SQLITE_PATCH'/g' \
-            $< > $@
-    """ % module_version(),
+    template = "src/config.in",
+    version = module_version(),
+    output = "include/sl3/config.hpp",
 )
 
 cc_library(

@@ -21,5 +21,6 @@ cc_library(
         "-DSQLITE_ENABLE_STMTVTAB",
         "-DSQLITE_ENABLE_DBSTAT_VTAB",
     ],
+    includes = ["."],
     visibility = ["//visibility:public"],
 )
