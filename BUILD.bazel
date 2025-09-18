@@ -6,9 +6,9 @@ package(default_visibility = ["//visibility:public"])
 # Generate config header using cross-platform Starlark
 sl3_config(
     name = "generate_config",
+    output = "include/sl3/config.hpp",
     template = "src/config.in",
     version = module_version(),
-    output = "include/sl3/config.hpp",
 )
 
 cc_library(

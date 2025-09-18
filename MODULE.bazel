@@ -2,7 +2,9 @@
 
 # SQLite version configuration - single source of truth
 SQLITE_RELEASE_YEAR = 2025
+
 SQLITE3_MINOR = 50
+
 SQLITE3_PATCH = 4
 
 module(
@@ -21,19 +23,19 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 # URL format: 3MMMPPP where MMM=minor padded to 3 digits, PPP=patch padded to 3 digits
 # For 3.47.2: 3 + 047 + 002 + 00 = 3470200 (not 3047200)
 _sqlite_version_number = 3000000 + SQLITE3_MINOR * 10000 + SQLITE3_PATCH * 100
+
 http_archive(
     name = "sqlite",
     build_file = "//third_party:sqlite.BUILD",
-    urls = ["https://www.sqlite.org/{}/sqlite-amalgamation-{}.zip".format(SQLITE_RELEASE_YEAR, _sqlite_version_number)],
-    strip_prefix = "sqlite-amalgamation-{}".format(_sqlite_version_number),
     sha256 = "1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032",
-
+    strip_prefix = "sqlite-amalgamation-{}".format(_sqlite_version_number),
+    urls = ["https://www.sqlite.org/{}/sqlite-amalgamation-{}.zip".format(SQLITE_RELEASE_YEAR, _sqlite_version_number)],
 )
 
 # Doctest for testing - using http_archive with its own BUILD file
 http_archive(
     name = "doctest",
-    urls = ["https://github.com/doctest/doctest/archive/v2.4.12.tar.gz"],
     sha256 = "73381c7aa4dee704bd935609668cf41880ea7f19fa0504a200e13b74999c2d70",
     strip_prefix = "doctest-2.4.12",
+    urls = ["https://github.com/doctest/doctest/archive/v2.4.12.tar.gz"],
 )
