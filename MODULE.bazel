@@ -1,11 +1,9 @@
 """libsl3 - A C++ wrapper for SQLite3"""
 
 # SQLite version configuration - single source of truth
-SQLITE_RELEASE_YEAR = 2025
-
 SQLITE3_MINOR = 50
-
 SQLITE3_PATCH = 4
+SQLITE3_VERSION = "3.{}.{}".format(SQLITE3_MINOR, SQLITE3_PATCH)
 
 module(
     name = "libsl3",
@@ -13,29 +11,9 @@ module(
 )
 
 # Core Bazel modules
-bazel_dep(name = "rules_cc", version = "0.1.1")
-bazel_dep(name = "platforms", version = "0.0.11")
+bazel_dep(name = "rules_cc", version = "0.2.8")
+bazel_dep(name = "platforms", version = "1.0.0")
 
-# Use http_archive for dependencies not in BCR
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-# SQLite dependency - using http_archive since not in BCR
-# URL format: 3MMMPPP where MMM=minor padded to 3 digits, PPP=patch padded to 3 digits
-# For 3.47.2: 3 + 047 + 002 + 00 = 3470200 (not 3047200)
-_sqlite_version_number = 3000000 + SQLITE3_MINOR * 10000 + SQLITE3_PATCH * 100
-
-http_archive(
-    name = "sqlite",
-    build_file = "//third_party:sqlite.BUILD",
-    sha256 = "1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032",
-    strip_prefix = "sqlite-amalgamation-{}".format(_sqlite_version_number),
-    urls = ["https://www.sqlite.org/{}/sqlite-amalgamation-{}.zip".format(SQLITE_RELEASE_YEAR, _sqlite_version_number)],
-)
-
-# Doctest for testing - using http_archive with its own BUILD file
-http_archive(
-    name = "doctest",
-    sha256 = "73381c7aa4dee704bd935609668cf41880ea7f19fa0504a200e13b74999c2d70",
-    strip_prefix = "doctest-2.4.12",
-    urls = ["https://github.com/doctest/doctest/archive/v2.4.12.tar.gz"],
-)
+# Library dependencies from the Bazel Central Registry
+bazel_dep(name = "sqlite3", version = SQLITE3_VERSION, repo_name = "sqlite")
+bazel_dep(name = "doctest", version = "2.4.12")
