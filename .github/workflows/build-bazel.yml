@@ -18,12 +18,14 @@ jobs:
           - macos-latest
           - windows-latest
     steps:
+      - uses: bazel-contrib/setup-bazel@0.15.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          external-cache: true
+
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # - name: Setup MSVC environment
-      #   if: matrix.os == 'windows-2022'
-      #   uses: ilammy/msvc-dev-cmd@v1
 
       - name: Build (fastbuild)
         run: bazel build //...
