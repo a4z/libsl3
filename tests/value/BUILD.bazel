@@ -2,6 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "value_test",
+    timeout = "short",
     srcs = ["valuetest.cpp"],
     deps = [
         "//:sl3",

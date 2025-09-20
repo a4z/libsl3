@@ -2,6 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "dataset_test",
+    timeout = "short",
     srcs = ["datasettest.cpp"],
     deps = [
         "//:sl3",

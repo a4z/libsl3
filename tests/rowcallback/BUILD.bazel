@@ -2,6 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "rowcallback_test",
+    timeout = "short",
     srcs = ["rowcallbacktest.cpp"],
     deps = [
         "//:sl3",
@@ -11,6 +12,7 @@ cc_test(
 
 cc_test(
     name = "rowcallback_coverage_test",
+    timeout = "short",
     srcs = ["rowcallbacktest_coverage.cpp"],
     deps = [
         "//:sl3",
