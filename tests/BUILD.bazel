@@ -8,8 +8,9 @@ cc_library(
     srcs = ["test_main.cpp"],
     hdrs = ["testing.hpp"],
     deps = [
-        "@doctest//doctest",
+        "@doctest//doctest:custom_main",
     ],
+    linkstatic = 1,
 )
 
 # Helper function would go here if Bazel supported it in BUILD files
