@@ -83,7 +83,7 @@ SET ( sl3_SRC
 )
 ################################################################################
 
-add_library( sl3 ${SQLITE3_FILES} ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
+add_library( sl3  ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
 target_include_directories(sl3 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
