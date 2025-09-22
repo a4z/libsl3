@@ -9,7 +9,7 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
     doxygen-awesome-css
-    URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
+    URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/tags/v2.4.0.zip
 )
 FetchContent_MakeAvailable(doxygen-awesome-css)
 
