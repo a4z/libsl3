@@ -18,11 +18,22 @@ Active development happens rarely, but the library is still maintained and updat
 
 \section Installation
 
-libsl3 can be built and consumed without any external dependencies, but you might want to use the sqlite3 installation from your system.
+\subsection bazel Bazel support
+
+Since version 1.2.50004 (tested with SqLite3 3.50.4), the Bazel build system is supported
+
+This should make it easy to integrate libsl3 into a Bazel project.
 
 \subsection consume Consuming sl3 in a CMake project
 
-An easy way to consume sl3 is via CMake's `FetchContent`.
+For CMake usage, there are variouse way to handle dependencies and the build.
+
+With CMake, libsl3 can be built and consumed without any external dependencies,
+but you might want to use the sqlite3 installation from your system.
+
+
+
+Consume sl3 is via CMake's `FetchContent`.
 
 \code
 cmake_minimum_required(VERSION 3.29)
@@ -53,6 +64,18 @@ If you want to use the system sqlite3 installation, you can omit the line
 `SET(sl3_USE_INTERNAL_SQLITE3 ON)`
 
 \section build_from_source Building sl3 from source
+
+\subsection bazelbuild Bazel build
+
+\code
+bazel build ...
+bazel test ...
+\endcode
+
+Bazel will care about dependencies and build and test the package.
+
+
+\subsection cmakebuild CMake build
 
 Get your copy of the source code from the <a href="https://github.com/a4z/libsl3">libsl3 GitHub repository</a>.
 
