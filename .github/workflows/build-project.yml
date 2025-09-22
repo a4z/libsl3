@@ -6,7 +6,16 @@ on:
   pull_request:
 
 jobs:
+  check-sqlite:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Check SQLite versions
+      run: bash tools/check_sqlite_versions.sh
+
   build:
+    needs: check-sqlite
     strategy:
       matrix:
         build:
@@ -47,5 +56,4 @@ jobs:
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel --verbose
     - name: Run unit test
       run:  ctest --preset ${{ matrix.build.preset }}-release --parallel
-
 

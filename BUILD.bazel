@@ -1,0 +1,53 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//:config.bzl", "sl3_config")
+
+package(default_visibility = ["//visibility:public"])
+
+# Generate config header using cross-platform Starlark
+sl3_config(
+    name = "generate_config",
+    output = "include/sl3/config.hpp",
+    template = "src/config.in",
+    version = module_version(),
+)
+
+cc_library(
+    name = "sl3",
+    srcs = [
+        "src/sl3/columns.cpp",
+        "src/sl3/command.cpp",
+        "src/sl3/config.cpp",
+        "src/sl3/database.cpp",
+        "src/sl3/dataset.cpp",
+        "src/sl3/dbvalue.cpp",
+        "src/sl3/dbvalues.cpp",
+        "src/sl3/error.cpp",
+        "src/sl3/rowcallback.cpp",
+        "src/sl3/types.cpp",
+        "src/sl3/value.cpp",
+        # Private headers
+        "src/sl3/connection.hpp",
+        "src/sl3/utils.hpp",
+    ],
+    hdrs = [
+        "include/sl3.hpp",
+        "include/sl3/columns.hpp",
+        "include/sl3/command.hpp",
+        "include/sl3/container.hpp",
+        "include/sl3/database.hpp",
+        "include/sl3/dataset.hpp",
+        "include/sl3/dbvalue.hpp",
+        "include/sl3/dbvalues.hpp",
+        "include/sl3/error.hpp",
+        "include/sl3/rowcallback.hpp",
+        "include/sl3/types.hpp",
+        "include/sl3/value.hpp",
+        ":generate_config",
+    ],
+    includes = [
+        "include",
+    ],
+    deps = [
+        "@sqlite//:sqlite3",
+    ],
+)
