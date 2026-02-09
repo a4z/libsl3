@@ -14,13 +14,13 @@ namespace sl3
 #ifdef _MSC_VER
   using std::initializer_list;
 
-  DbValues::DbValues (conatiner_type c) noexcept (
-      std::is_nothrow_move_constructible<conatiner_type>::value)
+  DbValues::DbValues (container_type c) noexcept (
+      std::is_nothrow_move_constructible<container_type>::value)
   : Container (std::move (c))
   {
   }
 
-  DbValues::DbValues (initializer_list<typename conatiner_type::value_type> l)
+  DbValues::DbValues (initializer_list<typename container_type::value_type> l)
   : Container (std::move (l))
   {
   }

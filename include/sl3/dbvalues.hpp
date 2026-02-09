@@ -31,13 +31,13 @@ namespace sl3
   public:
     //@{
     /// usual typedefs
-    using conatiner_type  = Container::conatiner_type;
-    using iterator        = conatiner_type::iterator;
-    using const_iterator  = conatiner_type::const_iterator;
-    using value_type      = conatiner_type::value_type;
-    using reference       = conatiner_type::reference;
-    using const_reference = conatiner_type::const_reference;
-    using size_type       = conatiner_type::size_type;
+    using container_type  = Container::container_type;
+    using iterator        = container_type::iterator;
+    using const_iterator  = container_type::const_iterator;
+    using value_type      = container_type::value_type;
+    using reference       = container_type::reference;
+    using const_reference = container_type::const_reference;
+    using size_type       = container_type::size_type;
     //@}
 
     /// Constructor
@@ -48,10 +48,10 @@ namespace sl3
 
 #else
 
-    DbValues (conatiner_type) noexcept (
+    DbValues (container_type) noexcept (
         std::is_nothrow_move_constructible<DbValue>::value);
 
-    DbValues (std::initializer_list<typename conatiner_type::value_type>);
+    DbValues (std::initializer_list<typename container_type::value_type>);
 
 #endif
 
