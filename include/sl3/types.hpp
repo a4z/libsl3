@@ -32,14 +32,15 @@ namespace sl3
     Int     = 1, //!< Int value
     Real    = 2, //!< Real value
     Text    = 3, //!< Text value
-    Blob    = 4, //!< Blob vale
+    Blob    = 4, //!< Blob value
     Variant = 5  //!< takes any type
   };
 
   /**
    * \brief Get the type name as string
    *
-   * For example, in log messages a type "Real" is more verbose that a type 2.
+   * For example, in log messages a type "Real" is more expressive than
+   * type 2.
    *
    * \return the type name as string
    */
@@ -71,44 +72,7 @@ namespace sl3
     using size_type       = container_type::size_type;
     //@}
 
-#ifndef _MSC_VER
     using Container::Container;
-
-#else
-    /**
-     * \brief c'tor
-     *
-     * Create an empty sl3::Type Container
-     */
-    Types () noexcept {}
-    using Base = Container<std::vector<Type>>;
-
-    /**
-     * \brief c'tor
-     *
-     * Create a container with given vector of sl3::Type elements.
-     *
-     * \param c vector of sl3::Type
-     */
-    Types (container_type c) noexcept (
-        std::is_nothrow_move_constructible<container_type>::value)
-    : Base (std::move (c))
-    {
-    }
-
-    /**
-     * \brief c'tor
-     *
-     * Create a container with given initializer list of sl3::Type elements.
-     *
-     * \param l initializer_list of  {sl3::Type, ...}
-     */
-    Types (std::initializer_list<typename container_type::value_type> l)
-    : Base (std::move (l))
-    {
-    }
-
-#endif
 
     /**
      * \brief Swap container

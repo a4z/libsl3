@@ -30,11 +30,11 @@ namespace sl3
    * \brief represents a SQLite3 Database
    *
    *
-   * Encapsulate some/the most - useful methods for a SQLite3 database object.
-   *
-   * A Database is opened when a instance is created and close when the
-   * instance
-   * goes out of scope.
+   * Encapsulates some of the most useful methods for a SQLite3 database
+   * object.
+   * A Database is opened when an instance is created and closed
+   * when the
+   * instance goes out of scope.
    *
    * \note for valgrind: http://www.sqlite.org/cvstrac/tktview?tn=3428 \n
    *  since I don't know where to put this note else I place it just here
@@ -53,10 +53,12 @@ namespace sl3
      * The exact behavior can be fine tuned using the openFlags parameter.
      *
      * \param name database name.
-     * \n If name is ":memory:" than the database will be an in memory
+     * \n If name is ":memory:" then the database will be an in-memory
+     *
      * database.
-     * \n If name has a size of 0 than the database will be private on disk
-     * database.
+     * \n If name has a size of 0 then the database will be a private on-disk
+
+     * * database.
      * \n Otherwise name will be interpreted as a file.
      *
      * \param openFlags if no flags are given, the defaults are
@@ -84,7 +86,7 @@ namespace sl3
      * \brief create a SqlCommand instance.
      *
      * Parameters that the statement might contain will be automatically
-     * deduced and created as DbVaraint values
+     * deduced and created as DbVariant values
      *
      * \param sql SQL statement
      * \return a Command instance
@@ -116,8 +118,9 @@ namespace sl3
     /**
      * \brief Execute one or more SQL statements.
      *
-     * Overload for const char to avoid a copy for larg command like
-     * create database scripts which are often static  char*
+     * Overload for const char* to avoid a copy for large commands like
+     *
+     * create-database scripts, which are often static char*.
      *
      * \throw sl3::SQLite3Error in case of a problem.
      *
@@ -126,7 +129,7 @@ namespace sl3
     void execute (const char* sql);
 
     /**
-     * \brief Execute one SQL statements and apply a SqlQueryHandler.
+     * \brief Execute one SQL statement and apply a SqlQueryHandler.
      *
      * \throw sl3::SQLite3Error in case of a problem.
      *
@@ -139,7 +142,7 @@ namespace sl3
     using Callback = Command::Callback;
 
     /**
-     * \brief Execute one SQL statements and apply a QueryCallback.
+     * \brief Execute one SQL statement and apply a QueryCallback.
      *
      * \throw sl3::SQLite3Error in case of a problem.
      *
@@ -159,12 +162,13 @@ namespace sl3
     Dataset select (const std::string& sql);
 
     /**
-     * \brief Execute a SQL query and returns the result .
+     * \brief Execute a SQL query and return the result.
      *
      *  If Types are
      *
-     * \throw sl3::SQLite3Error in case of a problems.
-     * \throw sl3::ErrTypeMisMatch in case of incorrect types.
+     * \throw sl3::SQLite3Error in case of problems.
+     * \throw
+     * sl3::ErrTypeMisMatch in case of incorrect types.
      *
      * \param sql SQL Statements
      * \param types wanted types of the returned Dataset
@@ -173,7 +177,7 @@ namespace sl3
     Dataset select (const std::string& sql, const Types& types);
 
     /**
-     * \brief Select a single value form the database.
+     * \brief Select a single value from the database.
      *
      * This is a quick way to get single value results for queries like
      *  "SELECT COUNT(*) FROM someTable;" \n
@@ -182,7 +186,7 @@ namespace sl3
      *  given query.
      * If query returns no rows, the return value will be null.
      *
-     * \throw sl3::SQLite3Error in case of a problems.
+     * \throw sl3::SQLite3Error in case of problems.
      *
      * \param sql SQL statement
      * \return DbValue of the first available result.
@@ -190,7 +194,7 @@ namespace sl3
     DbValue selectValue (const std::string& sql);
 
     /**
-     * \brief select a single typed value form the database.
+     * \brief Select a single typed value from the database.
      *
      * This is a quick way to get single value results for queries like
      *  "SELECT COUNT(*) FROM someTable;" \n
@@ -200,8 +204,9 @@ namespace sl3
      * If query returns no rows, the return value will be null.
      *
      * \throw sl3::ErrTypeMisMatch if return type differs from requested type
-     * \throw sl3::SQLite3Error in case of a problems.
-     * \param sql SQL statement
+     * \throw sl3::SQLite3Error in case of problems.
+     * \param sql SQL
+     * statement
      * \param type result has to be of that Type
      *
      * \return DbValue of the first available result.
@@ -284,7 +289,7 @@ namespace sl3
       Transaction& operator= (Transaction&&)      = delete;
 
       /** \brief Move constructor
-       *  A Transaction is movalble.
+       *  A Transaction is movable.
        */
       Transaction (Transaction&&) noexcept;
 
@@ -327,10 +332,11 @@ namespace sl3
      * Only internal used
      *
      * This uses a shared_ptr.
-     * libsl3 allows a sl3::Database do go out of scope,
-     * but keep a sl3::Command instance.
-     * The Command instance is still connected, and the underlying sqlite3
-     * connection will be closed when the last Command instance is destroyed.
+     * libsl3 allows a sl3::Database to go out of scope,
+     * but keep a
+     * sl3::Command instance. The Command instance is still connected, and the
+     * underlying sqlite3 connection will be closed when the last Command
+     * instance is destroyed.
      *
      */
     using ConnectionPtr = std::shared_ptr<internal::Connection>;

@@ -209,8 +209,9 @@ namespace sl3
 
     /**\brief unchecked random access
      * \param i index
-     * behaves undefined if given index is invalid
-     * \return reference to element at requested index
+     * behavior is undefined if the given index is invalid
+     * \return
+     * reference to element at requested index
      */
     reference
     operator[] (size_t i)
@@ -219,8 +220,9 @@ namespace sl3
     }
     /**\brief unchecked random access
      * \param i index
-     * behaves undefined if given index is invalid
-     * \return reference to element at requested index
+     * behavior is undefined if the given index is invalid
+     * \return
+     * reference to element at requested index
      */
     const_reference
     operator[] (size_t i) const

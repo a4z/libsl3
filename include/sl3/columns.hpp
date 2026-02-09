@@ -17,11 +17,11 @@ struct sqlite3_stmt;
 namespace sl3
 {
 
-  // TODO add to docu
-  // index access always checked, since docu says
+  // TODO add to docs
+  // index access always checked, since docs say
   // 'if the column index is out of range, the result is undefined'
-  // but if you fell lke preoptimization is requiresd,
-  // feel free to access  the underlying sqlite3_stmt via
+  // but if you feel like pre-optimization is required,
+  // feel free to access the underlying sqlite3_stmt via
   // and adopt the index access!
 
   /**
@@ -79,10 +79,10 @@ namespace sl3
     std::string getName (int idx) const;
 
     /**
-     * \brief Get columns names
+     * \brief Get column names
      *
-     *  Will return a list of size count() .
-     *  Unnamed columns will be an ampty string
+     *  Will return a list of size count().
+     *  Unnamed columns will be an empty string.
      *
      * \return the names
      */
@@ -117,7 +117,7 @@ namespace sl3
     /**
      * \brief Get all columns at once
      *
-     * All DbValue object will be of Type::Variant
+     * All DbValue objects will be of Type::Variant.
      *
      * \return DbValues of the column values
      */
@@ -126,7 +126,7 @@ namespace sl3
     /**
      * \brief Get all columns at once using the given types
      *
-     * If a value does not math the given types an exception will be thown
+     * If a value does not match the given types an exception will be thrown.
      *
      * \param types wanted Types
      * \throw sl3::ErrTypeMisMatch in case of an incorrect type
@@ -162,7 +162,7 @@ namespace sl3
     /**
      *  \brief Get the value of a column.
      *
-     *  If a column is Null of of a different type, the sqlite3 conversion
+     *  If a column is Null or of a different type, the sqlite3 conversion
      *  rules are applied.
      *
      *  \param idx column index
@@ -174,7 +174,7 @@ namespace sl3
     /**
      *  \brief Get the value of a column.
      *
-     *  If a column is Null of of a different type, the sqlite3 conversion
+     *  If a column is Null or of a different type, the sqlite3 conversion
      *  rules are applied.
      *
      *  \param idx column index
@@ -186,7 +186,7 @@ namespace sl3
     /**
      *  \brief Get the value of a column.
      *
-     *  If a column is Null of of a different type, the sqlite3 conversion
+     *  If a column is Null or of a different type, the sqlite3 conversion
      *  rules are applied.
      *  \param idx column index
      *  \throw sl3::ErrOutOfRange if idx is invalid
@@ -197,7 +197,7 @@ namespace sl3
     /**
      *  \brief Get the value of a column.
      *
-     *  If a column is Null of of a different type, the sqlite3 conversion
+     *  If a column is Null or of a different type, the sqlite3 conversion
      *  rules are applied.
      *
      *  \param idx column index
@@ -209,7 +209,7 @@ namespace sl3
     /**
      *  \brief Get the value of a column.
      *
-     *  If a column is Null of of a different type, the sqlite3 conversion
+     *  If a column is Null or of a different type, the sqlite3 conversion
      *  rules are applied.
      *
      *  \param idx column index

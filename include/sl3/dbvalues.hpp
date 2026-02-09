@@ -64,17 +64,19 @@ namespace sl3
     DbValues (DbValues&&) noexcept (
         std::is_nothrow_move_constructible<DbValue>::value);
 
-    /** \brief Assigment
-     *  \throw sl3::ErrTypeMisMatch if size() is different
+    /** \brief Assignment
+     *  \throw sl3::ErrTypeMisMatch if size() is
+     * different
      *  \see assignment of DbValue
-     *  \return reference ot this
+     *  \return reference to this
      */
     DbValues& operator= (const DbValues&);
 
-    /** \brief Assigment
-     *  \throw sl3::ErrTypeMisMatch if size() is different
+    /** \brief Assignment
+     *  \throw sl3::ErrTypeMisMatch if size() is
+     * different
      *  \see assignment of DbValue
-     *  \return reference ot this
+     *  \return reference to this
      */
     DbValues& operator= (DbValues&&);
 
@@ -83,7 +85,7 @@ namespace sl3
      *
      * Swaps  content of 2 DbValues.
      *
-     * \param other DbValues to swap wit
+     * \param other DbValues to swap with
      */
     void swap (DbValues& other) noexcept;
   };
@@ -94,7 +96,7 @@ namespace sl3
    *  \param a first value to swap with second value
    *  \param b second value to swap with first value
    *
-   *  This function call a.swap(b). \see DbValues::swap
+   *  This function calls a.swap(b). \see DbValues::swap
    */
   void swap (DbValues& a, DbValues& b) noexcept;
 

@@ -19,9 +19,9 @@ namespace sl3
   class Columns;
 
   /**
-   * \brief Callback for SQL Select statements
+   * \brief Callback for SQL SELECT statements
    *
-   * This interface can be used to process through the result of
+   * This interface can be used to process the result of
    * a SQL statement.
    *
    *

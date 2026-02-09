@@ -37,8 +37,9 @@ namespace sl3
   };
 
   /**
-   * \brief get textual representantion (the name) of an ErrCode
-   * \param ec wanted ErrCode name
+   * \brief get textual representation (the name) of an ErrCode
+   * \param ec
+   * wanted ErrCode name
    * \return the ErrCode name
    */
   constexpr const char*
@@ -56,8 +57,9 @@ namespace sl3
   /**
    * \brief Exception base type
    *
-   * A command base for all ErrType objects.
-   * All exceptions thrown by the library wil have this base type.
+   * A common base for all ErrType objects.
+   * All exceptions thrown by the
+   * library will have this base type.
    */
   class LIBSL3_API Error : public std::runtime_error
   {
@@ -68,7 +70,7 @@ namespace sl3
 
     /**
      * \brief Get ErrCode
-     * \return the Errcode of the excetion
+     * \return the ErrCode of the exception
      */
     virtual ErrCode getId () const = 0;
   };
@@ -84,8 +86,9 @@ namespace sl3
   /**
    * \brief Object class representing an ErrCode
    *
-   *  Allows typedef objects using an Errcode.
-   *  Each sl3::ErrCode becomes an ErrType object.
+   *  Allows typedef objects using an ErrCode.
+   *  Each sl3::ErrCode becomes
+   * an ErrType object.
    */
   template <ErrCode ec> class LIBSL3_API ErrType final : public Error
   {
@@ -140,8 +143,9 @@ namespace sl3
   public:
     /**
      * \brief c'tor
-     * \param sl3ec sqite error code
-     * \param sl3msg sqite error code
+     * \param sl3ec sqlite error code
+     * \param sl3msg sqlite error
+     * message
      * \param msg additional message
      */
     ErrType (int sl3ec, const char* sl3msg, const std::string& msg)
@@ -153,8 +157,9 @@ namespace sl3
 
     /**
      * \brief c'tor
-     * \param sl3ec sqite error code
-     * \param sl3msg sqite error code
+     * \param sl3ec sqlite error code
+     * \param sl3msg sqlite error
+     * message
      */
     ErrType (int sl3ec, const char* sl3msg)
     : ErrType (sl3ec, sl3msg, "")
@@ -179,8 +184,9 @@ namespace sl3
     /**
      * \brief  Get the sqlite3 error message.
      *
-     * If the exception was created with a sqlite a error message
-     * it can be accessed here.
+     * If the exception was created with a sqlite error message,
+     * it can
+     * be accessed here.
      *
      * \return the sqlite3 error message
      */
@@ -207,8 +213,9 @@ namespace sl3
   throw except (std::string (__FUNCTION__) + ": " + #exp)
 
   /*
-    TODO check if this can be done, togehter with __FUNCTION__
-    into a nice code locastion for nicer messages
+    TODO check if this can be done, together with __FUNCTION__,
+    into a nice
+  code location for clearer messages
     File.cpp::Function::39 The problem
 
 

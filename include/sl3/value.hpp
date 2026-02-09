@@ -24,7 +24,7 @@ namespace sl3
    * This class models the duck typing sqlite uses.
    * It supports int, real, text, blob and null values.
    *
-   * The class has the current type info availalbe.
+   * The class has the current type info available.
    *
    *
    */
@@ -40,8 +40,9 @@ namespace sl3
 
     /** \brief Constructor
      *
-     *  This constructor wiht an initialization value
-     *  \param val initial value
+     *  This constructor with an initialization value
+     *  \param val
+     * initial value
      */
     explicit Value (int val) noexcept;
 
@@ -129,8 +130,9 @@ namespace sl3
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
-     *  \throw sl3::ErrOutOfRange is the stored value is an int64_t
-     *  \return  the value
+     *  \throw sl3::ErrOutOfRange if the stored value is an int64_t
+     *
+     * \return  the value
      */
     explicit operator int () const;
 
@@ -144,8 +146,9 @@ namespace sl3
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
-     *  \throw sl3::ErrOutOfRange is the stored value is an int64_t and out of
-     *    the min or max double range.
+     *  \throw sl3::ErrOutOfRange if the stored value is an int64_t and out of
+
+     * *    the min or max double range.
      *  \return  the value
      */
     explicit operator double () const;
@@ -155,14 +158,14 @@ namespace sl3
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \return  the value
      */
-    explicit operator const std::string& () const; // TODO ref or val
+    explicit operator const std::string&() const; // TODO ref or val
 
     /** \brief Implicit conversion operator
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \return  the value
      */
-    explicit operator const Blob& () const; // TODO ref or val
+    explicit operator const Blob&() const; // TODO ref or val
 
     /** \brief Access the value
      *  \throw sl3::ErrNullValueAccess if value is null.
@@ -237,7 +240,7 @@ namespace sl3
     /**
      * \brief swap function
      *
-     *  Independent of the type, a Value is always swapable.
+     *  Independent of the type, a Value is always swappable.
      *
      *  \param other value to swap with
      */
@@ -286,11 +289,14 @@ namespace sl3
    *
    * Applies following rules which are equal to the sorting rules of sqlite.
    *
-   * - Type::Null is alwasy less than any other storage type.
-   * - Type::Interger or Type::Real
-   *     -- if the type is different, but the value equal,
-   *     than Type::Int < Type::Real .
-   *     if this is unwanted, use the weak_lt function.
+   * - Type::Null is always less than any other storage type.
+   * -
+   * Type::Integer or Type::Real
+   *     -- if the type is different, but the
+   * value is equal,
+   *     then Type::Int < Type::Real.
+   *     if this is
+   * unwanted, use the weak_lt function.
    *     -- always less than Type::Text or Type::Blob
    * - Type::Text is less than Type::Blob
    *
@@ -328,7 +334,7 @@ namespace sl3
   /**
    * \brief Value specialized swap function
    *
-   *  Independent of the type, a Value is always swapable.
+   *  Independent of the type, a Value is always swappable.
    *
    *  \param a first value to swap with second value
    *  \param b second value to swap with first value

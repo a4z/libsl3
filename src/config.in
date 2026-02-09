@@ -37,7 +37,7 @@
     \namespace sl3
     \brief Namespace of libSL3.
 
-    The namespace where the library defines it's elements.
+    The namespace where the library defines its elements.
 
 */
 namespace sl3
@@ -52,7 +52,7 @@ namespace sl3
    * \brief sqlite version string at compile time
    *
    * if this library was linked against an installed version of sqlite
-   * this function can be used to determinate if the system library has
+   * this function can be used to determine if the system library has
    * been updated.
    * \sa sqliteRuntimeVersion()
    *
@@ -64,7 +64,7 @@ namespace sl3
    * \brief sqlite version number at compile time
    *
    * if this library was linked against an installed version of sqlite
-   * this function can be used to determinate if the system library has
+   * this function can be used to determine if the system library has
    * been updated.
    * \sa sqliteRuntimeVersionNumber()
    *
@@ -77,7 +77,7 @@ namespace sl3
    * \brief sqlite version string at runtime
    *
    * if this library was linked against an installed version of sqlite
-   * this function can be used to determinate if the system library has
+   * this function can be used to determine if the system library has
    * been updated.
    * \sa sqliteCompiledVersion()
    *
@@ -89,7 +89,7 @@ namespace sl3
    * \brief sqlite version number at compile time
    *
    * if this library was linked against an installed version of sqlite
-   * this function can be used to determinate if the system library has
+   * this function can be used to determine if the system library has
    * been updated.
    * \sa sqliteCompiledVersionNumber()
    *
@@ -101,7 +101,7 @@ namespace sl3
   /**
    * \brief returns value of SQLITE_THREADSAFE compilation option
    *
-   *  see http://www.sqlite.org/compile.html about additional informations
+   *  see http://www.sqlite.org/compile.html for additional information
    *
    * \return 0 or 1 or 2
    */
