@@ -36,7 +36,6 @@ namespace sl3
     using reference       = typename container_type::reference;
     using const_reference = typename container_type::const_reference;
     using size_type       = typename container_type::size_type;
-    using container_type  = ContainerType;
     //@}
 
     /**
