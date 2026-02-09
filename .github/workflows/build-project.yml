@@ -34,6 +34,11 @@ jobs:
             preset: msvc22,
             cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg
           }
+          - {
+            os: windows-2025-vs2026,
+            preset: msvc26,
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg
+          }
     runs-on: ${{ matrix.build.os }}
     steps:
     - name: Cleanup for SQLite on macOS
