@@ -1,14 +1,16 @@
 {
   "default-registry": {
     "kind": "builtin",
-    "baseline": "5e5d0e1cd7785623065e77eff011afdeec1a3574"
+    "baseline": "6d7bf7ef21"
   },
   "registries": [
     {
       "kind": "git",
       "baseline": "e9273e2613b55f3fef3d0cf57a4e98d60aa72b02",
       "repository": "https://github.com/a4z/vcpkg-ports",
-      "packages": [ "common-compiler-warnings" ]
+      "packages": [
+        "common-compiler-warnings"
+      ]
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
   "version": 8,
   "include": [
-      "cmake/preset/ninja.json",
-      "cmake/preset/xcode.json",
-      "cmake/preset/msvc22.json"
+    "cmake/preset/ninja.json",
+    "cmake/preset/xcode.json",
+    "cmake/preset/msvc22.json",
+    "cmake/preset/msvc26.json"
   ]
 }
-
