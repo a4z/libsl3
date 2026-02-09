@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.29)
 
 
 set(sl3_MAJOR_VERSION 1)
-set(sl3_MINOR_VERSION 2)
+set(sl3_MINOR_VERSION 3)
 
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
