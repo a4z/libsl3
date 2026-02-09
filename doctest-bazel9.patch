@@ -1,0 +1,18 @@
+diff --git a/doctest/BUILD.bazel b/doctest/BUILD.bazel
+--- a/doctest/BUILD.bazel
++++ b/doctest/BUILD.bazel
+@@ -1,3 +1,5 @@
++load("@rules_cc//cc:defs.bzl", "cc_library")
++
+ cc_library(
+     name = "doctest",
+     hdrs = glob(["**/*.h"]),
+diff --git a/MODULE.bazel b/MODULE.bazel
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -3,3 +3,5 @@ module(
+     version = "2.4.12",
+     compatibility_level = 1,
+ )
++
++bazel_dep(name = "rules_cc", version = "0.2.16")

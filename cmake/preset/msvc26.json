@@ -1,0 +1,61 @@
+{
+  "version": 8,
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "msvc26",
+      "inherits": "base",
+      "generator": "Visual Studio 18 2026",
+      "cacheVariables": {
+        "TOOLCHAIN_INCLUDES": "toolchain/use-vcpkg"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc26",
+      "configurePreset": "msvc26",
+      "configuration": "Debug",
+      "jobs": 0
+    },
+    {
+      "name": "msvc26-release",
+      "configurePreset": "msvc26",
+      "configuration": "Release",
+      "jobs": 0
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "msvc26",
+      "inherits": "base",
+      "configurePreset": "msvc26"
+    },
+    {
+      "name": "msvc26-release",
+      "inherits": "msvc26",
+      "configuration": "Release"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "msvc26",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "msvc26"
+        },
+        {
+          "type": "build",
+          "name": "msvc26"
+        },
+        {
+          "type": "test",
+          "name": "msvc26"
+        }
+      ]
+    }
+  ]
+}
