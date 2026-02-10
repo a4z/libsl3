@@ -37,7 +37,7 @@ jobs:
           - {
             os: windows-2025-vs2026,
             preset: msvc26,
-            cmake_args: -DPROJECT_ADDONS='add-on/fetch-dependencies
+            cmake_args: -DPROJECT_ADDONS='add-on/fetch-dependencies'
           }
     runs-on: ${{ matrix.build.os }}
     steps:
