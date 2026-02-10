@@ -37,7 +37,7 @@ jobs:
           - {
             os: windows-2025-vs2026,
             preset: msvc26,
-            cmake_args: -DPROJECT_ADDONS='add-on/fetch-dependencies' -DCMAKE_TOOLCHAIN_FILE=""
+            cmake_args: -DPROJECT_ADDONS='add-on/fetch-dependencies' -DCMAKE_TOOLCHAIN_FILE="" -Dsl3_USE_INTERNAL_SQLITE3=ON
           }
     runs-on: ${{ matrix.build.os }}
     steps:
