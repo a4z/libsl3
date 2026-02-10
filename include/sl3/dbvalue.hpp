@@ -16,7 +16,7 @@
 #include <sl3/types.hpp>
 #include <sl3/value.hpp>
 
-// todo after a wile, type and storage type become confusing
+// todo after a while, type and storage type become confusing
 // find better name, type should be value type,
 // storage type something else, find better name!
 
@@ -29,7 +29,7 @@ namespace sl3
    * It supports int, real, text, blob and null values.
    *
    * The type can be a variant, to support all of the possible types,
-   * or it can be set explicit to a wanted type.
+   * or it can be set explicitly to a wanted type.
    *
    * Using this type for communication with the database can ensure either
    * type guarantee or give the flexibility of variant types.
@@ -60,13 +60,14 @@ namespace sl3
 
     /** \brief Constructor
      *
-     *  This constructor takes a initialization value, and optionally a type
+     *  This constructor takes an initialization value, and optionally a type
      *  which can only be Type::Variant or the default one.
+     *
      *
      *  \throw sl3::ErrTypeMisMatch if given type is incompatible
      *  \param val initial value
      *  \param type wanted type, default set to type but can
-     *  be set to DbValue::Variant if waned
+     *  be set to DbValue::Variant if wanted
      */
     explicit DbValue (int val, Type type = Type::Int);
 
@@ -195,8 +196,9 @@ namespace sl3
     const Value& getValue () const noexcept;
 
     /** \brief Value access
-     *  Just s shorter way tan getValue.
-     *  \return reference to the underlying Value
+     *  Just a shorter way than getValue.
+     *  \return reference to the
+     * underlying Value
      */
     const Value&
     value () const noexcept
@@ -230,7 +232,7 @@ namespace sl3
      *
      *  \throw sl3::ErrTypeMisMatch if getType is incorrect
      *  \param defval default value to return if value is NULL
-     *  \return the value or the give defval in case value is NULL
+     *  \return the value or the given defval in case the value is NULL
      */
     int64_t getInt (int64_t defval) const;
 
@@ -252,10 +254,10 @@ namespace sl3
     /** \brief Value access with default for a NULL and different type value.
      *
      *  This method will not throw. If the actual value is null or of a
-     *  different type, the fiven default value will be returned.
+     *  different type, the given default value will be returned.
      *
      *  \param defval default value to return
-     *  \return the value or the give default value if the value needs to be
+     *  \return the value or the given default value if the value needs to be
      *      replaced
      */
     int64_t get (int64_t defval) const;
@@ -311,8 +313,9 @@ namespace sl3
      * This is the type with which the Value has been created
      * and will not change.
      *
-     * The type might be Type::Varian, so that a DbValue can hold any value,
-     * or a specific Type to guarantee the only the allow type is used.
+     * The type might be Type::Variant, so that a DbValue can hold any value,
+     *
+     * or a specific Type to guarantee that only the allowed type is used.
      *
      * \return the type
      */
@@ -325,15 +328,16 @@ namespace sl3
      * returns the actual type information, otherwise it will be the same as
      * type or null.
      *
-     * \return the type the value actual holds
+     * \return the type the value actually holds
      */
     Type type () const;
 
     /**
      * \brief Check if assignment would be OK
      *
-     * If this function return true, the other value can
-     * be assign because it is type compatible.
+     * If this function returns true, the other value can
+     * be assigned
+     * because it is type compatible.
      *
      * \param other value to check
      * \return true if the other value can be assigned

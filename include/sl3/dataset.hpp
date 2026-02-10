@@ -59,7 +59,7 @@ namespace sl3
     Dataset () noexcept;
 
     /**
-     * \brief Constructor wiht DbValuesTypeList as description
+     * \brief Constructor with DbValuesTypeList as description
      *
      * Types of DbValue will use the given description when creating the
      *  DbValue list.
@@ -108,21 +108,24 @@ namespace sl3
      *
      * Removes loaded data and sets a new specification for the field
      * description
-     *  so that the actual instance can be reused for populate with a different
-     *  select statement / sql command.
-     * Passing an empty DbValuesTypeList mean that all fields will be
-     * DsVariandField and field count will be detected.
+     *  so that the actual instance can be reused to populate with a different
+
+     * *  select statement / sql command. Passing an empty DbValuesTypeList
+     * means that all fields will be
+     * DsVariantField and field count will
+     * be detected.
      *
      * \param types new Types requirement
      */
     void reset (const Types& types);
 
     /**
-     * \brief Merge an other Dataset.
+     * \brief Merge another Dataset.
      *
      * Appends the data of the given Dataset to the end of the actual data.
-     * The field names and types of the given Dataset must match the actuals
-     * one.
+     * The field names and types of the given Dataset must match the current
+
+     * * one.
      *
      * \throw sl3::ErrTypeMisMatch if field names types are not equal or
      * size differs.
@@ -146,8 +149,9 @@ namespace sl3
     /**
      * \brief Get the index of a field by namespace
      *
-     * \throw sl3::OutOfRanage if name is not found
-     * \param name field name
+     * \throw sl3::OutOfRange if name is not found
+     * \param name field
+     * name
      * \return field index
      */
     std::size_t getIndex (const std::string& name) const;
@@ -155,7 +159,8 @@ namespace sl3
     /**
      * \brief Typedef for a relation function signature
      *
-     * Used to specify the the less function that shall be used for sorting
+     * Used to specify the less function that shall be used for sorting
+     *
      * a Dataset.
      *
      * \see Dataset::sort

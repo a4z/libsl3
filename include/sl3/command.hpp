@@ -84,9 +84,11 @@ namespace sl3
      *
      * Runs the command, applying given parameters
      *  and returns the result in a Dataset.
-     * It types are given, they are used for the returned Dataset.
-     * It no types are given all fields in the returned Dataset will be
-     * of Type::Variant
+     * If types are given, they are used for the returned Dataset.
+     * If no
+     * types are given all fields in the returned Dataset will be
+     * of
+     * Type::Variant
      *
      * \throw sl3::ErrTypeMisMatch if types are given which are invalid or
      * given parameters are of the wrong size.
@@ -166,14 +168,14 @@ namespace sl3
     /**
      * \brief Parameters of command.
      *
-     * \return referenct to the parameters
+     * \return reference to the parameters
      */
     DbValues& getParameters ();
 
     /**
      * \brief Parameters of command.
      *
-     * \return const referenct to the parameters
+     * \return const reference to the parameters
      */
     const DbValues& getParameters () const;
 
@@ -181,7 +183,7 @@ namespace sl3
      * \brief get Parameter at given index.
      * \param idx index
      * \throw sl3::ErrOutOfRange if index is invalid
-     * \return referenct to the parameters at given index
+     * \return reference to the parameters at given index
      */
     DbValue& getParameter (int idx);
 
@@ -189,19 +191,21 @@ namespace sl3
      * \brief get Parameter at given index.
      * \param idx index
      * \throw sl3::ErrOutOfRange if index is invalid
-     * \return const referenct to the parameters at given index
+     * \return const reference to the parameters at given index
      */
     const DbValue& getParameter (int idx) const;
 
     /**
      * \brief Set parameter values
      *
-     * The Types ot the given values must be compatible with the
-     * current ones.
+     * The types of the given values must be compatible with the
+     * current
+     * ones.
      *
-     * \param values new paramter values
-     * \throw sl3::ErrTypeMisMatch if size of values differs from the actual
-     * parameter size or DbValue assignment throws.
+     * \param values new parameter values
+     * \throw sl3::ErrTypeMisMatch if
+     * size of values differs from the actual parameter size or DbValue
+     * assignment throws.
      * \see DbValue
      *
      */
