@@ -11,7 +11,7 @@ FetchContent_Declare(
   doctest
   SYSTEM
   GIT_REPOSITORY "https://github.com/onqtam/doctest"
-  GIT_TAG "v2.4.12"
+  GIT_TAG "dev"
   OVERRIDE_FIND_PACKAGE
 )
 
