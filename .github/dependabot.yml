@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "bazel"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # sqlite3 is managed manually: SQLITE3_MINOR and SQLITE3_PATCH in MODULE.bazel
+      # encode the version into the library's own version number, used in tests
+      # needs to be in sync with cmake also
+      - dependency-name: "sqlite3"
+
