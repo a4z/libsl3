@@ -44,9 +44,7 @@ cc_library(
         "include/sl3/value.hpp",
         ":generate_config",
     ],
-    includes = [
-        "include",
-    ],
+    strip_include_prefix = "include",
     deps = [
         "@sqlite//:sqlite3",
     ],
