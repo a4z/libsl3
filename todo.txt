@@ -1,0 +1,7 @@
+
+
+Bazel 9.0.0 release notes (flag flips, including --incompatible_strict_action_env): https://github.com/bazelbuild/bazel/releases
+Historical behavior description of strict action env and PATH inheritance: https://github.com/bazelbuild/bazel/issues/6648
+
+so, linker problems are possible, investigate (Linux)
+
