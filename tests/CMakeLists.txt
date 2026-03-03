@@ -7,11 +7,11 @@ add_subdirectory(commands)
 add_subdirectory(database)
 add_subdirectory(dataset)
 add_subdirectory(dbvalue)
+add_subdirectory(errors)
 add_subdirectory(rowcallback)
 add_subdirectory(typenames)
 add_subdirectory(value)
 add_subdirectory(version)
-
 
 
 # make test should also run the sample, so either put it here

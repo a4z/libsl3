@@ -1,0 +1,3 @@
+
+Bazel, on linux ld.lld is requested, thats not optimal since ld.bfd is default installed, 
+todo, check why, and if there is something todo
