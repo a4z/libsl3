@@ -2,6 +2,8 @@ include_guard(GLOBAL)
 
 include(GNUInstallDirs)
 
+set(sl3_CMAKE_PACKAGE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/sl3")
+
 install(
     TARGETS sl3
     EXPORT sl3Targets
@@ -12,7 +14,7 @@ install(
 install(EXPORT sl3Targets
     FILE sl3Targets.cmake
     NAMESPACE a4z::
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    DESTINATION "${sl3_CMAKE_PACKAGE_DIR}"
 )
 
 include(CMakePackageConfigHelpers)
@@ -23,14 +25,13 @@ write_basic_package_version_file(
 configure_package_config_file(
     ${CMAKE_CURRENT_LIST_DIR}/sl3Config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/sl3Config.cmake
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    INSTALL_DESTINATION "${sl3_CMAKE_PACKAGE_DIR}"
 )
 
 install(
     FILES
         ${CMAKE_CURRENT_BINARY_DIR}/sl3Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/sl3ConfigVersion.cmake
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    DESTINATION "${sl3_CMAKE_PACKAGE_DIR}"
 
 )
-
