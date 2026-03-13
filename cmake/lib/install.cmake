@@ -2,9 +2,12 @@ include_guard(GLOBAL)
 
 include(GNUInstallDirs)
 
-install(TARGETS sl3 EXPORT sl3Targets)
-INSTALL(FILES ${sl3_HDR} DESTINATION include/sl3)
-INSTALL(FILES include/sl3.hpp DESTINATION include/sl3)
+install(
+    TARGETS sl3
+    EXPORT sl3Targets
+    FILE_SET public_headers
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 install(EXPORT sl3Targets
     FILE sl3Targets.cmake
@@ -30,5 +33,4 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 
 )
-
 
