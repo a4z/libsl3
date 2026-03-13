@@ -1,4 +1,4 @@
-name: package integration (system sqlite)
+name: package installation test
 
 on:
   workflow_dispatch:
