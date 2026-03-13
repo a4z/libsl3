@@ -1,0 +1,36 @@
+name: package integration (system sqlite)
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  package-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install system sqlite dev package
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev
+
+      - name: Build and stage install (system sqlite)
+        run: |
+          cmake -B build/installcheck/Release -S . \
+            -DCMAKE_BUILD_TYPE=Release \
+            -Dsl3_USE_INTERNAL_SQLITE3=OFF \
+            -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
+          cmake --build build/installcheck/Release --parallel
+          DESTDIR="$(pwd)/build/installcheck/inst" cmake --install build/installcheck/Release --prefix=/usr --strip
+
+      - name: Consumer integration test against staged install
+        run: |
+          cmake -S tests/pkg-consumer -B build/pkg-consumer \
+            -DCMAKE_PREFIX_PATH="$(pwd)/build/installcheck/inst/usr"
+          cmake --build build/pkg-consumer --parallel
+          ctest --test-dir build/pkg-consumer --output-on-failure

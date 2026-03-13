@@ -25,7 +25,7 @@ jobs:
           external-cache: true
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build (fastbuild)
         run: bazel build //...

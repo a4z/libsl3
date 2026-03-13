@@ -1,5 +1,15 @@
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+
+set(_sl3_sqlite_link_target "@SQLITE_LINK_NAME@")
+if(_sl3_sqlite_link_target STREQUAL "SQLite::SQLite3")
+  find_dependency(SQLite3 REQUIRED)
+elseif(_sl3_sqlite_link_target STREQUAL "unofficial::sqlite3::sqlite3")
+  find_dependency(unofficial-sqlite3 CONFIG REQUIRED)
+endif()
+unset(_sl3_sqlite_link_target)
+
 include("${CMAKE_CURRENT_LIST_DIR}/sl3Targets.cmake")
 
 check_required_components("sl3")

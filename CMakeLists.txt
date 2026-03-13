@@ -23,23 +23,24 @@ project(libsl3
 
 
 # done differently now
-LIST(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
+list(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
 
 
 option(sl3_USE_INTERNAL_SQLITE3 "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" OFF)
-option(sl3_USE_COMMON_COMPILER_WARNINGS "Build using shared libraries" ON)
+option(sl3_USE_COMMON_COMPILER_WARNINGS "Use common compiler warning preset target" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 if (sl3_USE_COMMON_COMPILER_WARNINGS)
     find_package(commonCompilerWarnings CONFIG REQUIRED)
     set(LIBWARNINGS a4z::commonCompilerWarnings)
-else(sl3_USE_COMMON_COMPILER_WARNINGS)
+else()
     add_library(all_warnings_off INTERFACE)
     set(LIBWARNINGS all_warnings_off)
     message(STATUS "sl3_USE_COMMON_COMPILER_WARNINGS is OFF")
-endif(sl3_USE_COMMON_COMPILER_WARNINGS)
+endif()
 
 
 set(sl3_CONFIG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/sl3/config.hpp")
@@ -47,7 +48,8 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/config.in" "${sl3_CONFIG_HEADER}
 
 ################################################################################
 
-SET ( sl3_HDR
+set(sl3_PUBLIC_HEADERS
+    include/sl3.hpp
     include/sl3/columns.hpp
     include/sl3/command.hpp
     include/sl3/config.hpp
@@ -62,12 +64,11 @@ SET ( sl3_HDR
     include/sl3/value.hpp
 )
 #-------------------------------------------------------------------------------
-SET ( sl3_SRCHDR
-  src/sl3/connection.hpp
-
+set(sl3_PRIVATE_HEADERS
+    src/sl3/connection.hpp
 )
 #-------------------------------------------------------------------------------
-SET ( sl3_SRC
+set(sl3_SRC
     src/sl3/columns.cpp
     src/sl3/config.cpp
     src/sl3/command.cpp
@@ -79,22 +80,27 @@ SET ( sl3_SRC
     src/sl3/rowcallback.cpp
     src/sl3/types.cpp
     src/sl3/value.cpp
-
 )
 ################################################################################
 
-add_library( sl3  ${sl3_SRC} ${sl3_SRCHDR} ${sl3_HDR} )
-target_include_directories(sl3 PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
+add_library(sl3)
+target_sources(sl3
+    PRIVATE
+        ${sl3_SRC}
+        ${sl3_PRIVATE_HEADERS}
+    PUBLIC
+        FILE_SET public_headers
+        TYPE HEADERS
+        BASE_DIRS
+            "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        FILES
+            ${sl3_PUBLIC_HEADERS}
 )
 
 target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:${LIBWARNINGS}>)
 
 include( lib/find_sqlite )
 target_link_libraries(sl3 PUBLIC ${SQLITE_LINK_NAME})
-
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
 set(sl3_install_targets sl3)
 
@@ -104,11 +110,11 @@ if(BUILD_SHARED_LIBS)
         SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}
         POSITION_INDEPENDENT_CODE ON
     )
-endif(BUILD_SHARED_LIBS)
+endif()
 
 if(sl3_BUILD_TESTING)
     add_subdirectory(tests)
-endif(sl3_BUILD_TESTING)
+endif()
 
 include(lib/install)
 include(lib/doxydoc)
@@ -116,4 +122,3 @@ include(lib/doxydoc)
 # include(CMakePrintSystemInformation)
 # include(CMakePrintHelpers)
 # cmake_print_variables(CMAKE_SYSTEM_AND_CXX_COMPILER_INFO_FILE)
-
