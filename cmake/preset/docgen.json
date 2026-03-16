@@ -1,0 +1,52 @@
+{
+  "version": 8,
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "docgen",
+      "inherits": "base",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "OFF",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "sl3_USE_COMMON_COMPILER_WARNINGS": "OFF",
+        "sl3_USE_INTERNAL_SQLITE3": "OFF",
+        "PROJECT_ADDONS": "add-on/fetch-dependencies;add-on/coverage-gcov"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "docgen",
+      "configurePreset": "docgen"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "docgen",
+      "inherits": "base",
+      "configurePreset": "docgen"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "docgen",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "docgen"
+        },
+        {
+          "type": "build",
+          "name": "docgen"
+        },
+        {
+          "type": "test",
+          "name": "docgen"
+        }
+      ]
+    }
+  ]
+}

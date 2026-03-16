@@ -4,6 +4,7 @@
     "cmake/preset/ninja.json",
     "cmake/preset/xcode.json",
     "cmake/preset/msvc22.json",
-    "cmake/preset/msvc26.json"
+    "cmake/preset/msvc26.json",
+    "cmake/preset/docgen.json"
   ]
 }
