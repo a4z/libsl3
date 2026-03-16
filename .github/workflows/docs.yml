@@ -33,20 +33,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install lcov
-        run: sudo apt-get install lcov
-      # For doc gen present should not be used, since the multi config is not needed, but keep that for now
+        run: sudo apt-get install -y lcov libsqlite3-dev
       - name: Run workflow to get coverage docs
-        run:  cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/use-vcpkg -DPROJECT_ADDONS='add-on/coverage-gcov' -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
+        run:  cmake --fresh --preset docgen
       - name: Build project
-        run:  cmake --build --preset ninja --parallel
+        run:  cmake --build --preset docgen
       - name: Run tests
-        run:  ctest --preset ninja --parallel
+        run:  ctest --preset docgen
       - name: Build documentation
-        run:  cmake --build --preset ninja --parallel --target doc
+        run:  cmake --build --preset docgen --target doc
       - name: Build coverage docs
-        run:  cmake --build --preset ninja --target coverage
+        run:  cmake --build --preset docgen --target coverage
       - name: Add coverage to docs
-        run:  mv build/Linux/ninja/coverage/ build/Linux/ninja/doc/html/coverage
+        run:  mv build/Linux/docgen/coverage/ build/Linux/docgen/doc/html/coverage
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
