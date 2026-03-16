@@ -23,9 +23,9 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: ssciwr/doxygen-install@v1
+      - uses: ssciwr/doxygen-install@v2
         with:
-          version: "1.12.0"
+          version: "1.16.1"
       - uses: lukka/get-cmake@latest
         with:
           cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
@@ -48,7 +48,7 @@ jobs:
       - name: Add coverage to docs
         run:  mv build/Linux/ninja/coverage/ build/Linux/ninja/doc/html/coverage
       - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'build/Linux/ninja/doc/html/'
 
