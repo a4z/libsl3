@@ -21,7 +21,7 @@ namespace sl3
   /**
    * \brief Error codes
    *
-   * These enum values used to create ErrType objects.
+   * These enum values are used to create ErrType objects.
    *
    * Each ErrCode becomes an ErrType object.
    *
@@ -37,7 +37,7 @@ namespace sl3
   };
 
   /**
-   * \brief get textual representation (the name) of an ErrCode
+   * \brief Get the textual representation (the name) of an ErrCode
    * \param ec
    * wanted ErrCode name
    * \return the ErrCode name
@@ -76,7 +76,7 @@ namespace sl3
   };
 
   /**
-   * \brief overloaded stream operator
+   * \brief Overloaded stream operator
    * \param os ostream
    * \param e the Error
    * \return the ostream
@@ -86,7 +86,7 @@ namespace sl3
   /**
    * \brief Object class representing an ErrCode
    *
-   *  Allows typedef objects using an ErrCode.
+   *  Allows typedefs using an ErrCode.
    *  Each sl3::ErrCode becomes
    * an ErrType object.
    */
@@ -126,7 +126,7 @@ namespace sl3
   using ErrUnexpected = ErrType<ErrCode::UNEXPECTED>;
 
   /**
-   * \brief packaging an error from sqlite3.
+   * \brief Package an error from sqlite3.
    * This exception will be thrown if sqlite3 reports an error.
    *
    * Holds the sqlite3 error code and the error message if it is available.

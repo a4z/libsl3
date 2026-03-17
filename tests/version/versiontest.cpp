@@ -3,8 +3,8 @@
 
 #include <string>
 
-// believe it or not, this is actually usefull,
-// there are often many different version of sqlite on a system
+// believe it or not, this is actually useful,
+// there are often many different versions of sqlite on a system
 // and which one cmake picks up depends ... so you want to know about that
 
 /*
@@ -13,7 +13,7 @@ this happened on Mac CI,
 
 /Users/runner/work/libsl3/libsl3/tests/version/versiontest.cpp:6:
   Scenario: check sqlite versions for library and app
-     Given: cmake genertated config
+     Given: cmake generated config
       When: comparing the compile/runtime version numbers
       Then: they are the same
 
@@ -28,11 +28,11 @@ SCENARIO ("check sqlite versions for library and app")
   // this can be used as an example to add into your project
   // assure the libsl3 was compiled using the same header as you app
 
-  GIVEN ("cmake genertated config")
+  GIVEN ("cmake generated config")
   {
-    WHEN ("comparing compile/runtime verion")
+    WHEN ("comparing the compile/runtime version")
     {
-      THEN ("these version are the same")
+      THEN ("these versions are the same")
       {
         std::string compiledVersion = sl3::sqliteCompiledVersion ();
         CHECK (compiledVersion == sl3::sqliteRuntimeVersion ());

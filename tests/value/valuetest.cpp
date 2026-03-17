@@ -33,9 +33,9 @@ namespace sl3
 }
 // * interesting, does not happen on 6.3
 // on 5.3 there is a Value::Value (const Value& other) noexcept
-// call where oter has some type
+// call where other has some type
 
-SCENARIO ("create, assign, copy and moveing values")
+SCENARIO ("create, assign, copy and move values")
 {
   using namespace sl3;
   GIVEN ("some values of each supported type")
@@ -80,7 +80,7 @@ SCENARIO ("create, assign, copy and moveing values")
       ValueList vals{typed_values (ival, dval, txt, blob)};
       vals.emplace_back (Value{});
 
-      THEN ("every value can be copied to an other value")
+      THEN ("every value can be copied to another value")
       {
         ValueList vals_m{typed_values (ival, dval, txt, blob)};
         vals_m.emplace_back (Value{});
@@ -109,7 +109,7 @@ SCENARIO ("create, assign, copy and moveing values")
       ValueList vals{typed_values (ival, dval, txt, blob)};
       vals.emplace_back (Value{});
 
-      THEN ("every value can be move assinged to an other value")
+      THEN ("every value can be move-assigned to another value")
       {
         for (auto val : vals)
           {
@@ -139,7 +139,7 @@ SCENARIO ("create, assign, copy and moveing values")
       ValueList vals{typed_values (int64_t{ival}, dval, txt, blob)};
       vals.emplace_back (Value{});
 
-      THEN ("every value can be assinged to any other value")
+      THEN ("every value can be assigned to any other value")
       {
         for (auto val : vals)
           {
@@ -183,7 +183,7 @@ SCENARIO ("null value values access")
     WHEN ("trying to access any value")
     {
       CHECK (val.isNull ());
-      THEN ("err null values access will be throws")
+      THEN ("null value access throws")
       {
         CHECK_THROWS_AS ((void)val.int64 (), sl3::ErrNullValueAccess);
         CHECK_THROWS_AS ((void)static_cast<int64_t> (val),
@@ -275,13 +275,13 @@ SCENARIO ("invalid type access")
     {
       ValueList vals{typed_values (ival, dval, txt, blob)};
 
-      THEN ("running check_throw on each fo this value will work")
+      THEN ("running check_throw on each of these values will work")
       {
         for (auto v : vals)
           check_invariants (v);
       }
 
-      THEN ("assinging the values to something otherworks")
+      THEN ("assigning the values to something else works")
       {
         vals.emplace_back (Value{});
         for (auto v : vals)
@@ -343,7 +343,7 @@ SCENARIO ("number special")
     {
       v = std::numeric_limits<int64_t>::max ();
 
-      THEN ("converting to an integer will might throw")
+      THEN ("converting to an integer throws")
       {
         CHECK_THROWS_AS ((void)static_cast<int> (v), ErrOutOfRange);
       }
@@ -376,7 +376,7 @@ SCENARIO ("number special")
       }
     }
 
-    WHEN ("assign a real value bigger than is to big")
+    WHEN ("assign a real value that is too big")
     {
       v = std::numeric_limits<double>::max ();
       THEN ("converting to an integer will throw")
@@ -400,7 +400,7 @@ SCENARIO ("number special")
 SCENARIO ("eject values")
 {
   using namespace sl3;
-  GIVEN ("a blob an a string value with knowen value")
+  GIVEN ("a blob and a string value with known values")
   {
     const std::string txt = "hello";
     const Blob        blob{std::byte{'A'}, std::byte{'B'}};
@@ -417,16 +417,16 @@ SCENARIO ("eject values")
         CHECK_EQ (txt, etxt);
         CHECK_EQ (blob, eblob);
 
-        AND_THEN ("the values are resteded to Null")
+        AND_THEN ("the values are reset to Null")
         {
           CHECK (sval.isNull ());
           CHECK (bval.isNull ());
         }
       }
     }
-    WHEN ("ejecting the blob / string value from the wrongtype")
+    WHEN ("ejecting the blob / string value from the wrong type")
     {
-      THEN ("exceptions are throws")
+      THEN ("exceptions are thrown")
       {
         CHECK_THROWS_AS (sval.ejectBlob (), ErrTypeMisMatch);
         CHECK_THROWS_AS (bval.ejectText (), ErrTypeMisMatch);
@@ -434,7 +434,7 @@ SCENARIO ("eject values")
     }
     WHEN ("ejecting from Null values")
     {
-      THEN ("exceptions are throws")
+      THEN ("exceptions are thrown")
       {
         Value val;
         CHECK_THROWS_AS (val.ejectBlob (), ErrNullValueAccess);
@@ -466,7 +466,7 @@ SCENARIO ("compare  values")
     {
       Value     v{0};
       ValueList smaller = {Value{-1}, Value{}, Value{-1.0}};
-      THEN ("all check succeed")
+      THEN ("all checks succeed")
       {
         check_smaller (Value{0}, smaller);
         check_smaller (Value{1.0}, smaller);
@@ -490,7 +490,7 @@ SCENARIO ("compare  values")
           CHECK_FALSE (value_type_eq (val, v));
         }
     };
-    WHEN ("callin check_eq with knowen values")
+    WHEN ("calling check_eq with known values")
     {
       THEN ("all tests succeed")
       {
@@ -517,7 +517,7 @@ SCENARIO ("compare  values")
     Value ival{1};
     Value rval{1.0};
 
-    WHEN ("comparing with them self")
+    WHEN ("comparing with themselves")
     {
       THEN ("value_eq is true and value_type_eq is true")
       {
@@ -571,7 +571,7 @@ SCENARIO ("stringing values")
     WHEN ("stringing a null value")
     {
       ss << Value{};
-      THEN ("the stingstream contains <NULL>")
+      THEN ("the stringstream contains <NULL>")
       {
         CHECK (ss.str () == "<NULL>");
       }
@@ -579,13 +579,13 @@ SCENARIO ("stringing values")
     WHEN ("stringing an int value")
     {
       ss << Value{1};
-      THEN ("the stingstream contains the int") { CHECK (ss.str () == "1"); }
+      THEN ("the stringstream contains the int") { CHECK (ss.str () == "1"); }
     }
 
     WHEN ("stringing a real value")
     {
       ss << Value{1.1};
-      THEN ("the stingstream contains the real")
+      THEN ("the stringstream contains the real")
       {
         CHECK (ss.str () == "1.1");
       }
@@ -594,7 +594,7 @@ SCENARIO ("stringing values")
     WHEN ("stringing a text value")
     {
       ss << Value{"hello"};
-      THEN ("the stingstream contains the text")
+      THEN ("the stringstream contains the text")
       {
         CHECK (ss.str () == "hello");
       }
@@ -603,9 +603,54 @@ SCENARIO ("stringing values")
     WHEN ("stringing a blob value")
     {
       ss << Value{Blob{}};
-      THEN ("the stingstream contains <BLOB>")
+      THEN ("the stringstream contains <BLOB>")
       {
         CHECK (ss.str () == "<BLOB>");
+      }
+    }
+  }
+}
+
+SCENARIO ("value edge cases that improve branch coverage")
+{
+  using namespace sl3;
+
+  GIVEN ("values near tricky conversion and comparison boundaries")
+  {
+    WHEN ("converting a too-small int64_t to int")
+    {
+      Value v{int64_t{std::numeric_limits<int>::min () - 1LL}};
+
+      THEN ("an out of range error is thrown")
+      {
+        CHECK_THROWS_AS ((void)static_cast<int> (v), ErrOutOfRange);
+      }
+    }
+
+    WHEN ("comparing subnormal real values")
+    {
+      Value zero{0.0};
+      Value tiny{std::numeric_limits<double>::denorm_min ()};
+
+      THEN ("value_type_eq uses the subnormal almost-equal path")
+      {
+        CHECK (value_type_eq (zero, tiny));
+        CHECK (value_type_eq (tiny, zero));
+      }
+    }
+
+    WHEN ("resetting text and blob values to null explicitly")
+    {
+      Value text{"hello"};
+      Value blob{Blob{std::byte{'A'}, std::byte{'B'}}};
+
+      text.setNull ();
+      blob.setNull ();
+
+      THEN ("both values become null")
+      {
+        CHECK (text.isNull ());
+        CHECK (blob.isNull ());
       }
     }
   }

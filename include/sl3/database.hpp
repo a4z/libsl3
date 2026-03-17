@@ -27,7 +27,7 @@ namespace sl3
   }
 
   /**
-   * \brief represents a SQLite3 Database
+   * \brief Represents a SQLite3 database
    *
    *
    * Encapsulates some of the most useful methods for a SQLite3 database
@@ -83,7 +83,7 @@ namespace sl3
     Database (Database&&) noexcept;
 
     /**
-     * \brief create a SqlCommand instance.
+     * \brief Create an SQL command instance.
      *
      * Parameters that the statement might contain will be automatically
      * deduced and created as DbVariant values
@@ -94,7 +94,7 @@ namespace sl3
     Command prepare (const std::string& sql);
 
     /**
-     * \brief create a Command.
+     * \brief Create a Command.
      *
      *  Given parameters will be used to set up the command parameters,
      *
@@ -236,11 +236,12 @@ namespace sl3
     std::string getMostRecentErrMsg ();
 
     /**
-     * \brief Returns number of row that have changed since database opening.
+     * \brief Returns the number of rows that have changed since the database
+     * was opened.
      *
      * Returns the number of rows that have been changed
-     * Through successful SQL INSERT/UPDATE or DELETE statements since database
-     *  was opened.
+     * through successful SQL INSERT/UPDATE or DELETE statements since the
+     * database was opened.
      *
      * \return Count of changed rows
      */
@@ -257,7 +258,7 @@ namespace sl3
     std::size_t getRecentlyChanged ();
 
     /**
-     * \brief returns rowid  of the most recent successful INSERT statement
+     * \brief Returns the rowid of the most recent successful INSERT statement
      *
      * Returns the rowid (ROWID, OID, or _ROWID_ or the column of
      * type INTEGER PRIMARY KEY )

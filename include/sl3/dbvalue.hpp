@@ -45,7 +45,7 @@ namespace sl3
     /**
      * \brief Constructor
      *
-     *  Constructs a type  and the value is null.
+     *  Constructs a type and the value is null.
      *
      *  \param type wanted storage type
      *  If Type::Null is given, the type will be a variant.
@@ -55,7 +55,7 @@ namespace sl3
     // TODO constructor Value, Value - Type,
     // would this maybe make the other value c'tors obsolete?
     // this would be fine
-    // don't like the ctors below anyway, they should take a flag,
+    // don't like the constructors below anyway; they should take a flag,
     // variant or not, but not the type
 
     /** \brief Constructor
@@ -109,8 +109,8 @@ namespace sl3
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \note , only value assignment happens here,
-     *  the type does not change, the storage type might change in case of type
-     *  is a variant.
+     *  the type does not change; the storage type might change if the type is
+     *  a variant.
      *
      * \param val new value
      * \return reference to this
@@ -164,8 +164,8 @@ namespace sl3
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \note , only value assignment happens here,
-     *  the type does not change, the storage type might change in case of type
-     *  is a variant.
+     *  the type does not change; the storage type might change if the type is
+     *  a variant.
      *  \param val new value
      */
     void set (int val);

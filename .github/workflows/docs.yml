@@ -28,8 +28,8 @@ jobs:
           version: "1.16.1"
       - uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
-          ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
+          cmakeVersion: "~3.31.0"  
+          ninjaVersion: "^1.13.1"  
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install lcov

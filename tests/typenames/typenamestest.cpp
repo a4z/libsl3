@@ -8,7 +8,7 @@
 SCENARIO ("check typenames")
 {
   using namespace sl3;
-  GIVEN ("the sqlite version libsl3 was comiled with")
+  GIVEN ("the sqlite version libsl3 was compiled with")
   {
     std::string libUsedVersion = sl3::sqliteCompiledVersion ();
 
@@ -27,11 +27,11 @@ SCENARIO ("check typenames")
       }
     }
 
-    WHEN ("getting typnmes in a stream")
+    WHEN ("getting type names in a stream")
     {
       std::string appUsedVersion = sl3::sqliteRuntimeVersion ();
 
-      THEN ("the full enum name in in the stream")
+      THEN ("the full enum name is in the stream")
       {
         {
           std::stringstream ss;

@@ -21,7 +21,7 @@ namespace sl3
   // index access always checked, since docs say
   // 'if the column index is out of range, the result is undefined'
   // but if you feel like pre-optimization is required,
-  // feel free to access the underlying sqlite3_stmt via
+  // feel free to access the underlying sqlite3_stmt
   // and adopt the index access!
 
   /**
@@ -40,10 +40,10 @@ namespace sl3
 
     Columns (sqlite3_stmt* stmt);
 
-    // not be needed, even if they would not harm ..
+    // should not be needed, even if they would not harm
     Columns& operator= (const Columns&) = delete;
 
-    // not be needed, even if they would not harm ..
+    // should not be needed, even if they would not harm
     Columns& operator= (Columns&&) = delete;
 
     Columns (const Columns&) = default;
@@ -140,7 +140,7 @@ namespace sl3
      * If used, should be called before accessing the value of the column
      * at the given index, otherwise the typed access might set the type.
      *
-     * This method can be used to check if a column isNull.
+     * This method can be used to check if a column is null.
      *
      * \param idx wanted index
      * \throw sl3::ErrOutOfRange if idx is invalid
@@ -221,7 +221,7 @@ namespace sl3
     /**
      * \brief Get the underlying sqlite3_stmt
      *
-     * User defined QueryCallbacks might have their own way to do things,
+     * User-defined query callbacks might have their own way to do things,
      * so this getter provides access to the underlying sqlite3_stmt.
      *
      * \return underlying sqlite3_stmt

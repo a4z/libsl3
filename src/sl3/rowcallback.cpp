@@ -10,6 +10,10 @@
 
 namespace sl3
 {
+  RowCallback::RowCallback () noexcept = default;
+
+  RowCallback::~RowCallback () noexcept = default;
+
   void
   RowCallback::onStart ()
   {

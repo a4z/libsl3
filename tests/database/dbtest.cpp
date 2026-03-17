@@ -33,7 +33,7 @@ SCENARIO ("creating a database")
 
 SCENARIO ("creating some test data")
 {
-  GIVEN ("an im memory database")
+  GIVEN ("an in-memory database")
   {
     sl3::Database db{":memory:"};
 
@@ -54,7 +54,7 @@ SCENARIO ("creating some test data")
           "INSERT INTO tbltest VALUES (2, 'zwei', 2.22) ;"
           "INSERT INTO tbltest VALUES (3, NULL, NULL) ;");
 
-      THEN ("I can veryfy that the table and some test data exists")
+      THEN ("I can verify that the table and some test data exists")
       {
         CHECK (db.getTotalChanges () == 3);
         CHECK_NOTHROW (db.execute (std::string{"DELETE FROM tbltest;"}));
@@ -76,7 +76,7 @@ SCENARIO ("move construct a database")
 
     CHECK_NOTHROW (db.execute ("SELECT COUNT(*) FROM tbltest;"));
 
-    WHEN ("Moveconstruct a new db from an existing one")
+    WHEN ("move-constructing a new db from an existing one")
     {
       sl3::Database db1{std::move (db)};
       THEN ("the new constructed db has data")
@@ -88,19 +88,14 @@ SCENARIO ("move construct a database")
       {
         CHECK_THROWS_AS (db.execute ("SELECT COUNT(*) FROM tbltest;"),
                          sl3::ErrNoConnection);
-
-        //        those are protected, does this make sense?
-        //        adding a derivating from a database
-        //        CHECK(db.db() == nullptr) ;
-        //        CHECK(db1.db() != nullptr) ;
       }
     }
   }
 }
 
-SCENARIO ("check the connections and if derivate works")
+SCENARIO ("check the connections and if derivation works")
 {
-  GIVEN ("a derivated db that let me access db property")
+  GIVEN ("a derived db that lets me access the db property")
   {
     struct MyDb : public sl3::Database
     {
@@ -115,7 +110,7 @@ SCENARIO ("check the connections and if derivate works")
 
     CHECK_NOTHROW (db.execute ("SELECT COUNT(*) FROM tbltest;"));
 
-    WHEN ("Moveconstruct a new db from an existing one")
+    WHEN ("move-constructing a new db from an existing one")
     {
       MyDb db1{std::move (db)};
       THEN ("the new constructed db has data")
@@ -415,7 +410,7 @@ SCENARIO ("selecting values")
 
 SCENARIO ("accessing database change properties")
 {
-  GIVEN ("an database with an empty table")
+  GIVEN ("a database with an empty table")
   {
     sl3::Database db{":memory:"};
 
@@ -451,7 +446,7 @@ SCENARIO ("accessing database change properties")
 
       sl3::Database db1{std::move (db)};
 
-      THEN ("no undefined behavior but exceptions are thorwn")
+      THEN ("no undefined behavior but exceptions are thrown")
       {
         CHECK_THROWS_AS ((void)db.getTotalChanges (), sl3::ErrNoConnection);
         CHECK_THROWS_AS ((void)db.getRecentlyChanged (), sl3::ErrNoConnection);
@@ -467,7 +462,7 @@ SCENARIO ("accessing database change properties")
 
 SCENARIO ("accessing database error properties")
 {
-  GIVEN ("an database an empty datbase")
+  GIVEN ("an empty database")
   {
     sl3::Database db{":memory:"};
 
@@ -490,7 +485,7 @@ SCENARIO ("accessing database error properties")
       }
     }
 
-    WHEN ("something has been done wrong, and than something that worked")
+    WHEN ("something has been done wrong, and then something worked")
     {
       REQUIRE_THROWS (db.execute ("CREATE SCHNALBE tbltest (f INTEGER);"));
       REQUIRE_NOTHROW (db.execute ("CREATE TABLE tbltest (f INTEGER);"));
@@ -507,7 +502,7 @@ SCENARIO ("accessing database error properties")
 
       sl3::Database db1{std::move (db)};
 
-      THEN ("exceptions are thrown, but not fot ")
+      THEN ("exceptions are thrown, but not for the moved-to db")
       {
         CHECK_THROWS_AS ((void)db.getMostRecentErrCode (),
                          sl3::ErrNoConnection);
@@ -567,7 +562,7 @@ SCENARIO ("using transactions")
 
         trans.commit ();
       }
-      THEN ("commit on the moved from object does not effect the database")
+      THEN ("commit on the moved-from object does not affect the database")
       {
         REQUIRE_THROWS (db.execute ("SELECT * FROM tbltest;"));
       }
@@ -584,7 +579,7 @@ SCENARIO ("using transactions")
 
         trans1.commit ();
       }
-      THEN ("commit did effect the database")
+      THEN ("commit did affect the database")
       {
         REQUIRE_NOTHROW (db.execute ("SELECT * FROM tbltest;"));
       }

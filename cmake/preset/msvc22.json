@@ -1,6 +1,8 @@
 {
-  "version": 8,
-  "include": ["base.json"],
+  "version": 10,
+  "include": [
+    "base.json"
+  ],
   "configurePresets": [
     {
       "name": "msvc22",
