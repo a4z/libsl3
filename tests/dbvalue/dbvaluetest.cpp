@@ -268,7 +268,7 @@ SCENARIO ("using value, basics")
         WHEN ("copy a typed value to a variant one")
         {
           DbValue v{Type::Variant};
-          THEN ("this always succeed")
+          THEN ("this always succeeds")
           {
             v = dbval;
             CHECK (value_type_eq (v.value (), dbval.value ()));
@@ -281,7 +281,7 @@ SCENARIO ("using value, basics")
 SCENARIO ("variant")
 {
   using namespace sl3;
-  GIVEN ("an variant value")
+  GIVEN ("a variant value")
   {
     DbValue dbval{Type::Variant};
 
@@ -334,7 +334,7 @@ SCENARIO ("assign values")
   {
     DbValue dbval{Type::Variant};
 
-    WHEN ("assingin any other typed value")
+    WHEN ("assigning any other typed value")
     {
       THEN ("this works")
       {
@@ -352,13 +352,13 @@ SCENARIO ("assign values")
     {
       DbValue strval{"foo"};
 
-      THEN ("this thorws")
+      THEN ("this throws")
       {
         CHECK_THROWS_AS (dbval = strval, ErrTypeMisMatch);
         CHECK_THROWS_AS (dbval = DbValue{Type::Real}, ErrTypeMisMatch);
       }
     }
-    WHEN ("assign a comaptible varaint")
+    WHEN ("assign a compatible variant")
     {
       DbValue strval{12, Type::Variant};
 
@@ -444,7 +444,7 @@ SCENARIO ("sorting")
 
     WHEN ("comparing them")
     {
-      THEN ("they are value equal but not value type eaql")
+      THEN ("they are value-equal but not value-type-equal")
       {
         CHECK (dbval_eq (ival, ival));
         CHECK (dbval_eq (ival, rval));

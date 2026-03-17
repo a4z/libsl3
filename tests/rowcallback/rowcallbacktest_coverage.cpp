@@ -12,7 +12,7 @@ SCENARIO ("for coverage")
     sl3::Database db{":memory:"};
     auto          sql = "SELECT 'b' as byte, NULL as noval; ";
     REQUIRE_NOTHROW (db.execute (sql));
-    WHEN ("asking for the used storegae space")
+    WHEN ("asking for the used storage space")
     {
       THEN ("some int will use some space, and null non space")
       {
@@ -23,7 +23,7 @@ SCENARIO ("for coverage")
         });
       }
     }
-    WHEN ("geting an int from a null value")
+    WHEN ("getting an int from a null value")
     {
       THEN ("sqlite will convert it to 0")
       {
@@ -34,7 +34,7 @@ SCENARIO ("for coverage")
       }
     }
 
-    WHEN ("want accecc to shoot myslef into the foot")
+    WHEN ("want access to shoot myself in the foot")
     {
       THEN ("this is possible")
       {

@@ -222,7 +222,7 @@ SCENARIO ("binding values of all types and using select to check the result")
         REQUIRE_EQ (ds[0][3].getBlob (), params[3].getBlob ());
         REQUIRE (ds[0][4].isNull ());
       }
-      THEN ("selecting all data with concrete types will retun typed info")
+      THEN ("selecting all data with concrete types returns typed info")
       {
         auto types = Types{
             Type::Int, Type::Real, Type::Text, Type::Blob, Type::Variant};
@@ -239,7 +239,7 @@ SCENARIO ("binding values of all types and using select to check the result")
         REQUIRE_THROWS_AS ((void)db.select ("SELECT * FROM t;", types),
                            ErrTypeMisMatch);
       }
-      THEN ("selecting all data with wrong numver of types will throw")
+      THEN ("selecting all data with the wrong number of types will throw")
       {
         auto types = Types{Type::Int, Type::Real, Type::Text, Type::Blob};
         REQUIRE_THROWS_AS ((void)db.select ("SELECT * FROM t;", types),

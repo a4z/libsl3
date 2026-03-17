@@ -5,7 +5,7 @@
 
 SCENARIO ("creating an in memory database with custom name")
 {
-  GIVEN ("an im memory database with a custom name")
+  GIVEN ("an in-memory database with a custom name")
   {
     sl3::Database db{
         "", SQLITE_OPEN_MEMORY | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE};

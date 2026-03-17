@@ -149,7 +149,7 @@ namespace sl3
     return false;
   }
 
-  // how, and does this makesense ?
+  // how, and does this make sense?
 
   bool
   dbval_eq (const DbValue& a, const DbValue& b) noexcept

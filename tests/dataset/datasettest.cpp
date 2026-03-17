@@ -3,10 +3,10 @@
 
 #include <string>
 
-SCENARIO ("dataset creation and defautl operatores")
+SCENARIO ("dataset creation and default operators")
 {
   using namespace sl3;
-  GIVEN ("a database, a table and knowen data")
+  GIVEN ("a database, a table, and known data")
   {
     Database db{":memory:"};
     db.execute ("CREATE TABLE t (int INTEGER,txt TEXT, dbl real );"
@@ -19,7 +19,7 @@ SCENARIO ("dataset creation and defautl operatores")
     WHEN ("having an empty dataset")
     {
       Dataset ds;
-      THEN ("assinging new dataset is possible without problems")
+      THEN ("assigning a new dataset is possible without problems")
       {
         CHECK_NOTHROW (ds = db.select ("SELECT * FROM t;"));
         CHECK_EQ (ds.getIndex ("int"), 0);
@@ -36,7 +36,7 @@ SCENARIO ("dataset creation and defautl operatores")
     {
       auto ds = db.select ("SELECT * FROM t;", types);
 
-      THEN ("the fieds are not variants")
+      THEN ("the fields are not variants")
       {
         for (const auto& row : ds)
           {
@@ -114,7 +114,7 @@ SCENARIO ("merging datasets")
 
       AND_WHEN ("reset the fields  but not the types")
       {
-        THEN ("merging this ds still thorws")
+        THEN ("merging this ds still throws")
         {
           ds.reset ();
           CHECK_THROWS_AS (ds.merge (dsdifferent), ErrTypeMisMatch);
@@ -198,7 +198,7 @@ SCENARIO ("sorting a dataset")
 SCENARIO ("doing some things via dbvalues on rows of datasets")
 {
   using namespace sl3;
-  GIVEN ("a database and a typed dataset with knowen content")
+  GIVEN ("a database and a typed dataset with known content")
   {
     Database db{":memory:"};
     Types    types = {Type::Int, Type::Text, Type::Real};
@@ -224,7 +224,7 @@ SCENARIO ("doing some things via dbvalues on rows of datasets")
       }
     }
 
-    WHEN ("having a dataset with same field count but incampatible types")
+    WHEN ("having a dataset with the same field count but incompatible types")
     {
       auto ds1 = db.select ("SELECT 1,'hello', 'hello';",
                             {Type::Int, Type::Text, Type::Text});
@@ -236,7 +236,7 @@ SCENARIO ("doing some things via dbvalues on rows of datasets")
       }
     }
 
-    WHEN ("having an ohter , compatible dataset")
+    WHEN ("having another compatible dataset")
     {
       auto ds1 = db.select ("SELECT 2,'world', 3.3;",
                             {Type::Int, Type::Text, Type::Real});

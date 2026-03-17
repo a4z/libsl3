@@ -103,7 +103,7 @@ SCENARIO ("Check RowCallback start and end calls")
                                "INSERT INTO tbltest VALUES (2) ;"
                                "INSERT INTO tbltest VALUES (3) ;"));
 
-  GIVEN ("a RowCallback that counts all calls and fantasi on start/end counts")
+  GIVEN ("a RowCallback that counts all calls and tracks start/end counts")
   {
     struct CB : sl3::RowCallback
     {
@@ -235,7 +235,7 @@ SCENARIO ("testing column names and index properties")
   }
 }
 
-SCENARIO ("all index accesses throw out of range for an invalud index")
+SCENARIO ("all index accesses throw out of range for an invalid index")
 {
   GIVEN ("a record with some fields")
   {
@@ -476,7 +476,7 @@ SCENARIO ("getting rows from columns")
 
     WHEN ("request a row with wrong count of types")
     {
-      THEN ("exceptions are the consequenze")
+      THEN ("exceptions are the consequence")
       {
         REQUIRE_NOTHROW (db.execute (sql));
         db.execute (sql, [] (sl3::Columns cols) {
@@ -496,9 +496,9 @@ SCENARIO ("getting rows from columns")
       }
     }
 
-    WHEN ("request a row with spezific correct  types")
+    WHEN ("request a row with specific correct types")
     {
-      THEN ("a row with those types is retunred")
+      THEN ("a row with those types is returned")
       {
         REQUIRE_NOTHROW (db.execute (sql));
         db.execute (sql, [] (sl3::Columns cols) {

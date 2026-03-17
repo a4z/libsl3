@@ -40,7 +40,7 @@ namespace sl3
 
     /** \brief Constructor
      *
-     *  This constructor with an initialization value
+     *  This constructor takes an initialization value.
      *  \param val
      * initial value
      */
@@ -89,8 +89,8 @@ namespace sl3
     /** \brief Assignment
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \note , only value assignment happens here,
-     *  the type does not change, the storage type might change in case of type
-     *  is a variant.
+     *  the type does not change; the storage type might change if the type is
+     *  a variant.
      *
      * \param val new value
      * \return reference to this
@@ -147,8 +147,7 @@ namespace sl3
      *  \throw sl3::ErrNullValueAccess if value is null.
      *  \throw sl3::ErrTypeMisMatch if getType is incompatible
      *  \throw sl3::ErrOutOfRange if the stored value is an int64_t and out of
-
-     * *    the min or max double range.
+     *  the min or max double range.
      *  \return  the value
      */
     explicit operator double () const;

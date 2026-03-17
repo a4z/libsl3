@@ -726,7 +726,7 @@ namespace sl3
     if (b.getType () != Type::Blob)
       return false;
 
-    // we are both bolb
+    // we are both blobs
     return a._store.blobval < b._store.blobval;
   }
 
@@ -837,7 +837,7 @@ namespace sl3
     if (b.getType () != Type::Blob)
       return false;
 
-    // we are both bolb
+    // we are both blobs
     return a._store.blobval < b._store.blobval;
   }
 
