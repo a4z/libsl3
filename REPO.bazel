@@ -1,2 +1,2 @@
 """Files to ignore for bazel query and build commands."""
-ignore_directories(["build", "sqlite",])
+ignore_directories(["build"])
