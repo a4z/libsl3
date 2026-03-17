@@ -21,20 +21,23 @@ if(NOT GCOV)
     message(FATAL_ERROR "gcov tool not found for GCC version ${GCC_MAJOR_VERSION}")
 endif()
 
-set(COVERAGE_BRANCHES "--rc branch_coverage=1")
+set(COVERAGE_BRANCHES "--rc branch_coverage=1 --rc no_exception_branch=1")
 # these warnings are ridiculous, they depend on the lcov genhtml version
 set(COVERAGE_WARNINGS "--ignore-errors gcov --ignore-errors mismatch --ignore-errors unused")
+set(COVERAGE_FILTERS "--filter region,branch_region")
+
 set(GENHTML_WARNINGS "")
 
 set(COVERAGE_TOOL "lcov")
 
+separate_arguments(COVERAGE_FILTERS)
 separate_arguments(COVERAGE_BRANCHES)
 separate_arguments(COVERAGE_WARNINGS)
 separate_arguments(GENHTML_WARNINGS)
 add_custom_target(coverage
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
-    COMMAND lcov  --directory . --capture --output-file ${CMAKE_BINARY_DIR}/coverage/coverage.info ${COVERAGE_WARNINGS} ${COVERAGE_BRANCHES}
-    COMMAND lcov --remove ${CMAKE_BINARY_DIR}/coverage/coverage.info '/usr/*' '*/tests/*' '*/vcpkg_installed/*' '${CMAKE_BINARY_DIR}/_deps/*'  '${CMAKE_SOURCE_DIR}/external/*' --output-file ${CMAKE_BINARY_DIR}/coverage/coverage.info.cleaned ${COVERAGE_WARNINGS} ${COVERAGE_BRANCHES}
+    COMMAND lcov  --directory . --capture --output-file ${CMAKE_BINARY_DIR}/coverage/coverage.info ${COVERAGE_WARNINGS} ${COVERAGE_BRANCHES} ${COVERAGE_FILTERS}
+    COMMAND lcov --remove ${CMAKE_BINARY_DIR}/coverage/coverage.info '/usr/*' '*/tests/*' '*/vcpkg_installed/*' '${CMAKE_BINARY_DIR}/_deps/*'  '${CMAKE_SOURCE_DIR}/external/*' --output-file ${CMAKE_BINARY_DIR}/coverage/coverage.info.cleaned ${COVERAGE_WARNINGS} ${COVERAGE_BRANCHES} ${COVERAGE_FILTERS}
     COMMAND genhtml --branch-coverage ${CMAKE_BINARY_DIR}/coverage/coverage.info.cleaned --output-directory ${CMAKE_BINARY_DIR}/coverage ${GENHTML_WARNINGS} ${COVERAGE_BRANCHES}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

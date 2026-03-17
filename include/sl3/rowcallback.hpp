@@ -30,16 +30,17 @@ namespace sl3
   {
     friend class Command;
 
+  public:
+    /**
+     * \brief Destructor
+     */
+    virtual ~RowCallback () noexcept;
+
   protected:
     /**
      * \brief Constructor
      */
-    RowCallback () noexcept = default;
-
-    /**
-     * \brief Constructor
-     */
-    virtual ~RowCallback () noexcept = default;
+    RowCallback () noexcept;
 
     /**
      * \brief Process one row of the result from  a SELECT statement

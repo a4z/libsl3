@@ -3,10 +3,10 @@
 
 #include <string>
 
-SCENARIO ("dataset creation and defautl operatores")
+SCENARIO ("dataset creation and default operators")
 {
   using namespace sl3;
-  GIVEN ("a database, a table and knowen data")
+  GIVEN ("a database, a table, and known data")
   {
     Database db{":memory:"};
     db.execute ("CREATE TABLE t (int INTEGER,txt TEXT, dbl real );"
@@ -19,7 +19,7 @@ SCENARIO ("dataset creation and defautl operatores")
     WHEN ("having an empty dataset")
     {
       Dataset ds;
-      THEN ("assinging new dataset is possible without problems")
+      THEN ("assigning a new dataset is possible without problems")
       {
         CHECK_NOTHROW (ds = db.select ("SELECT * FROM t;"));
         CHECK_EQ (ds.getIndex ("int"), 0);
@@ -36,7 +36,7 @@ SCENARIO ("dataset creation and defautl operatores")
     {
       auto ds = db.select ("SELECT * FROM t;", types);
 
-      THEN ("the fieds are not variants")
+      THEN ("the fields are not variants")
       {
         for (const auto& row : ds)
           {
@@ -114,7 +114,7 @@ SCENARIO ("merging datasets")
 
       AND_WHEN ("reset the fields  but not the types")
       {
-        THEN ("merging this ds still thorws")
+        THEN ("merging this ds still throws")
         {
           ds.reset ();
           CHECK_THROWS_AS (ds.merge (dsdifferent), ErrTypeMisMatch);
@@ -198,7 +198,7 @@ SCENARIO ("sorting a dataset")
 SCENARIO ("doing some things via dbvalues on rows of datasets")
 {
   using namespace sl3;
-  GIVEN ("a database and a typed dataset with knowen content")
+  GIVEN ("a database and a typed dataset with known content")
   {
     Database db{":memory:"};
     Types    types = {Type::Int, Type::Text, Type::Real};
@@ -224,7 +224,7 @@ SCENARIO ("doing some things via dbvalues on rows of datasets")
       }
     }
 
-    WHEN ("having a dataset with same field count but incampatible types")
+    WHEN ("having a dataset with the same field count but incompatible types")
     {
       auto ds1 = db.select ("SELECT 1,'hello', 'hello';",
                             {Type::Int, Type::Text, Type::Text});
@@ -236,7 +236,7 @@ SCENARIO ("doing some things via dbvalues on rows of datasets")
       }
     }
 
-    WHEN ("having an ohter , compatible dataset")
+    WHEN ("having another compatible dataset")
     {
       auto ds1 = db.select ("SELECT 2,'world', 3.3;",
                             {Type::Int, Type::Text, Type::Real});
@@ -248,6 +248,52 @@ SCENARIO ("doing some things via dbvalues on rows of datasets")
         CHECK (ds[0][0].getInt () == 2);
         CHECK_NOTHROW (ds.at (0) = std::move (ds2.at (0)));
         CHECK (ds[0][0].getInt () == 3);
+      }
+    }
+  }
+}
+
+SCENARIO ("covering remaining dataset edge cases")
+{
+  using namespace sl3;
+
+  GIVEN ("datasets with matching sizes but special edge conditions")
+  {
+    Database db{":memory:"};
+
+    WHEN ("merging datasets with different field names")
+    {
+      auto namedA = db.select ("SELECT 1 as int, 'eins' as txt, 2.2 as dbl;");
+      auto namedB = db.select ("SELECT 2 as foo, 'zwei' as bar, 3.3 as baz;");
+
+      THEN ("merge throws because the names differ")
+      {
+        CHECK_THROWS_AS (namedA.merge (namedB), ErrTypeMisMatch);
+      }
+    }
+
+    WHEN ("merging a row into a variant dataset")
+    {
+      Dataset ds{Types{Type::Variant, Type::Variant, Type::Variant}};
+      auto    row = db.select ("SELECT 'he', 'll', 'o';").at (0);
+
+      THEN ("the variant path accepts the row without type checks")
+      {
+        CHECK_NOTHROW (ds.merge (row));
+        REQUIRE_EQ (ds.size (), std::size_t{1});
+        CHECK_EQ (ds[0][0].getText (), "he");
+        CHECK_EQ (ds[0][1].getText (), "ll");
+        CHECK_EQ (ds[0][2].getText (), "o");
+      }
+    }
+
+    WHEN ("sorting with a null comparator")
+    {
+      auto ds = db.select ("SELECT 2 as v UNION ALL SELECT 1 as v;");
+
+      THEN ("the comparator guard throws")
+      {
+        CHECK_THROWS_AS (ds.sort ({0}, nullptr), ErrNullValueAccess);
       }
     }
   }

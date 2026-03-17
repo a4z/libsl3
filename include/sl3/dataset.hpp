@@ -20,9 +20,9 @@
 namespace sl3
 {
   /**
-   * \brief A utility for processing the result queries.
+   * \brief A utility for processing query results.
    *
-   * This class is a RowCallback that loads the result of a Query into a list
+   * This class is a RowCallback that loads the result of a query into a list
    *  of DbValues.
    * The loaded list can be browsed and the loaded values can be accessed.
    *
@@ -38,7 +38,7 @@ namespace sl3
    *   be thrown.
    *
    *  - Without any specification \n
-   *  In this case all fields will be DsVariantField ,
+   *  In this case all fields will be DsVariantField,
    *  using the storage type sqlite reports for the actual value.
    *
    *
@@ -52,7 +52,7 @@ namespace sl3
     /**
      * \brief Constructor
      *
-     * All fields will be DsVariantField , using the storage type sqlite
+     * All fields will be DsVariantField, using the storage type sqlite
      * reports for the actual value.
      * Field count will be detected and applied.
      */
@@ -91,7 +91,7 @@ namespace sl3
     Dataset& operator= (const Dataset&) = default;
 
     /**
-     * \brief Rvalues assignment
+     * \brief Rvalue assignment
      * \return reference to this
      */
     Dataset& operator= (Dataset&&) = default;
@@ -107,10 +107,9 @@ namespace sl3
      * \brief Clear all states.
      *
      * Removes loaded data and sets a new specification for the field
-     * description
-     *  so that the actual instance can be reused to populate with a different
-
-     * *  select statement / sql command. Passing an empty DbValuesTypeList
+     * description so that the actual instance can be reused to populate with a
+     * different select statement / SQL command. Passing an empty
+     * DbValuesTypeList
      * means that all fields will be
      * DsVariantField and field count will
      * be detected.
@@ -124,8 +123,7 @@ namespace sl3
      *
      * Appends the data of the given Dataset to the end of the actual data.
      * The field names and types of the given Dataset must match the current
-
-     * * one.
+     * one.
      *
      * \throw sl3::ErrTypeMisMatch if field names types are not equal or
      * size differs.
@@ -147,7 +145,7 @@ namespace sl3
     void merge (const DbValues& row);
 
     /**
-     * \brief Get the index of a field by namespace
+     * \brief Get the index of a field by name
      *
      * \throw sl3::OutOfRange if name is not found
      * \param name field
@@ -176,7 +174,7 @@ namespace sl3
      * Sort according to the given field indexes.
      * The Dataset will be sorted according to sqlite rules.
      *
-     * \throw sl2::OutOfRange if a given index is invalid
+     * \throw sl3::OutOfRange if a given index is invalid
      * \param idxs list of field indexes
      * \param cmp pointer to a less than compare function, default dbval_lt
      */

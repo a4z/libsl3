@@ -3,6 +3,7 @@
 #include <sl3/database.hpp>
 #include <sl3/error.hpp>
 
+#include <memory>
 #include <string>
 
 SCENARIO ("Check RowCallback and Callback return values")
@@ -102,7 +103,7 @@ SCENARIO ("Check RowCallback start and end calls")
                                "INSERT INTO tbltest VALUES (2) ;"
                                "INSERT INTO tbltest VALUES (3) ;"));
 
-  GIVEN ("a RowCallback that counts all calls and fantasi on start/end counts")
+  GIVEN ("a RowCallback that counts all calls and tracks start/end counts")
   {
     struct CB : sl3::RowCallback
     {
@@ -140,6 +141,33 @@ SCENARIO ("Check RowCallback start and end calls")
         CHECK (cb.onstart == 0);
         CHECK (cb.onstart == 0);
         CHECK (cb.onend == 3);
+      }
+    }
+  }
+}
+
+SCENARIO ("destroying a RowCallback through a base pointer")
+{
+  GIVEN ("a concrete RowCallback owned as a base unique_ptr")
+  {
+    struct DummyCallback : sl3::RowCallback
+    {
+      bool
+      onRow (sl3::Columns /*unusedForNow*/) override
+      {
+        return true;
+      }
+    };
+
+    WHEN ("the unique_ptr goes out of scope")
+    {
+      THEN ("destroying via RowCallback base pointer does not throw")
+      {
+        CHECK_NOTHROW (
+          [] {
+            std::unique_ptr<sl3::RowCallback> cb =
+              std::make_unique<DummyCallback> ();
+          } ());
       }
     }
   }
@@ -207,7 +235,7 @@ SCENARIO ("testing column names and index properties")
   }
 }
 
-SCENARIO ("all index accesses throw out of range for an invalud index")
+SCENARIO ("all index accesses throw out of range for an invalid index")
 {
   GIVEN ("a record with some fields")
   {
@@ -448,7 +476,7 @@ SCENARIO ("getting rows from columns")
 
     WHEN ("request a row with wrong count of types")
     {
-      THEN ("exceptions are the consequenze")
+      THEN ("exceptions are the consequence")
       {
         REQUIRE_NOTHROW (db.execute (sql));
         db.execute (sql, [] (sl3::Columns cols) {
@@ -468,9 +496,9 @@ SCENARIO ("getting rows from columns")
       }
     }
 
-    WHEN ("request a row with spezific correct  types")
+    WHEN ("request a row with specific correct types")
     {
-      THEN ("a row with those types is retunred")
+      THEN ("a row with those types is returned")
       {
         REQUIRE_NOTHROW (db.execute (sql));
         db.execute (sql, [] (sl3::Columns cols) {
@@ -488,6 +516,73 @@ SCENARIO ("getting rows from columns")
           CHECK (row.at (3).type () == sl3::Type::Blob);
           CHECK (row.at (4).dbtype () == sl3::Type::Variant);
           CHECK (row.at (4).type () == sl3::Type::Null);
+
+          return false;
+        });
+      }
+    }
+  }
+}
+
+SCENARIO ("covering remaining edge cases of columns access")
+{
+  GIVEN ("a record containing empty text, empty blob and null data")
+  {
+    sl3::Database db{":memory:"};
+    auto          sql = "SELECT '' as empty_text, "
+                        " zeroblob(0) as empty_blob, "
+                        " NULL as empty_null; ";
+
+    WHEN ("accessing values and metadata inside a callback")
+    {
+      THEN ("empty values and invalid indices are handled correctly")
+      {
+        REQUIRE_NOTHROW (db.execute (sql));
+        db.execute (sql, [] (sl3::Columns cols) {
+          REQUIRE_EQ (cols.count (), 3);
+
+          CHECK_EQ (cols.getName (0), "empty_text");
+          CHECK_EQ (cols.getName (1), "empty_blob");
+          CHECK_EQ (cols.getName (2), "empty_null");
+
+          auto names = cols.getNames ();
+          REQUIRE_EQ (names.size (), std::size_t{3});
+          CHECK_EQ (names[0], "empty_text");
+          CHECK_EQ (names[1], "empty_blob");
+          CHECK_EQ (names[2], "empty_null");
+
+          CHECK_EQ (cols.getType (0), sl3::Type::Text);
+          CHECK_EQ (cols.getType (1), sl3::Type::Blob);
+          CHECK_EQ (cols.getType (2), sl3::Type::Null);
+
+          CHECK_EQ (cols.getSize (0), std::size_t{0});
+          CHECK_EQ (cols.getSize (1), std::size_t{0});
+          CHECK_EQ (cols.getSize (2), std::size_t{0});
+
+          CHECK_EQ (cols.getText (0), "");
+          CHECK (cols.getBlob (1).empty ());
+          CHECK_EQ (cols.getText (2), "");
+          CHECK (cols.getBlob (2).empty ());
+          CHECK_EQ (cols.getInt (2), 0);
+          CHECK_EQ (cols.getInt64 (2), 0);
+          CHECK_EQ (cols.getReal (2), doctest::Approx{0.0});
+
+          auto nullAsNull = cols.getValue (2, sl3::Type::Null);
+          CHECK_EQ (nullAsNull.dbtype (), sl3::Type::Variant);
+          CHECK (nullAsNull.isNull ());
+
+          CHECK_THROWS_AS ((void)cols.getName (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getValue (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS (
+              (void)cols.getValue (-1, sl3::Type::Variant),
+              sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getType (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getSize (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getText (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getInt (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getInt64 (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getReal (-1), sl3::ErrOutOfRange);
+          CHECK_THROWS_AS ((void)cols.getBlob (-1), sl3::ErrOutOfRange);
 
           return false;
         });

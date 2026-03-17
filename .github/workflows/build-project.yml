@@ -50,8 +50,8 @@ jobs:
     - uses: lukka/get-cmake@latest
       if: matrix.build.os != 'windows-2025-vs2026'
       with:
-        cmakeVersion: "~3.30.0"  # <--= optional, use most recent 3.25.x version
-        ninjaVersion: "^1.11.1"  # <--= optional, use most recent 1.x version
+        cmakeVersion: "~3.31.0"  # <--= optional, use most recent 3.25.x version
+        ninjaVersion: "^1.13.1"  # <--= optional, use most recent 1.x version
 
     - uses: lukka/get-cmake@latest
       if: matrix.build.os == 'windows-2025-vs2026'

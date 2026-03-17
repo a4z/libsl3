@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 10,
   "configurePresets": [
     {
       "name": "base",
@@ -13,8 +13,7 @@
         "CMAKE_MODULE_PATH": "${sourceDir}/cmake",
         "CMAKE_PROJECT_INCLUDE": "project-setup"
       },
-      "environment": {
-      }
+      "environment": {}
     }
   ],
   "testPresets": [

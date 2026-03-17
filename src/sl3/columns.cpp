@@ -152,7 +152,7 @@ namespace sl3
         type = Type::Null;
         break;
 
-      default:
+      default:                               // LCOV_EXCL_LINE
         throw ErrUnexpected ("never reach"); // LCOV_EXCL_LINE
         break;                               // LCOV_EXCL_LINE
       }

@@ -1,9 +1,8 @@
 {
-  "version": 8,
+  "version": 10,
   "include": [
     "cmake/preset/ninja.json"
-
-  ]  ,
+  ],
   "configurePresets": [
     {
       "name": "memsan",
@@ -44,4 +43,3 @@
     }
   ]
 }
-
