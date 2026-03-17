@@ -1,0 +1,23 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# keep my own here, since bcr sometimes catches up too slow with versions
+
+cc_library(
+    name = "sqlite",
+    srcs = ["sqlite3.c"],
+    hdrs = ["sqlite3.h",  "sqlite3ext.h"],
+    includes = ["."],
+    # Some Unix platforms have pthread and/or dlopen in separate libraries.
+    linkopts = select({
+        "@platforms//os:freebsd": ["-lpthread"],
+        "@platforms//os:linux": [
+            "-lpthread",
+            "-ldl",
+        ],
+        "@platforms//os:netbsd": ["-lpthread"],
+        "@platforms//os:openbsd": ["-lpthread"],
+        "//conditions:default": [],
+    }),
+)

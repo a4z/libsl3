@@ -17,5 +17,6 @@ bazel_dep(name = "rules_cc", version = "0.2.17")
 bazel_dep(name = "platforms", version = "1.0.0")
 
 # Library dependencies from the Bazel Central Registry
-bazel_dep(name = "sqlite3", version = SQLITE3_VERSION, repo_name = "sqlite")
 bazel_dep(name = "doctest", version = "2.4.12.bcr.1")
+# sqlite can be done, but use the own one sice bcr is sometimes slow to catch up with versions
+# bazel_dep(name = "sqlite3", version = SQLITE3_VERSION, repo_name = "sqlite")
