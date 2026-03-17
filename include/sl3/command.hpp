@@ -239,6 +239,9 @@ namespace sl3
     DbValues      _parameters;
   };
 
+  // Branch coverage for that is a nightmare,
+  // cant come over 60% with all the boilerplate in commandsexttest.cpp
+  // LCOV_EXCL_BR_START
   /**
    * \brief Syntax sugar to create command parameters
    *
@@ -259,6 +262,7 @@ namespace sl3
   {
     return {DbValue{vals}...};
   }
+  // LCOV_EXCL_BR_STOP
 }
 
 #endif

@@ -6,7 +6,7 @@
 SCENARIO ("using precompiled commands")
 {
   using namespace sl3;
-  GIVEN ("cmake genertated config")
+  GIVEN ("a database with a table")
   {
     Database db{":memory:"};
     db.execute ("CREATE TABLE tbl (fld1  , fld2 , fld3 );");

@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 10,
   "include": [
     "base.json"
   ],
@@ -10,7 +10,7 @@
       "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": "OFF",
-        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_BUILD_TYPE": "None",
         "sl3_USE_COMMON_COMPILER_WARNINGS": "OFF",
         "sl3_USE_INTERNAL_SQLITE3": "OFF",
         "PROJECT_ADDONS": "add-on/fetch-dependencies;add-on/coverage-gcov"
@@ -21,6 +21,16 @@
     {
       "name": "docgen",
       "configurePreset": "docgen"
+    },
+    {
+      "name": "docgen-doc",
+      "configurePreset": "docgen",
+      "targets": "doc"
+    },
+    {
+      "name": "docgen-coverage",
+      "configurePreset": "docgen",
+      "targets": "coverage"
     }
   ],
   "testPresets": [
@@ -45,6 +55,14 @@
         {
           "type": "test",
           "name": "docgen"
+        },
+        {
+          "type": "build",
+          "name": "docgen-doc"
+        },
+        {
+          "type": "build",
+          "name": "docgen-coverage"
         }
       ]
     }

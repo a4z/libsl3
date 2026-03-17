@@ -610,3 +610,48 @@ SCENARIO ("stringing values")
     }
   }
 }
+
+SCENARIO ("value edge cases that improve branch coverage")
+{
+  using namespace sl3;
+
+  GIVEN ("values near tricky conversion and comparison boundaries")
+  {
+    WHEN ("converting a too-small int64_t to int")
+    {
+      Value v{int64_t{std::numeric_limits<int>::min () - 1LL}};
+
+      THEN ("an out of range error is thrown")
+      {
+        CHECK_THROWS_AS ((void)static_cast<int> (v), ErrOutOfRange);
+      }
+    }
+
+    WHEN ("comparing subnormal real values")
+    {
+      Value zero{0.0};
+      Value tiny{std::numeric_limits<double>::denorm_min ()};
+
+      THEN ("value_type_eq uses the subnormal almost-equal path")
+      {
+        CHECK (value_type_eq (zero, tiny));
+        CHECK (value_type_eq (tiny, zero));
+      }
+    }
+
+    WHEN ("resetting text and blob values to null explicitly")
+    {
+      Value text{"hello"};
+      Value blob{Blob{std::byte{'A'}, std::byte{'B'}}};
+
+      text.setNull ();
+      blob.setNull ();
+
+      THEN ("both values become null")
+      {
+        CHECK (text.isNull ());
+        CHECK (blob.isNull ());
+      }
+    }
+  }
+}

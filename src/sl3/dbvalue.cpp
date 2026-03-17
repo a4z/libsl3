@@ -108,6 +108,18 @@ namespace sl3
       Type type;
     };
 
+    std::string
+    assignmentTypeName (const DbValue& value)
+    {
+      if (value.dbtype () == Type::Variant)
+        {
+          return typeName (value.dbtype ()) + " with storage type"
+                 + typeName (value.type ());
+        }
+
+      return typeName (value.dbtype ());
+    }
+
   } //--------------------------------------------------------------------------
 
   bool
@@ -197,11 +209,7 @@ namespace sl3
     if (!canAssign (other))
       {
         throw ErrTypeMisMatch (typeName (_type) + "="
-                               + (other._type == Type::Variant
-                                      ? typeName (other._type)
-                                            + " with storage type"
-                                            + typeName (other.type ())
-                                      : typeName (other._type)));
+                               + assignmentTypeName (other));
       }
 
     assign (other);
@@ -214,11 +222,7 @@ namespace sl3
     if (!canAssign (other))
       {
         throw ErrTypeMisMatch (typeName (_type) + "="
-                               + (other._type == Type::Variant
-                                      ? typeName (other._type)
-                                            + " with storage type"
-                                            + typeName (other.type ())
-                                      : typeName (other._type)));
+                               + assignmentTypeName (other));
       }
     _value = std::move (other._value);
 

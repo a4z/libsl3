@@ -48,6 +48,27 @@ SCENARIO ("checking error codes")
     }
   }
 
+  GIVEN ("the concrete sl3 error aliases")
+  {
+    const ErrNoConnection noConnection;
+    const ErrOutOfRange outOfRange;
+    const ErrTypeMisMatch typeMisMatch;
+    const ErrNullValueAccess nullValueAccess;
+    const ErrUnexpected unexpected;
+
+    WHEN ("asking each error for its identifier")
+    {
+      THEN ("each alias reports the matching ErrCode")
+      {
+        CHECK(noConnection.getId() == sl3::ErrCode::NoConnection);
+        CHECK(outOfRange.getId() == sl3::ErrCode::OutOfRange);
+        CHECK(typeMisMatch.getId() == sl3::ErrCode::TypeMisMatch);
+        CHECK(nullValueAccess.getId() == sl3::ErrCode::NullValueAccess);
+        CHECK(unexpected.getId() == sl3::ErrCode::UNEXPECTED);
+      }
+    }
+  }
+
 }
 
 

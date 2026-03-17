@@ -102,7 +102,7 @@ namespace sl3
         }
 
       // if  busy, use v2 for garbed collecting,
-      if (sqlite3_close (sl3db) != SQLITE_OK)
+      if (sqlite3_close (sl3db) != SQLITE_OK) // LCOV_EXCL_BR_LINE
         {                           // but that should 'never' happen :-)
           sqlite3_close_v2 (sl3db); // LCOV_EXCL_LINE
         }

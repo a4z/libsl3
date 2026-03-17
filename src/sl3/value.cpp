@@ -105,13 +105,13 @@ namespace sl3
   Value::Value (std::string val) noexcept
   : _type{Type::Text}
   {
-    new (&_store.textval) std::string (std::move (val));
+    new (&_store.textval) std::string (std::move (val)); // LCOV_EXCL_BR_LINE
   }
 
   Value::Value (const char* val)
   : _type{Type::Text}
   {
-    new (&_store.textval) std::string (val);
+    new (&_store.textval) std::string (val); // LCOV_EXCL_BR_LINE
   }
 
   Value::Value (double val) noexcept
@@ -123,7 +123,7 @@ namespace sl3
   Value::Value (Blob val) noexcept
   : _type{Type::Blob}
   {
-    new (&_store.blobval) Blob (std::move (val));
+    new (&_store.blobval) Blob (std::move (val)); // LCOV_EXCL_BR_LINE
   }
 
   Value::~Value () noexcept
@@ -155,11 +155,11 @@ namespace sl3
         break;
 
       case Type::Text:
-        new (&_store.textval) std::string (other._store.textval);
+        new (&_store.textval) std::string (other._store.textval); // LCOV_EXCL_BR_LINE
         break;
 
       case Type::Blob:
-        new (&_store.blobval) Blob (other._store.blobval);
+        new (&_store.blobval) Blob (other._store.blobval); // LCOV_EXCL_BR_LINE
         break;
 
       default:
@@ -187,12 +187,12 @@ namespace sl3
         break;
 
       case Type::Text:
-        new (&_store.textval) std::string (std::move (other._store.textval));
+        new (&_store.textval) std::string (std::move (other._store.textval)); // LCOV_EXCL_BR_LINE
         other._store.textval.~basic_string ();
         break;
 
       case Type::Blob:
-        new (&_store.blobval) Blob (std::move (other._store.blobval));
+        new (&_store.blobval) Blob (std::move (other._store.blobval)); // LCOV_EXCL_BR_LINE
         other._store.blobval.~vector ();
         break;
 
@@ -244,14 +244,14 @@ namespace sl3
         break;
 
       case Type::Text:
-        new (&_store.textval) std::string (other._store.textval);
+        new (&_store.textval) std::string (other._store.textval); // LCOV_EXCL_BR_LINE
         break;
 
       case Type::Blob:
-        new (&_store.blobval) Blob (other._store.blobval);
+        new (&_store.blobval) Blob (other._store.blobval); // LCOV_EXCL_BR_LINE
         break;
 
-      case Type::Variant:
+      case Type::Variant:                   // LCOV_EXCL_LINE
         raiseErrUnexpected ("never reach"); // LCOV_EXCL_LINE
         break;                              // LCOV_EXCL_LINE
       }
@@ -301,12 +301,12 @@ namespace sl3
         break;
 
       case Type::Text:
-        new (&_store.textval) std::string (std::move (other._store.textval));
+        new (&_store.textval) std::string (std::move (other._store.textval)); // LCOV_EXCL_BR_LINE
         other._store.textval.~basic_string ();
         break;
 
       case Type::Blob:
-        new (&_store.blobval) Blob (std::move (other._store.blobval));
+        new (&_store.blobval) Blob (std::move (other._store.blobval)); // LCOV_EXCL_BR_LINE
         other._store.blobval.~vector ();
         break;
 
@@ -382,7 +382,7 @@ namespace sl3
         _store.blobval.~vector<Blob::value_type> ();
       }
 
-    new (&_store.textval) std::string (val);
+    new (&_store.textval) std::string (val); // LCOV_EXCL_BR_LINE
     _type = Type::Text;
     return *this;
   }
@@ -399,12 +399,13 @@ namespace sl3
         _store.blobval = val;
         return *this;
       }
-    new (&_store.blobval) Blob (val);
+    new (&_store.blobval) Blob (val); // LCOV_EXCL_BR_LINE
     _type = Type::Blob;
     return *this;
   }
 
-  Value::operator int () const
+  Value::
+  operator int () const
   {
     if (isNull ())
       throw ErrNullValueAccess ();
@@ -422,7 +423,8 @@ namespace sl3
     return static_cast<int> (_store.intval);
   }
 
-  Value::operator int64_t () const
+  Value::
+  operator int64_t () const
   {
     if (isNull ())
       throw ErrNullValueAccess ();
@@ -435,7 +437,8 @@ namespace sl3
     return _store.intval;
   }
 
-  Value::operator double () const
+  Value::
+  operator double () const
   {
     if (isNull ())
       {
@@ -459,7 +462,8 @@ namespace sl3
     return _store.realval;
   }
 
-  Value::operator const std::string& () const
+  Value::
+  operator const std::string&() const
   {
     if (isNull ())
       throw ErrNullValueAccess ();
@@ -470,7 +474,8 @@ namespace sl3
     return _store.textval;
   }
 
-  Value::operator const Blob& () const
+  Value::
+  operator const Blob&() const
   {
     if (isNull ())
       throw ErrNullValueAccess ();
@@ -777,7 +782,7 @@ namespace sl3
           retval = a._store.blobval == b._store.blobval;
         break;
 
-      default:
+      default: // LCOV_EXCL_LINE
         break; // LCOV_EXCL_LINE
       }
 

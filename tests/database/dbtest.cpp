@@ -54,7 +54,7 @@ SCENARIO ("creating some test data")
           "INSERT INTO tbltest VALUES (2, 'zwei', 2.22) ;"
           "INSERT INTO tbltest VALUES (3, NULL, NULL) ;");
 
-      THEN ("I can veryfy that the table and some test data exists")
+      THEN ("I can verify that the table and some test data exists")
       {
         CHECK (db.getTotalChanges () == 3);
         CHECK_NOTHROW (db.execute (std::string{"DELETE FROM tbltest;"}));
@@ -100,7 +100,7 @@ SCENARIO ("move construct a database")
 
 SCENARIO ("check the connections and if derivate works")
 {
-  GIVEN ("a derivated db that let me access db property")
+  GIVEN ("a derived db that let me access db property")
   {
     struct MyDb : public sl3::Database
     {
@@ -451,7 +451,7 @@ SCENARIO ("accessing database change properties")
 
       sl3::Database db1{std::move (db)};
 
-      THEN ("no undefined behavior but exceptions are thorwn")
+      THEN ("no undefined behavior but exceptions are thrown")
       {
         CHECK_THROWS_AS ((void)db.getTotalChanges (), sl3::ErrNoConnection);
         CHECK_THROWS_AS ((void)db.getRecentlyChanged (), sl3::ErrNoConnection);
@@ -467,7 +467,7 @@ SCENARIO ("accessing database change properties")
 
 SCENARIO ("accessing database error properties")
 {
-  GIVEN ("an database an empty datbase")
+  GIVEN ("an database an empty database")
   {
     sl3::Database db{":memory:"};
 
