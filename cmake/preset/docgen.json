@@ -8,7 +8,7 @@
       "name": "docgen",
       "inherits": "base",
       "generator": "Ninja",
-      "toolchainFile": "${sourceDir}/cmake/toolchain/fech-dependencies.cmake",
+      "toolchainFile": "${sourceDir}/cmake/toolchain/fetch-dependencies.cmake",
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": "OFF",
         "CMAKE_BUILD_TYPE": "None",
