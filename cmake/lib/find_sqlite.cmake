@@ -53,7 +53,7 @@ else(sl3_USE_INTERNAL_SQLITE3)
     set(SQLITE_LINK_NAME unofficial::sqlite3::sqlite3)
   else()
     find_package(SQLite3 REQUIRED)
-    set(SQLITE_LINK_NAME SQLite::SQLite3)
+    set(SQLITE_LINK_NAME SQLite3::SQLite3)
   endif()
 endif(sl3_USE_INTERNAL_SQLITE3)
 

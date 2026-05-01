@@ -8,8 +8,7 @@
       "name": "memsan",
       "inherits": "ninja",
       "cacheVariables": {
-        "TOOLCHAIN_INCLUDES": "toolchain/linux-clang;toolchain/linux-clang-san-mem",
-        "PROJECT_ADDONS": "add-on/fetch-dependencies",
+        "TOOLCHAIN_INCLUDES": "toolchain/fetch-dependencies;toolchain/linux-clang;toolchain/linux-clang-san-mem",
         "sl3_USE_INTERNAL_SQLITE3": "ON"
       }
     },
@@ -17,8 +16,7 @@
       "name": "memsan-int",
       "inherits": "ninja",
       "cacheVariables": {
-        "TOOLCHAIN_INCLUDES": "toolchain/linux-clang;toolchain/linux-clang-san-mem",
-        "PROJECT_ADDONS": "add-on/fetch-dependencies",
+        "TOOLCHAIN_INCLUDES": "toolchain/fetch-dependencies;toolchain/linux-clang;toolchain/linux-clang-san-mem",
         "sl3_USE_INTERNAL_SQLITE3": "OFF"
       }
     }

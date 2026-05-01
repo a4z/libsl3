@@ -16,7 +16,7 @@ if(CCACHE_BIN)
 endif()
 
 
-if(DEFINED TOOLCHAIN_INCLUDES)
+if(DEFINED  )
   foreach(TOOLCHAIN_INCLUDE ${TOOLCHAIN_INCLUDES})
     message(STATUS "Include toolchain : ${TOOLCHAIN_INCLUDE}")
     include(${TOOLCHAIN_INCLUDE})

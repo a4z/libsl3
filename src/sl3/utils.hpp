@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <functional>
 #include <limits>
 
 namespace sl3
