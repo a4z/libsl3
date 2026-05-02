@@ -14,7 +14,7 @@ module(
 
 # Core Bazel modules
 bazel_dep(name = "rules_cc", version = "0.2.18")
-bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "platforms", version = "1.1.0")
 
 # Library dependencies from the Bazel Central Registry
 bazel_dep(name = "doctest", version = "2.4.12.bcr.1")
