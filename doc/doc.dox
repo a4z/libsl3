@@ -129,7 +129,7 @@ ctest --preset msvc22
 If you do not have vcpkg installed, the simplest way to get started is
 
 \code
-cmake --preset ninja -DPROJECT_ADDONS=add-on/fetch-dependencies -Dsl3_USE_INTERNAL_SQLITE3=ON
+cmake --preset ninja -DTOOLCHAIN_INCLUDES=toolchain/fetch-dependencies -Dsl3_USE_INTERNAL_SQLITE3=ON
 \endcode
 
 If you have sqlite3 installed on your system, you can use it by omitting `-Dsl3_USE_INTERNAL_SQLITE3=ON`.

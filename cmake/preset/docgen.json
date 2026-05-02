@@ -8,12 +8,13 @@
       "name": "docgen",
       "inherits": "base",
       "generator": "Ninja",
+      "toolchainFile": "${sourceDir}/cmake/toolchain/fetch-dependencies.cmake",
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": "OFF",
         "CMAKE_BUILD_TYPE": "None",
         "sl3_USE_COMMON_COMPILER_WARNINGS": "OFF",
         "sl3_USE_INTERNAL_SQLITE3": "OFF",
-        "PROJECT_ADDONS": "add-on/fetch-dependencies;add-on/coverage-gcov"
+        "PROJECT_ADDONS": "add-on/coverage-gcov"
       }
     }
   ],

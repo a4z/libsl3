@@ -19,14 +19,18 @@ endif()
 
 
 if(DEFINED ACTIVE_PRESET_NAME)
-  message(STATUS "-- Running preset : ${ACTIVE_PRESET_NAME}")
+  message(STATUS "--- Running preset : ${ACTIVE_PRESET_NAME}")
 endif()
 
-
+if (DEFINED FETCH_DEPENDENCIES_TC)
+  message(STATUS "--- Using fetch dependencies toolchain")
+  set(ACTIVATE_FETCH_DEPENDENCIES_TC ON)
+  include(${FETCH_DEPENDENCIES_TC})
+endif()
 
 if(DEFINED PROJECT_ADDONS)
   foreach(ADDON ${PROJECT_ADDONS})
-    message(STATUS "Add project addon: ${ADDON}")
+    message(STATUS "--- Add project addon: ${ADDON}")
     include(${ADDON})
   endforeach()
 endif()
