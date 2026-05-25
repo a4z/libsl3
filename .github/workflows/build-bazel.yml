@@ -32,3 +32,8 @@ jobs:
 
       - name: Test (fastbuild)
         run: bazel test //...
+
+      - name: Test BCR consumer module
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: tests/bcr-consumer
+        run: bazel test --lockfile_mode=off //:consumer_test

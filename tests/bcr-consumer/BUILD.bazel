@@ -1,0 +1,7 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "consumer_test",
+    srcs = ["main.cpp"],
+    deps = ["@libsl3//:sl3"],
+)
