@@ -1,0 +1,9 @@
+module(name = "libsl3_consumer_test")
+
+bazel_dep(name = "libsl3")
+bazel_dep(name = "rules_cc", version = "0.2.18")
+
+local_path_override(
+    module_name = "libsl3",
+    path = "../..",
+)

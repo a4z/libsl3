@@ -1,9 +1,9 @@
 """libsl3 - A C++ wrapper for SQLite3"""
 
 # SQLite version configuration - single source of truth
-SQLITE3_MINOR = 51
+SQLITE3_MINOR = 53
 
-SQLITE3_PATCH = 3
+SQLITE3_PATCH = 1
 
 SQLITE3_VERSION = "3.{}.{}".format(SQLITE3_MINOR, SQLITE3_PATCH)
 
@@ -18,5 +18,6 @@ bazel_dep(name = "platforms", version = "1.1.0")
 
 # Library dependencies from the Bazel Central Registry
 bazel_dep(name = "doctest", version = "2.4.12.bcr.1")
-# sqlite can be done, but use the own one sice bcr is sometimes slow to catch up with versions
-# bazel_dep(name = "sqlite3", version = SQLITE3_VERSION, repo_name = "sqlite")
+
+# SQLite from BCR
+bazel_dep(name = "sqlite3", version = SQLITE3_VERSION, repo_name = "sqlite")
