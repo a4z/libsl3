@@ -79,10 +79,12 @@ for file_name in sqlite3.c sqlite3.h sqlite3ext.h; do
   install -m 0644 "$src_file" "$dst_file"
 done
 
-sed -Ei \
+cmake_tmp="$tmp_dir/CMakeLists.txt"
+sed -E \
   -e "s/^set\(internal_SQLITE_MINOR_V[[:space:]]+[0-9]+\)/set(internal_SQLITE_MINOR_V ${minor})/" \
   -e "s/^set\(internal_SQLITE_PATCH_V[[:space:]]+[0-9]+\)/set(internal_SQLITE_PATCH_V  ${patch})/" \
-  "$cmake_file"
+  "$cmake_file" > "$cmake_tmp"
+cat "$cmake_tmp" > "$cmake_file"
 
 echo "Updated vendored SQLite files in $sqlite_dir to $version"
 echo "Updated $cmake_file to $version"

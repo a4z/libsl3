@@ -20,9 +20,13 @@ Active development happens rarely, but the library is still maintained and updat
 
 \subsection bazel Bazel support
 
-Since version 1.2.50004 (tested with SQLite3 3.50.4), the Bazel build system is supported.
+libsl3 is available on the Bazel Central Registry.
+Add it to your \c MODULE.bazel file:
 
-This should make it easy to integrate libsl3 into a Bazel project.
+\code
+bazel_dep(name = "libsl3")
+\endcode
+
 
 \subsection consume Consuming sl3 in a CMake project
 

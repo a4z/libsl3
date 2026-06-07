@@ -21,6 +21,15 @@ Quickly summarized, there are dependencies, but they are all either development 
 - doctest
 - commonCompilerWarnings
 
+### Consume via Bazel
+
+libsl3 is available on the Bazel Central Registry.
+Add it to your `MODULE.bazel` file:
+
+```bazel
+bazel_dep(name = "libsl3")
+```
+
 ### Consume via CMake
 
 To build libsl3 without any dependencies, run
