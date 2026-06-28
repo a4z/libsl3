@@ -131,8 +131,8 @@ SCENARIO ("using precompiled commands")
         CHECK_EQ (names.at (0), ":eins");
         CHECK_EQ (names.at (1), "@zwei");
         CHECK_EQ (names.at (2), "$drei");
-        CHECK_EQ (cmd2.getParameters ().size (), 3);
-        CHECK_EQ (cmd2.getParameter (0).getInt (), 100);
+        CHECK_EQ (cmd2.getParameters ().size (), 3u);
+        CHECK_EQ (cmd2.getParameter (0).getInt (), 100u);
         CHECK_EQ (cmd2.getParameter (1).getText (), "hello");
       }
     }
@@ -214,7 +214,7 @@ SCENARIO ("binding values of all types and using select to check the result")
       THEN ("selecting all data returns the inserted data")
       {
         auto ds = db.select ("SELECT * FROM t;");
-        REQUIRE_EQ (ds.size (), 1);
+        REQUIRE_EQ (ds.size (), 1u);
         REQUIRE_EQ (ds[0].size (), params.size ());
         REQUIRE_EQ (ds[0][0].getInt (), params[0].getInt ());
         REQUIRE_EQ (ds[0][1].getReal (), params[1].getReal ());
@@ -227,7 +227,7 @@ SCENARIO ("binding values of all types and using select to check the result")
         auto types = Types{
             Type::Int, Type::Real, Type::Text, Type::Blob, Type::Variant};
         auto ds = db.select ("SELECT * FROM t;", types);
-        REQUIRE_EQ (ds.size (), 1);
+        REQUIRE_EQ (ds.size (), 1u);
         REQUIRE_EQ (ds[0].size (), types.size ());
         for (size_t i = 0; i < ds[0].size (); ++i)
           REQUIRE_EQ (ds[0][i].dbtype (), types[i]);
