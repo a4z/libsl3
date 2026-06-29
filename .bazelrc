@@ -1,6 +1,6 @@
 
 # Enable platform-specific config
-common --enable_platform_specific_config
+common --enable_platform_specific_config --features=external_include_paths --host_features=external_include_paths
 
 
 # Warnings for this workspace only. Global --copt also affects external repos.
@@ -8,7 +8,7 @@ common --enable_platform_specific_config
 # external/sqlite3+/sqlite3.c(19593): error C2220: the following warning is treated as an error
 # external/sqlite3+/sqlite3.c(19593): warning C4200: nonstandard extension used: zero-sized array in struct/union
 build:unix --per_file_copt=^//.*@-Wall,-Wextra,-Wpedantic,-Werror
-build:msvc --per_file_copt=^//.*@/W4,/WX
+build:msvc --per_file_copt=^//.*@/W4,/WX 
 # /DEBUG:FASTLINK is unsupported in VS 2022; suppress the linker warning
 build:msvc --linkopt=/IGNORE:4315
 

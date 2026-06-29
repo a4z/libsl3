@@ -22,13 +22,13 @@ SCENARIO ("dataset creation and default operators")
       THEN ("assigning a new dataset is possible without problems")
       {
         CHECK_NOTHROW (ds = db.select ("SELECT * FROM t;"));
-        CHECK_EQ (ds.getIndex ("int"), 0);
-        CHECK_EQ (ds.getIndex ("txt"), 1);
-        CHECK_EQ (ds.getIndex ("dbl"), 2);
+        CHECK_EQ (ds.getIndex ("int"), 0u);
+        CHECK_EQ (ds.getIndex ("txt"), 1u);
+        CHECK_EQ (ds.getIndex ("dbl"), 2u);
         CHECK_THROWS_AS (ds.getIndex ("abc"), ErrOutOfRange);
 
-        CHECK_EQ (ds.size (), 3);
-        CHECK_EQ (ds.at (0).size (), 3);
+        CHECK_EQ (ds.size (), 3u);
+        CHECK_EQ (ds.at (0).size (), 3u);
       }
     }
 
@@ -58,9 +58,9 @@ SCENARIO ("dataset creation and default operators")
         dsm = db.select ("SELECT * FROM t;");
         Dataset ds{std::move (dsm)};
 
-        CHECK_EQ (ds.getIndex ("int"), 0);
-        CHECK_EQ (ds.getIndex ("txt"), 1);
-        CHECK_EQ (ds.getIndex ("dbl"), 2);
+        CHECK_EQ (ds.getIndex ("int"), 0u);
+        CHECK_EQ (ds.getIndex ("txt"), 1u);
+        CHECK_EQ (ds.getIndex ("dbl"), 2u);
       }
     }
   }
@@ -135,9 +135,9 @@ SCENARIO ("merging datasets")
     WHEN ("having an dataset with names fields")
     {
       Dataset dsf = db.select ("SELECT 1 as int, 'eins' as txt, 2.2 as dbl;");
-      CHECK_EQ (dsf.getIndex ("int"), 0);
-      CHECK_EQ (dsf.getIndex ("txt"), 1);
-      CHECK_EQ (dsf.getIndex ("dbl"), 2);
+      CHECK_EQ (dsf.getIndex ("int"), 0u);
+      CHECK_EQ (dsf.getIndex ("txt"), 1u);
+      CHECK_EQ (dsf.getIndex ("dbl"), 2u);
 
       THEN ("merging a dataset with the same fieldnames work")
       {
