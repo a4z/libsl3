@@ -1,0 +1,33 @@
+name: release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  upload-asset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Create source archive
+        run: |
+          VERSION="${{ github.ref_name }}"
+          tar --transform="s,^,libsl3-${VERSION}/," \
+              -czf /tmp/libsl3-${VERSION}.tar.gz \
+              --exclude=.git \
+              --exclude=bazel-bin \
+              --exclude=bazel-out \
+              --exclude=bazel-testlogs \
+              --exclude=bazel-libsl3 \
+              --exclude=build \
+              --exclude=.DS_Store \
+              .
+
+      - name: Upload release asset
+        run: gh release upload ${{ github.ref_name }} /tmp/libsl3-${{ github.ref_name }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
