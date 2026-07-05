@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     ignore:
       # sqlite3 is managed manually: SQLITE3_MINOR and SQLITE3_PATCH in MODULE.bazel
       # encode the version into the library's own version number, used in tests
