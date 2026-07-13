@@ -31,6 +31,8 @@ include(CMakeLocalOpts.cmake OPTIONAL)
 
 option(sl3_USE_INTERNAL_SQLITE3 "use build-in sqlite3 ON, use system sqlite3 header/lib, OFF" OFF)
 option(sl3_USE_COMMON_COMPILER_WARNINGS "Use common compiler warning preset target" ON)
+option(sl3_BUILD_DOCS "Build documentation (required doxygen), OFF" OFF)
+
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 if (sl3_USE_COMMON_COMPILER_WARNINGS)
@@ -117,7 +119,10 @@ if(sl3_BUILD_TESTING)
 endif()
 
 include(lib/install)
-include(lib/doxydoc)
+
+if (sl3_BUILD_DOCS)
+    include(lib/doxydoc)
+endif()
 
 # include(CMakePrintSystemInformation)
 # include(CMakePrintHelpers)
