@@ -14,6 +14,7 @@
         "CMAKE_BUILD_TYPE": "None",
         "sl3_USE_COMMON_COMPILER_WARNINGS": "OFF",
         "sl3_USE_INTERNAL_SQLITE3": "OFF",
+        "sl3_BUILD_DOCS": "ON",
         "PROJECT_ADDONS": "add-on/coverage-gcov"
       }
     }
