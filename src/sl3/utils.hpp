@@ -4,20 +4,16 @@
 #include <cstddef>
 #include <functional>
 #include <limits>
+#include <type_traits>
 
 namespace sl3
 {
 
+  template <typename T>
   inline size_t
-  as_size_t (int val)
+  as_size_t (T val)
   {
-    assert (val >= 0); // LCOV_EXCL_BR_LINE
-    return static_cast<size_t> (val);
-  }
-
-  inline size_t
-  as_size_t (ptrdiff_t val)
-  {
+    static_assert (std::is_signed_v<T>);
     assert (val >= 0); // LCOV_EXCL_BR_LINE
     return static_cast<size_t> (val);
   }
