@@ -35,6 +35,12 @@ jobs:
             cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg
           }
           - {
+            os: windows-2022,
+            preset: msvc22,
+            cmake_args: -DCMAKE_TOOLCHAIN_FILE=toolchain/use-vcpkg -A Win32 -DVCPKG_TARGET_TRIPLET=x86-windows,
+            arch: x86
+          }
+          - {
             os: windows-2025-vs2026,
             preset: msvc26,
             cmake_args: -DCMAKE_TOOLCHAIN_FILE='toolchain/fetch-dependencies' -Dsl3_USE_INTERNAL_SQLITE3=ON
@@ -64,6 +70,8 @@ jobs:
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.build.arch || 'x64' }}
     - name: Configure project
       run:  cmake --preset ${{ matrix.build.preset }} ${{ matrix.build.cmake_args }}
     - name: Build project
