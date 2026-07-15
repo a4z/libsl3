@@ -22,13 +22,17 @@ archive_version="$(printf '3%02d%02d00' "$minor" "$patch")"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sqlite_dir="$script_dir/sqlite"
 cmake_file="$script_dir/CMakeLists.txt"
+module_file="$script_dir/MODULE.bazel"
+vcpkg_file="$script_dir/vcpkg.json"
 archive_base="sqlite-amalgamation-${archive_version}"
 archive_name="${archive_base}.zip"
 
-if [[ ! -f "$cmake_file" ]]; then
-  echo "error: missing $cmake_file" >&2
-  exit 1
-fi
+for build_file in "$cmake_file" "$module_file" "$vcpkg_file"; do
+  if [[ ! -f "$build_file" ]]; then
+    echo "error: missing $build_file" >&2
+    exit 1
+  fi
+done
 
 tmp_dir="$(mktemp -d)"
 cleanup() {
@@ -86,5 +90,22 @@ sed -E \
   "$cmake_file" > "$cmake_tmp"
 cat "$cmake_tmp" > "$cmake_file"
 
+module_tmp="$tmp_dir/MODULE.bazel"
+sed -E \
+  -e "s/^SQLITE3_MINOR = [0-9]+/SQLITE3_MINOR = ${minor}/" \
+  -e "s/^SQLITE3_PATCH = [0-9]+/SQLITE3_PATCH = ${patch}/" \
+  "$module_file" > "$module_tmp"
+cat "$module_tmp" > "$module_file"
+
+lib_version="1.2.$((10#$minor * 1000 + 10#$patch))"
+vcpkg_tmp="$tmp_dir/vcpkg.json"
+sed -E \
+  -e "s/^  \"version\": \"[^\"]+\",/  \"version\": \"${lib_version}\",/" \
+  -e "/\"name\": \"sqlite3\"/,/}/{s/\"version>=\": \"[^\"]+\"/\"version>=\": \"${version}\"/;}" \
+  "$vcpkg_file" > "$vcpkg_tmp"
+cat "$vcpkg_tmp" > "$vcpkg_file"
+
 echo "Updated vendored SQLite files in $sqlite_dir to $version"
 echo "Updated $cmake_file to $version"
+echo "Updated $module_file to $version"
+echo "Updated $vcpkg_file to SQLite $version and libsl3 $lib_version"
