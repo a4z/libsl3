@@ -15,23 +15,23 @@
 #define SL3_CONFIG
 
 
-// TODO this has to look like here https://gcc.gnu.org/wiki/Visibility
-
 #if defined(_WIN32) && defined(_MSC_VER)
     #if defined(LIBSL3_DLL)
         #define LIBSL3_API __declspec(dllexport)
     #elif defined(LINK_SL3_DLL)
         #define LIBSL3_API __declspec(dllimport)
-    #else
-        #define LIBSL3_API
     #endif
-#else
+#elif defined(__GNUC__)
+    #if defined(LIBSL3_DLL) || defined(LINK_SL3_DLL)
+        #define LIBSL3_API [[gnu::visibility("default")]]
+    #endif
+#endif
+
+#ifndef LIBSL3_API
     #define LIBSL3_API
 #endif
 
 #include <cstdint>
-
-//#define LIBSL3_API
 
 /**
     \namespace sl3
