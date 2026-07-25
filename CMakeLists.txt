@@ -2,27 +2,22 @@ cmake_minimum_required(VERSION 3.31)
 
 set(sl3_MAJOR_VERSION 1)
 set(sl3_MINOR_VERSION 3)
-
 # sqlite major is always 3, no need to use that here
 # set(internal_SQLITE_MAJOR_V 3)
 set(internal_SQLITE_MINOR_V 53)
 set(internal_SQLITE_PATCH_V  3)
-
 # sqlite uses (X*1000000 + Y*1000 + Z),
 # but minor patch used since major is always 3
 math(EXPR sl3_PATCH_VERSION "${internal_SQLITE_MINOR_V}*1000 + ${internal_SQLITE_PATCH_V}")
-
 set(sl3_VERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}.${sl3_PATCH_VERSION})
+
 
 project(libsl3
     VERSION ${sl3_VERSION}
     LANGUAGES C CXX
 )
 
-
-
-# done differently now
-list(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
+include(cmake/project-setup.cmake)
 
 #optional enable personal test/trial dir
 include(CMakeLocalOpts.cmake OPTIONAL)
@@ -97,6 +92,9 @@ target_sources(sl3
         FILES
             ${sl3_PUBLIC_HEADERS}
 )
+
+
+target_compile_features(sl3 PUBLIC c_std_17 cxx_std_17)
 
 target_link_libraries(sl3 PRIVATE $<BUILD_INTERFACE:${LIBWARNINGS}>)
 

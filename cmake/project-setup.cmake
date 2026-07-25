@@ -1,32 +1,25 @@
 include_guard(GLOBAL)
-# Keep this here for now, but add a CI test that builds with 20 or 17
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 17)
-
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_C_STANDARD 17)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(PROJECT_IS_TOP_LEVEL)
     # make git ignore the build directory
     file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
     include(CTest)
     option(sl3_BUILD_TESTING "Build the tests" ${BUILD_TESTING})
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set(CMAKE_C_EXTENSIONS OFF)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    list(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
+    message(STATUS "--- Using CMake ${CMAKE_VERSION} (${CMAKE_COMMAND})")
 endif()
-
-message(STATUS "Using CMake ${CMAKE_VERSION} (${CMAKE_COMMAND})")
 
 if(DEFINED ACTIVE_PRESET_NAME)
   message(STATUS "--- Running preset : ${ACTIVE_PRESET_NAME}")
 endif()
 
-if (DEFINED FETCH_DEPENDENCIES_TC)
+if (DEFINED FETCH_DEPS_VIA)
   message(STATUS "--- Using fetch dependencies toolchain")
-  set(ACTIVATE_FETCH_DEPENDENCIES_TC ON)
-  include(${FETCH_DEPENDENCIES_TC})
+  set(ACTIVATE_FETCH_DEPS_VIA ON)
+  include(${FETCH_DEPS_VIA})
 endif()
 
 if(DEFINED PROJECT_ADDONS)

@@ -5,17 +5,21 @@ SQLite database based on its natural language, which is SQL.
 
 libsl3 originated back at a time when C++11 was new.
 It has remained stable to support existing users for quite a while, over a decade.
-With the arrival of C++23, development has restarted, but due to a lack of time, not much has happened so far. The minimum required C++ standard is now C++17.
-The goal is to keep the interface stable, but using a newer C++ standard might justify some breaking changes.
+With the arrival of C++23, development has restarted, but due to a lack of time,
+not much has happened so far. The minimum required C++ standard is now C++17.
+The goal is to keep the interface stable, but using a newer C++ standard might
+justify some breaking changes.
 
-For people seeking the old version, release v1.1.31001 preserves the original C++11 state with CMake 2.8 support.
+For people seeking the old version, release v1.1.31001 preserves the original
+C++11 state with CMake 2.8 support.
 
-**The full documentation for libsl3 can be found here:** <br>
-https://a4z.github.io/libsl3/
+**The full documentation for libsl3 can be found here:** \
+<https://a4z.github.io/libsl3/>
 
 ## Build
 
-Quickly summarized, there are dependencies, but they are all either development dependencies or optional
+Quickly summarized, there are dependencies, but they are all either development
+dependencies or optional
 
 - sqlite3
 - doctest
@@ -32,18 +36,33 @@ bazel_dep(name = "libsl3")
 
 ### Consume via CMake
 
+The simple default is
+
+```sh
+cmake -S . -B build -DFETCH_DEPS_VIA=toolchain/fetch-dependencies
+cmake --build build --parallel
+cmake --build build --target test
+```
+
 To build libsl3 without any dependencies, run
 
-    cmake -S . -B build -Dsl3_BUILD_TESTING=OFF -Dsl3_USE_INTERNAL_SQLITE3=ON -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
+```text
+cmake -S . -B build -Dsl3_BUILD_TESTING=OFF -Dsl3_USE_INTERNAL_SQLITE3=ON -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
+```
 
 This will build libsl3 with the internal sqlite distribution.
-The used sqlite version is documented in the patch level part of the actual libsl3 version.
+The used sqlite version is documented in the patch level part of the actual
+libsl3 version.
 
 For using sqlite from the system, run
 
-    cmake -S . -B build -Dsl3_BUILD_TESTING=OFF -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
+```text
+cmake -S . -B build -Dsl3_BUILD_TESTING=OFF -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
+```
 
 For more information about how to consume and build the library, visit [the documentation](https://a4z.github.io/libsl3/#Installation).
+
+You can also explore the existing presets.
 
 ## A short usage example
 
@@ -97,4 +116,4 @@ Additional samples can be found in the tests and tests/samples subfolder.
 
 ## License
 
-https://www.mozilla.org/en-US/MPL/2.0/
+<https://www.mozilla.org/en-US/MPL/2.0/>
