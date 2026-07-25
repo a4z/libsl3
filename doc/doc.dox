@@ -54,7 +54,7 @@ FetchContent_Declare(
   GIT_TAG        main
   OVERRIDE_FIND_PACKAGE
 )
-SET(BUILD_TESTING OFF)
+SET(sl3_BUILD_TESTING OFF)
 SET(sl3_USE_INTERNAL_SQLITE3 ON)
 SET(sl3_USE_COMMON_COMPILER_WARNINGS OFF)
 
@@ -408,23 +408,3 @@ Running this program, the output will be
 \endcode
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

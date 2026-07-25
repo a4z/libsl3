@@ -17,6 +17,7 @@ if(PROJECT_IS_TOP_LEVEL)
     option(sl3_BUILD_TESTING "Build the tests" ${BUILD_TESTING})
 endif()
 
+message(STATUS "Using CMake ${CMAKE_VERSION} (${CMAKE_COMMAND})")
 
 if(DEFINED ACTIVE_PRESET_NAME)
   message(STATUS "--- Running preset : ${ACTIVE_PRESET_NAME}")

@@ -11,8 +11,10 @@ build*/
 *.pyc
 
 .vscode
+.clwb/
 
 .DS_STORE
 CMakeUserPresets.json
 
 bazel-*
+tests/bcr-consumer/MODULE.bazel.lock
