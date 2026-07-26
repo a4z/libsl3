@@ -1,5 +1,5 @@
-# FETCH_DEPENDENCIES_TC, fetch dependencies toolchain, this files is passed as a toolchain
-if (FETCH_DEPENDENCIES_TC AND ACTIVATE_FETCH_DEPENDENCIES_TC)
+# FETCH_DEPS_VIA, fetch dependencies toolchain, this files is passed as a toolchain
+if (FETCH_DEPS_VIA AND ACTIVATE_FETCH_DEPS_VIA)
 
   include(FetchContent)
   FetchContent_Declare(
@@ -24,4 +24,4 @@ if (FETCH_DEPENDENCIES_TC AND ACTIVATE_FETCH_DEPENDENCIES_TC)
   # so for users, this just works
 endif()
 
-set(FETCH_DEPENDENCIES_TC ${CMAKE_CURRENT_LIST_FILE})
+set(FETCH_DEPS_VIA ${CMAKE_CURRENT_LIST_FILE})
