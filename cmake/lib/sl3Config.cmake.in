@@ -4,8 +4,9 @@
 include(CMakeFindDependencyMacro)
 
 set(_sl3_sqlite_link_target "@SQLITE_LINK_NAME@")
-if(_sl3_sqlite_link_target STREQUAL "SQLite::SQLite3")
-  find_dependency(SQLite3 REQUIRED)
+if(_sl3_sqlite_link_target MATCHES "^SQLite3?::SQLite3$")
+  # SQLite3::SQLite3 since CMake 4.3, SQLite::SQLite3 before
+  find_dependency(SQLite3)
 elseif(_sl3_sqlite_link_target STREQUAL "unofficial::sqlite3::sqlite3")
   find_dependency(unofficial-sqlite3 CONFIG REQUIRED)
 endif()

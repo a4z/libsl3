@@ -23,6 +23,7 @@ jobs:
         run: |
           cmake -B build/installcheck/Release -S . \
             -DCMAKE_BUILD_TYPE=Release \
+            -Dsl3_BUILD_TESTING=OFF \
             -Dsl3_USE_INTERNAL_SQLITE3=OFF \
             -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
           cmake --build build/installcheck/Release --parallel
