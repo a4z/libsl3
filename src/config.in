@@ -15,7 +15,7 @@
 #define SL3_CONFIG
 
 
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32) || defined(__CYGWIN__)
     #if defined(LIBSL3_DLL)
         #define LIBSL3_API __declspec(dllexport)
     #elif defined(LINK_SL3_DLL)
@@ -58,7 +58,7 @@ namespace sl3
    *
    * \return version string at compile time
    */
-  const char* sqliteCompiledVersion();
+  LIBSL3_API const char* sqliteCompiledVersion();
 
   /**
    * \brief sqlite version number at compile time
@@ -70,7 +70,7 @@ namespace sl3
    *
    * \return version number at compile time
    */
-  int sqliteCompiledVersionNumber();
+  LIBSL3_API int sqliteCompiledVersionNumber();
 
 
   /**
@@ -83,7 +83,7 @@ namespace sl3
    *
    * \return version string currently used
    */
-  const char* sqliteRuntimeVersion();
+  LIBSL3_API const char* sqliteRuntimeVersion();
 
   /**
    * \brief sqlite version number at compile time
@@ -95,7 +95,7 @@ namespace sl3
    *
    * \return sqlite version number currently used
    */
-  int sqliteRuntimeVersionNumber();
+  LIBSL3_API int sqliteRuntimeVersionNumber();
 
 
   /**
@@ -105,7 +105,7 @@ namespace sl3
    *
    * \return 0 or 1 or 2
    */
-  int sqliteThreadSafeCompileOption();
+  LIBSL3_API int sqliteThreadSafeCompileOption();
 
 
 }

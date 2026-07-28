@@ -44,7 +44,7 @@ namespace sl3
    *
    * \return the type name as string
    */
-  std::string typeName (Type);
+  LIBSL3_API std::string typeName (Type);
 
   /**
    * \brief overloaded stream operator for sl3::Type
@@ -52,7 +52,7 @@ namespace sl3
    * \param t the Type
    * \return the ostream
    */
-  std::ostream& LIBSL3_API operator<< (std::ostream& os, const Type& t);
+  LIBSL3_API std::ostream& operator<< (std::ostream& os, const Type& t);
 
   /**
    * \brief A Container holding sl3::Type values.

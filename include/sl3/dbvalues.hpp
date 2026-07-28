@@ -98,7 +98,7 @@ namespace sl3
    *
    *  This function calls a.swap(b). \see DbValues::swap
    */
-  void swap (DbValues& a, DbValues& b) noexcept;
+  LIBSL3_API void swap (DbValues& a, DbValues& b) noexcept;
 
 }
 

@@ -125,6 +125,14 @@ namespace sl3
   /// debug mode
   using ErrUnexpected = ErrType<ErrCode::UNEXPECTED>;
 
+#ifndef LIBSL3_DLL
+  extern template class ErrType<ErrCode::NoConnection>;
+  extern template class ErrType<ErrCode::OutOfRange>;
+  extern template class ErrType<ErrCode::TypeMisMatch>;
+  extern template class ErrType<ErrCode::NullValueAccess>;
+  extern template class ErrType<ErrCode::UNEXPECTED>;
+#endif
+
   /**
    * \brief Package an error from sqlite3.
    * This exception will be thrown if sqlite3 reports an error.

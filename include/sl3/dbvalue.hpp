@@ -381,7 +381,7 @@ namespace sl3
    *
    * \return true if the type and the current value are equal, false otherwise
    */
-  bool dbval_type_eq (const DbValue& a, const DbValue& b) noexcept;
+  LIBSL3_API bool dbval_type_eq (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief less than,  including type info
@@ -402,7 +402,7 @@ namespace sl3
    *
    * \returns true if given DbValue a is less than given DbValue b
    */
-  bool dbval_type_lt (const DbValue& a, const DbValue& b) noexcept;
+  LIBSL3_API bool dbval_type_lt (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief equality, ignoring type info
@@ -413,7 +413,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool dbval_eq (const DbValue& a, const DbValue& b) noexcept;
+  LIBSL3_API bool dbval_eq (const DbValue& a, const DbValue& b) noexcept;
 
   /**
    * \brief less than, ignoring type info
@@ -424,7 +424,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool dbval_lt (const DbValue& a, const DbValue& b) noexcept;
+  LIBSL3_API bool dbval_lt (const DbValue& a, const DbValue& b) noexcept;
 
 }
 
