@@ -12,6 +12,7 @@ build*/
 
 .vscode
 .clwb/
+.idea/
 
 .DS_STORE
 CMakeUserPresets.json
