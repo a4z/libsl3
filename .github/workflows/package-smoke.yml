@@ -50,30 +50,6 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Build and stage install (vcpkg sqlite, shared sl3)
+      - name: Run shared DLL package smoke test
         shell: pwsh
-        run: |
-          $toolchain = "$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-          cmake -S . -B build/installcheck/Release -G Ninja `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_TOOLCHAIN_FILE="$toolchain" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows `
-            -DBUILD_SHARED_LIBS=ON `
-            -Dsl3_BUILD_TESTING=OFF `
-            -Dsl3_USE_INTERNAL_SQLITE3=OFF `
-            -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
-          cmake --build build/installcheck/Release --parallel
-          cmake --install build/installcheck/Release --prefix "$PWD/build/installcheck/inst"
-
-      - name: Consumer integration test against staged install
-        shell: pwsh
-        run: |
-          $toolchain = "$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-          cmake -S tests/pkg-consumer -B build/pkg-consumer -G Ninja `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_PREFIX_PATH="$PWD/build/installcheck/inst" `
-            -DCMAKE_TOOLCHAIN_FILE="$toolchain" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows
-          cmake --build build/pkg-consumer --parallel
-          $env:PATH = "$(Resolve-Path build/installcheck/inst/bin);$env:PATH"
-          ctest --test-dir build/pkg-consumer --output-on-failure
+        run: .\testdll.ps1 -Msvc 22 -Config Release
