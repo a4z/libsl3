@@ -41,3 +41,9 @@ cc_binary(
     srcs = ["main6.cpp"],
     deps = ["//:sl3"],
 )
+
+cc_binary(
+    name = "sample7",
+    srcs = ["main7.cpp"],
+    deps = ["//:sl3"],
+)
