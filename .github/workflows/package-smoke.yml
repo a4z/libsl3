@@ -50,6 +50,20 @@ jobs:
       - name: Run shared object package smoke test
         run: ./testso.sh --config Release
 
+  package-integration-macos-shared:
+    runs-on: macos-latest
+    steps:
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.31.0"
+          ninjaVersion: "^1.13.1"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run dynamic library package smoke test
+        run: ./testdynlib.sh --config Release
+
   package-integration-windows-shared:
     runs-on: windows-2022
     steps:
