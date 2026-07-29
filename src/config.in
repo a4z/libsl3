@@ -23,6 +23,7 @@
     #endif
 #elif defined(__GNUC__)
     #if defined(LIBSL3_DLL) || defined(LINK_SL3_DLL)
+        // Stick with this syntax, works reliably and is not placement-sensitive
         #define LIBSL3_API __attribute__((visibility("default")))
     #endif
 #endif
