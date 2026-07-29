@@ -23,7 +23,7 @@
     #endif
 #elif defined(__GNUC__)
     #if defined(LIBSL3_DLL) || defined(LINK_SL3_DLL)
-        #define LIBSL3_API [[gnu::visibility("default")]]
+        #define LIBSL3_API __attribute__((visibility("default")))
     #endif
 #endif
 
