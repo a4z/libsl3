@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  package-integration:
+  package-integration-linux-static-system-sqlite:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,19 +19,65 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libsqlite3-dev
 
-      - name: Build and stage install (system sqlite)
+      - name: Build and test installed static package
         run: |
-          cmake -B build/installcheck/Release -S . \
+          cmake -S . -B build/static-system \
             -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF \
             -Dsl3_BUILD_TESTING=OFF \
             -Dsl3_USE_INTERNAL_SQLITE3=OFF \
             -Dsl3_USE_COMMON_COMPILER_WARNINGS=OFF
-          cmake --build build/installcheck/Release --parallel
-          DESTDIR="$(pwd)/build/installcheck/inst" cmake --install build/installcheck/Release --prefix=/usr --strip
+          cmake --build build/static-system --parallel
+          cmake --install build/static-system \
+            --prefix "$PWD/build/static-system/inst"
+          cmake -S tests/pkg-consumer -B build/static-system-consumer \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH="$PWD/build/static-system/inst"
+          cmake --build build/static-system-consumer --parallel
+          ctest --test-dir build/static-system-consumer --output-on-failure
 
-      - name: Consumer integration test against staged install
-        run: |
-          cmake -S tests/pkg-consumer -B build/pkg-consumer \
-            -DCMAKE_PREFIX_PATH="$(pwd)/build/installcheck/inst/usr"
-          cmake --build build/pkg-consumer --parallel
-          ctest --test-dir build/pkg-consumer --output-on-failure
+  package-integration-linux-shared:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.31.0"
+          ninjaVersion: "^1.13.1"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run shared object package smoke test
+        run: ./testso.sh --config Release
+
+  package-integration-macos-shared:
+    runs-on: macos-latest
+    steps:
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.31.0"
+          ninjaVersion: "^1.13.1"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run dynamic library package smoke test
+        run: ./testdynlib.sh --config Release
+
+  package-integration-windows-shared:
+    runs-on: windows-2022
+    steps:
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.31.0"
+          ninjaVersion: "^1.13.1"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Run shared DLL package smoke test
+        shell: pwsh
+        run: .\testdll.ps1 -Msvc 22 -Config Release

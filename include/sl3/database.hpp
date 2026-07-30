@@ -277,7 +277,7 @@ namespace sl3
      * If an instance of this class goes out of scope and commit has
      * not been called, it will call Rollback.
      */
-    class Transaction
+    class LIBSL3_API Transaction
     {
       sl3::Database* _db;
 
@@ -362,7 +362,7 @@ namespace sl3
    * \param errcode err number
    * \return Count of changed rows
    */
-  std::string getErrStr (int errcode);
+  LIBSL3_API std::string getErrStr (int errcode);
 
 }
 

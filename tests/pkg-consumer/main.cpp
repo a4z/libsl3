@@ -1,13 +1,24 @@
 #include <sl3/columns.hpp>
 #include <sl3/database.hpp>
+#include <sl3/error.hpp>
+#include <sl3/types.hpp>
 
 #include <cstddef>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 int
 main ()
 {
+  std::ostringstream typeStream;
+  typeStream << sl3::Type::Text;
+  if (typeStream.str () != "Type::Text")
+    {
+      std::cerr << "Expect Type::Text, got " << typeStream.str () << "\n";
+      return EXIT_FAILURE;
+    }
+
   const std::string compiledVersion = sl3::sqliteCompiledVersion ();
   const std::string runtimeVersion  = sl3::sqliteRuntimeVersion ();
   const int         compiledNumber  = sl3::sqliteCompiledVersionNumber ();
@@ -73,6 +84,27 @@ main ()
       std::cerr << "Expect Text, got " << sl3::typeName (t0) << "\n";
       return EXIT_FAILURE;
     }
+
+  auto moved = std::move (db);
+  try
+    {
+      (void)db.prepare ("SELECT 1");
+      std::cerr << "Expect ErrNoConnection from moved-from database\n";
+      return EXIT_FAILURE;
+    }
+  catch (const sl3::ErrNoConnection& e)
+    {
+      std::ostringstream errorStream;
+      errorStream << e;
+      if (errorStream.str ().find ("sl3::NoConnection:") == std::string::npos)
+        {
+          std::cerr << "Unexpected ErrNoConnection text: "
+                    << errorStream.str () << "\n";
+          return EXIT_FAILURE;
+        }
+    }
+
+  (void)moved;
 
   return EXIT_SUCCESS;
 }

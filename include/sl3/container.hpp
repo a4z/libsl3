@@ -9,6 +9,13 @@
 #ifndef SL3_CONTAINER_HPP_
 #define SL3_CONTAINER_HPP_
 
+#include <cstddef>
+#include <initializer_list>
+#include <iterator>
+#include <string>
+#include <type_traits>
+#include <utility>
+
 #include <sl3/error.hpp>
 
 namespace sl3
@@ -50,8 +57,7 @@ namespace sl3
      *
      * \param container values
      */
-    Container (ContainerType container) noexcept (
-        std::is_nothrow_move_constructible<ContainerType>::value)
+    Container (ContainerType container)
     : _cont (std::move (container))
     {
     }
@@ -81,8 +87,7 @@ namespace sl3
      * \brief Move constructor
      */
     Container (Container&&) noexcept (
-        std::is_nothrow_move_constructible<ContainerType>::value)
-        = default;
+        std::is_nothrow_move_constructible<ContainerType>::value) = default;
 
     /**
      * \brief Move assignment
@@ -94,8 +99,7 @@ namespace sl3
      * \brief Destructor
      */
     virtual ~Container () noexcept (
-        std::is_nothrow_destructible<ContainerType>::value)
-        = default;
+        std::is_nothrow_destructible<ContainerType>::value) = default;
 
     /**
      * \brief Iterator access

@@ -3,6 +3,8 @@
 
 include(CMakeFindDependencyMacro)
 
+find_dependency(Threads)
+
 set(_sl3_sqlite_link_target "@SQLITE_LINK_NAME@")
 if(_sl3_sqlite_link_target MATCHES "^SQLite3?::SQLite3$")
   # SQLite3::SQLite3 since CMake 4.3, SQLite::SQLite3 before

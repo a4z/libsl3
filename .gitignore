@@ -19,3 +19,7 @@ CMakeUserPresets.json
 
 bazel-*
 tests/bcr-consumer/MODULE.bazel.lock
+
+#clangd
+.cache/
+compile_commands.json

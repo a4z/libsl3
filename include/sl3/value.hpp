@@ -228,13 +228,16 @@ namespace sl3
 
     //    friend bool operator== (const Value& a, const Value& b) noexcept;
     //    friend bool operator< (const Value& a, const Value& b) noexcept;
-    friend std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
+    friend LIBSL3_API std::ostream& operator<< (std::ostream&     stm,
+                                                const sl3::Value& v);
 
-    friend bool value_type_eq (const Value& a, const Value& b) noexcept;
-    friend bool value_type_lt (const Value& a, const Value& b) noexcept;
+    friend LIBSL3_API bool value_type_eq (const Value& a,
+                                          const Value& b) noexcept;
+    friend LIBSL3_API bool value_type_lt (const Value& a,
+                                          const Value& b) noexcept;
 
-    friend bool value_eq (const Value& a, const Value& b) noexcept;
-    friend bool value_lt (const Value& a, const Value& b) noexcept;
+    friend LIBSL3_API bool value_eq (const Value& a, const Value& b) noexcept;
+    friend LIBSL3_API bool value_lt (const Value& a, const Value& b) noexcept;
 
     /**
      * \brief swap function
@@ -269,7 +272,7 @@ namespace sl3
    * \param v the value to stream
    * \return ostream
    */
-  std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
+  LIBSL3_API std::ostream& operator<< (std::ostream& stm, const sl3::Value& v);
 
   /**
    * \brief equality, including type info
@@ -281,7 +284,7 @@ namespace sl3
    *
    * \return true if the type and the current value are equal, false otherwise
    */
-  bool value_type_eq (const Value& a, const Value& b) noexcept;
+  LIBSL3_API bool value_type_eq (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief less than, including type info
@@ -306,7 +309,7 @@ namespace sl3
    *
    * \returns true if given Value a is less than given Value b
    */
-  bool value_type_lt (const Value& a, const Value& b) noexcept;
+  LIBSL3_API bool value_type_lt (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief equality, ignoring type info
@@ -317,7 +320,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool value_eq (const Value& a, const Value& b) noexcept;
+  LIBSL3_API bool value_eq (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief less than, ignoring type info
@@ -328,7 +331,7 @@ namespace sl3
    * \param b second value to compare
    * \return the comparison result
    */
-  bool value_lt (const Value& a, const Value& b) noexcept;
+  LIBSL3_API bool value_lt (const Value& a, const Value& b) noexcept;
 
   /**
    * \brief Value specialized swap function
@@ -338,7 +341,7 @@ namespace sl3
    *  \param a first value to swap with second value
    *  \param b second value to swap with first value
    */
-  void swap (Value& a, Value& b) noexcept;
+  LIBSL3_API void swap (Value& a, Value& b) noexcept;
 
   /// Define a constant for a Value that is null
   // static const Value NullValue{};

@@ -151,6 +151,19 @@ If set to ON, test targets will be added.<BR>
 Default is ON.
 
 
+\subsection shared_lib Shared library build
+
+libsl3 is a static library by default, but a shared build is supported
+on Linux, macOS, and Windows.
+
+\code
+cmake --preset ninja -DBUILD_SHARED_LIBS=ON
+\endcode
+
+The public symbols are exported, everything else is hidden.
+Consumers of the installed package do not need to do anything special,
+the `sl3` CMake target carries the required settings.
+
 For the internal sqlite3 distribution, there are
 <a href="https://github.com/a4z/libsl3/blob/main/sqlite/setup_sqlite3.cmake#L3">several options to configure sqlite3</a>.
 

@@ -13,6 +13,12 @@
 
 namespace sl3
 {
+  template class LIBSL3_API ErrType<ErrCode::NoConnection>;
+  template class LIBSL3_API ErrType<ErrCode::OutOfRange>;
+  template class LIBSL3_API ErrType<ErrCode::TypeMisMatch>;
+  template class LIBSL3_API ErrType<ErrCode::NullValueAccess>;
+  template class LIBSL3_API ErrType<ErrCode::UNEXPECTED>;
+
   std::ostream&
   operator<< (std::ostream& os, const Error& e)
   {

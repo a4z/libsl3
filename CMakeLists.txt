@@ -104,10 +104,25 @@ target_link_libraries(sl3 PUBLIC ${SQLITE_LINK_NAME})
 set(sl3_install_targets sl3)
 
 if(BUILD_SHARED_LIBS)
+    target_compile_definitions(sl3
+        PRIVATE LIBSL3_DLL
+        INTERFACE LINK_SL3_DLL
+    )
+
+    if(MSVC)
+        target_compile_options(sl3
+            PUBLIC
+                /wd4251
+                /wd4275
+        )
+    endif()
+
     set_target_properties(sl3 PROPERTIES
         VERSION ${sl3_VERSION}
         SOVERSION ${sl3_MAJOR_VERSION}.${sl3_MINOR_VERSION}
         POSITION_INDEPENDENT_CODE ON
+        CXX_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN ON
     )
 endif()
 
