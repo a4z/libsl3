@@ -16,14 +16,19 @@ C++11 state with CMake 2.8 support.
 **The full documentation for libsl3 can be found here:** \
 <https://a4z.github.io/libsl3/>
 
-## Build
+## Using libsl3 in a project
 
-Quickly summarized, there are dependencies, but they are all either development
-dependencies or optional
+libsl3 supports CMake and Bazel
 
-- sqlite3
-- doctest
-- commonCompilerWarnings
+### Consume via vcpkg
+
+libsl3 is available on [vcpkg](https://vcpkg.io/en/package/libsl3.html):
+
+```sh
+vcpkg install libsl3
+```
+
+If you do not use vcpkg, fetch_content works also.
 
 ### Consume via Bazel
 
@@ -34,7 +39,16 @@ Add it to your `MODULE.bazel` file:
 bazel_dep(name = "libsl3")
 ```
 
-### Consume via CMake
+## Building libsl3 from source
+
+Quickly summarized, there are dependencies, but they are all either development
+dependencies or optional
+
+- sqlite3
+- doctest
+- commonCompilerWarnings
+
+### Build via CMake
 
 The simple default is
 
@@ -64,7 +78,18 @@ For more information about how to consume and build the library, visit [the docu
 
 You can also explore the existing presets.
 
-## A short usage example
+### Build with Bazel
+
+Just use Bazel
+
+```sh
+bazel build //...
+bazel test //...
+```
+
+## Using libsl3
+
+A short intro to sl3's api
 
 ```cpp
 #include <cassert>
@@ -113,6 +138,10 @@ This will output
 ```
 
 Additional samples can be found in the tests and tests/samples subfolder.
+
+## Documentation
+
+For more information, visit the docs as <https://a4z.github.io/libsl3/>.
 
 ## License
 
