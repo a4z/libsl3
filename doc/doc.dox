@@ -16,7 +16,7 @@ Later, when C++11 was new, it became <i>a modern C++11 interface to SQLite</i>.
 Today, libsl3 is still around: a C++ interface for SQLite.
 Active development happens rarely, but the library is still maintained and updated when required.
 
-\section Installation
+\section using Using libsl3 in a project
 
 \subsection bazel Bazel support
 
@@ -27,17 +27,15 @@ Add it to your \c MODULE.bazel file:
 bazel_dep(name = "libsl3")
 \endcode
 
+\subsection consume CMake support
 
-\subsection consume Consuming sl3 in a CMake project
+libsl3 is available on <a href="https://vcpkg.io/en/package/libsl3.html">vcpkg</a>:
 
-For CMake usage, there are various ways to handle dependencies and the build.
+\code
+vcpkg install libsl3
+\endcode
 
-With CMake, libsl3 can be built and consumed without any external dependencies,
-but you might want to use the sqlite3 installation from your system.
-
-
-
-One way to consume sl3 is via CMake's `FetchContent`.
+If you do not use vcpkg, CMake's `FetchContent` is also an option.
 
 \code
 cmake_minimum_required(VERSION 3.29)
@@ -90,9 +88,7 @@ The project has the following dependencies:
 \li Optional: <a href="https://www.doxygen.nl">doxygen</a> for building the documentation
 \li Optional: <a href="https://github.com/doctest/doctest">doctest</a> for unit testing
 
-\subsection deal_dependencies Dependency management
-
-There are 3 options for dependency management.
+There are 3 options for handling those dependencies:
 
 \li Ignore them and turn them off (no testing and internal sqlite3)
 \li Use vcpkg, a package manager for C++ libraries
