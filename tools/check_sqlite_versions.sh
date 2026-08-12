@@ -1,36 +1,59 @@
+#!/usr/bin/env bash
 
-cmake_minor=$(grep '^set([[:space:]]*internal_SQLITE_MINOR_V' CMakeLists.txt | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/')
-cmake_patch=$(grep '^set([[:space:]]*internal_SQLITE_PATCH_V' CMakeLists.txt | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/')
+set -euo pipefail
 
-echo "CMakeLists.txt: minor=$cmake_minor, patch=$cmake_patch"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(cd "$script_dir/.." && pwd)"
 
+cmake_file="$repo_dir/CMakeLists.txt"
+module_file="$repo_dir/MODULE.bazel"
+vcpkg_file="$repo_dir/vcpkg.json"
+sqlite_header="$repo_dir/sqlite/sqlite3.h"
+sqlite_source="$repo_dir/sqlite/sqlite3.c"
 
-bazel_minor=$(grep '^SQLITE3_MINOR' MODULE.bazel | cut -d '=' -f2 | tr -d '[:space:]')
-bazel_patch=$(grep '^SQLITE3_PATCH' MODULE.bazel | cut -d '=' -f2 | tr -d '[:space:]')
+cmake_minor="$(sed -nE 's/^set\(internal_SQLITE_MINOR_V[[:space:]]+([0-9]+)\)$/\1/p' "$cmake_file")"
+cmake_patch="$(sed -nE 's/^set\(internal_SQLITE_PATCH_V[[:space:]]+([0-9]+)\)$/\1/p' "$cmake_file")"
+expected_sqlite_version="3.${cmake_minor}.${cmake_patch}"
+expected_sqlite_number="$((3 * 1000000 + 10#$cmake_minor * 1000 + 10#$cmake_patch))"
+expected_lib_suffix="$((10#$cmake_minor * 1000 + 10#$cmake_patch))"
 
-echo "MODULE.bazel:   minor=$bazel_minor, patch=$bazel_patch"
+module_sqlite_version="$(sed -nE '/bazel_dep\(name = "sqlite3"/s/.*version = "([^"]+)".*/\1/p' "$module_file")"
+module_lib_version="$(sed -nE 's/^[[:space:]]+version = "([0-9]+\.[0-9]+\.[0-9]+)",$/\1/p' "$module_file")"
+vcpkg_sqlite_version="$(sed -n '/"name": "sqlite3"/,/}/s/.*"version>=": "\([^"]*\)".*/\1/p' "$vcpkg_file")"
+vcpkg_lib_version="$(sed -n 's/^[[:space:]]*"version": "\([^"]*\)",/\1/p' "$vcpkg_file")"
+header_version="$(sed -nE 's/^#define SQLITE_VERSION[[:space:]]+"([^"]+)"/\1/p' "$sqlite_header")"
+header_number="$(sed -nE 's/^#define SQLITE_VERSION_NUMBER[[:space:]]+([0-9]+)/\1/p' "$sqlite_header")"
+source_version="$(sed -nE 's/^#define SQLITE_VERSION[[:space:]]+"([^"]+)"/\1/p' "$sqlite_source")"
+source_number="$(sed -nE 's/^#define SQLITE_VERSION_NUMBER[[:space:]]+([0-9]+)/\1/p' "$sqlite_source")"
 
-vcpkg_sqlite_version=$(sed -n '/"name": "sqlite3"/,/}/s/.*"version>=": "\([^"]*\)".*/\1/p' vcpkg.json)
-vcpkg_lib_version=$(sed -n 's/^[[:space:]]*"version": "\([^"]*\)",/\1/p' vcpkg.json | head -n 1)
+check_equal() {
+  local location="$1"
+  local actual="$2"
+  local expected="$3"
 
-expected_sqlite_version="3.$bazel_minor.$bazel_patch"
-expected_lib_version="1.2.$((bazel_minor * 1000 + bazel_patch))"
+  if [[ "$actual" != "$expected" ]]; then
+    echo "error: $location has '$actual', expected '$expected'" >&2
+    return 1
+  fi
+}
 
-echo "vcpkg.json:     SQLite=$vcpkg_sqlite_version, libsl3=$vcpkg_lib_version"
+check_lib_version() {
+  local location="$1"
+  local version="$2"
 
-if [ "$cmake_minor" != "$bazel_minor" ] || [ "$cmake_patch" != "$bazel_patch" ]; then
-  echo "Error: SQLite version mismatch between CMakeLists.txt and MODULE.bazel" >&2
-  exit 1
-fi
+  if [[ "$version" != *".${expected_lib_suffix}" ]]; then
+    echo "error: $location has '$version', expected SQLite suffix '.${expected_lib_suffix}'" >&2
+    return 1
+  fi
+}
 
-if [ "$vcpkg_sqlite_version" != "$expected_sqlite_version" ]; then
-  echo "Error: vcpkg.json SQLite version must be $expected_sqlite_version" >&2
-  exit 1
-fi
+check_equal "MODULE.bazel SQLite version" "$module_sqlite_version" "$expected_sqlite_version"
+check_equal "vcpkg.json SQLite version" "$vcpkg_sqlite_version" "$expected_sqlite_version"
+check_equal "sqlite/sqlite3.h version" "$header_version" "$expected_sqlite_version"
+check_equal "sqlite/sqlite3.h version number" "$header_number" "$expected_sqlite_number"
+check_equal "sqlite/sqlite3.c version" "$source_version" "$expected_sqlite_version"
+check_equal "sqlite/sqlite3.c version number" "$source_number" "$expected_sqlite_number"
+check_equal "vcpkg.json libsl3 version" "$vcpkg_lib_version" "$module_lib_version"
+check_lib_version "MODULE.bazel libsl3 version" "$module_lib_version"
 
-if [ "$vcpkg_lib_version" != "$expected_lib_version" ]; then
-  echo "Error: vcpkg.json libsl3 version must be $expected_lib_version" >&2
-  exit 1
-fi
-
-echo "SQLite and library versions match"
+echo "SQLite version $expected_sqlite_version is consistent"

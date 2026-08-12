@@ -90,14 +90,16 @@ sed -E \
   "$cmake_file" > "$cmake_tmp"
 cat "$cmake_tmp" > "$cmake_file"
 
+current_lib_version="$(sed -nE 's/^[[:space:]]+version = "([0-9]+\.[0-9]+\.[0-9]+)",$/\1/p' "$module_file")"
+lib_version="${current_lib_version%.*}.$((10#$minor * 1000 + 10#$patch))"
+
 module_tmp="$tmp_dir/MODULE.bazel"
 sed -E \
-  -e "s/^SQLITE3_MINOR = [0-9]+/SQLITE3_MINOR = ${minor}/" \
-  -e "s/^SQLITE3_PATCH = [0-9]+/SQLITE3_PATCH = ${patch}/" \
+  -e 's/^(    version = ")[^"]+(",$)/\1'"${lib_version}"'\2/' \
+  -e "/bazel_dep\(name = \"sqlite3\"/s/version = \"[^\"]+\"/version = \"${version}\"/" \
   "$module_file" > "$module_tmp"
 cat "$module_tmp" > "$module_file"
 
-lib_version="1.2.$((10#$minor * 1000 + 10#$patch))"
 vcpkg_tmp="$tmp_dir/vcpkg.json"
 sed -E \
   -e "s/^  \"version\": \"[^\"]+\",/  \"version\": \"${lib_version}\",/" \
