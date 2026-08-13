@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Run shared object package smoke test
-        run: ./testso.sh --config Release
+        run: ./tools/testso.sh --config Release
 
   package-integration-macos-shared:
     runs-on: macos-latest
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Run dynamic library package smoke test
-        run: ./testdynlib.sh --config Release
+        run: ./tools/testdynlib.sh --config Release
 
   package-integration-windows-shared:
     runs-on: windows-2022
@@ -80,4 +80,4 @@ jobs:
 
       - name: Run shared DLL package smoke test
         shell: pwsh
-        run: .\testdll.ps1 -Msvc 22 -Config Release
+        run: .\tools\testdll.ps1 -Msvc 22 -Config Release

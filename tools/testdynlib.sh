@@ -2,7 +2,7 @@
 
 # Build, test, install, and consume libsl3 as a macOS dynamic library.
 #
-# Run from the repository root with ./testdynlib.sh. By default the script
+# Run from the repository root with ./tools/testdynlib.sh. By default the script
 # uses the Release configuration, fetched dependencies, and internal SQLite.
 # Build directories are deleted before configuration.
 #
@@ -11,9 +11,9 @@
 # tests/pkg-consumer against the install, and runs that consumer test.
 #
 # Examples:
-#   ./testdynlib.sh --keep-build
-#   ./testdynlib.sh --config Debug
-#   ./testdynlib.sh --config RelWithDebInfo
+#   ./tools/testdynlib.sh --keep-build
+#   ./tools/testdynlib.sh --config Debug
+#   ./tools/testdynlib.sh --config RelWithDebInfo
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ keep_build=false
 
 usage() {
     cat <<'EOF'
-Usage: ./testdynlib.sh [--config CONFIG] [--keep-build]
+Usage: ./tools/testdynlib.sh [--config CONFIG] [--keep-build]
 
 Build, test, install, and consume libsl3 as a macOS dynamic library.
 EOF
@@ -63,7 +63,7 @@ if [[ $(uname -s) != Darwin ]]; then
     exit 1
 fi
 
-repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 build_root="$repo_root/build/Darwin"
 build_dir="$build_root/xcode"
 install_prefix="$build_dir/inst"

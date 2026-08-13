@@ -85,4 +85,3 @@ done
 # Open the HTML report
 echo "Opening the HTML coverage report: ${COVERAGE_REPORT_DIR}/html/index.html"
 #open ${COVERAGE_REPORT_DIR}/html/index.html
-
