@@ -13,7 +13,7 @@
 # then you can test gcovr
 # interesting, but does not make me happy
 
-REPO=$(cd "$(dirname "$0")" && pwd)
+REPO=$(cd "$(dirname "$0")/.." && pwd)
 BUILD=$REPO/build/Linux/docgen
 
 mkdir -p "$BUILD/gcovr"

@@ -3,7 +3,7 @@
 Build, test, install, and consume libsl3 as a Windows shared DLL.
 
 .DESCRIPTION
-Run from the repository root with .\testdll.ps1. By default the script uses
+Run from the repository root with .\tools\testdll.ps1. By default the script uses
 MSVC 2022, the Release configuration, fetched dependencies, and internal
 SQLite. Build directories are deleted before configuration.
 
@@ -12,13 +12,13 @@ installs the package, builds tests/pkg-consumer against the install, and runs
 that consumer test with the installed DLL on PATH.
 
 .EXAMPLE
-.\testdll.ps1 -KeepBuild
+.\tools\testdll.ps1 -KeepBuild
 
 .EXAMPLE
-.\testdll.ps1 -Config Debug
+.\tools\testdll.ps1 -Config Debug
 
 .EXAMPLE
-.\testdll.ps1 -Config RelWithDebInfo -Msvc 26
+.\tools\testdll.ps1 -Config RelWithDebInfo -Msvc 26
 #>
 
 param(
@@ -69,7 +69,7 @@ function Remove-BuildDirectory {
     }
 }
 
-$RepoRoot = $PSScriptRoot
+$RepoRoot = Split-Path -Parent $PSScriptRoot
 $ConfigurePreset = "msvc$Msvc"
 $CmakeConfig = if ($Config -eq "ReleaseDebug") {
     "RelWithDebInfo"

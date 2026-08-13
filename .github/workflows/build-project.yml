@@ -78,4 +78,3 @@ jobs:
       run:  cmake --build --preset ${{ matrix.build.preset }}-release --parallel --verbose
     - name: Run unit test
       run:  ctest --preset ${{ matrix.build.preset }}-release --parallel
-

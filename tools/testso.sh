@@ -2,7 +2,7 @@
 
 # Build, test, install, and consume libsl3 as a Linux shared object.
 #
-# Run from the repository root with ./testso.sh. By default the script uses
+# Run from the repository root with ./tools/testso.sh. By default the script uses
 # the Release configuration, fetched dependencies, and internal SQLite. Build
 # directories are deleted before configuration.
 #
@@ -11,9 +11,9 @@
 # that consumer test.
 #
 # Examples:
-#   ./testso.sh --keep-build
-#   ./testso.sh --config Debug
-#   ./testso.sh --config RelWithDebInfo
+#   ./tools/testso.sh --keep-build
+#   ./tools/testso.sh --config Debug
+#   ./tools/testso.sh --config RelWithDebInfo
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ keep_build=false
 
 usage() {
     cat <<'EOF'
-Usage: ./testso.sh [--config CONFIG] [--keep-build]
+Usage: ./tools/testso.sh [--config CONFIG] [--keep-build]
 
 Build, test, install, and consume libsl3 as a Linux shared library.
 EOF
@@ -58,7 +58,7 @@ case "$config" in
         ;;
 esac
 
-repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 build_root="$repo_root/build/Linux"
 build_dir="$build_root/ninja"
 install_prefix="$build_dir/inst"
