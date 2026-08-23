@@ -12,7 +12,7 @@
 
 #include <sqlite3.h>
 
-#include "../sl3/connection.hpp"
+#include "connection.hpp"
 #include <sl3/columns.hpp>
 #include <sl3/database.hpp>
 #include <sl3/error.hpp>
@@ -168,31 +168,32 @@ namespace sl3
   Command::select (const DbValues& parameters, const Types& types)
   {
     Dataset  ds{types};
-    Callback fillds = [&ds] (Columns columns) -> bool {
-      if (ds._names.size () == 0)
-        {
-          const int typeCount = static_cast<int> (ds._fieldtypes.size ());
+    Callback fillds = [&ds] (Columns columns) -> bool
+      {
+        if (ds._names.size () == 0)
+          {
+            const int typeCount = static_cast<int> (ds._fieldtypes.size ());
 
-          if (typeCount == 0)
-            {
-              using container_type = Types::container_type;
-              container_type c (as_size_t (columns.count ()), Type::Variant);
-              Types          fieldtypes{c};
-              ds._fieldtypes.swap (fieldtypes);
-            }
-          else if (typeCount != columns.count ())
-            {
-              throw ErrTypeMisMatch (
-                  "DbValuesTypeList.size != queryrow.getColumnCount()");
-            }
-          ds._names = columns.getNames ();
-        }
+            if (typeCount == 0)
+              {
+                using container_type = Types::container_type;
+                container_type c (as_size_t (columns.count ()), Type::Variant);
+                Types          fieldtypes{c};
+                ds._fieldtypes.swap (fieldtypes);
+              }
+            else if (typeCount != columns.count ())
+              {
+                throw ErrTypeMisMatch (
+                    "DbValuesTypeList.size != queryrow.getColumnCount()");
+              }
+            ds._names = columns.getNames ();
+          }
 
-      // this will throw if a type does not match.
-      ds._cont.emplace_back (columns.getRow (ds._fieldtypes));
+        // this will throw if a type does not match.
+        ds._cont.emplace_back (columns.getRow (ds._fieldtypes));
 
-      return true;
-    };
+        return true;
+      };
 
     execute (fillds, parameters);
     return ds;
