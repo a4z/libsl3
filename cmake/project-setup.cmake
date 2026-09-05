@@ -1,5 +1,9 @@
 include_guard(GLOBAL)
 
+# Needed for top-level and subproject (FetchContent / add_subdirectory) builds
+# alike: the main CMakeLists.txt includes modules from cmake/ unconditionally.
+list(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
+
 if(PROJECT_IS_TOP_LEVEL)
     # make git ignore the build directory
     file(WRITE ${CMAKE_BINARY_DIR}/.gitignore "*")
@@ -8,7 +12,6 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_C_EXTENSIONS OFF)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    list(PREPEND CMAKE_MODULE_PATH "${libsl3_SOURCE_DIR}/cmake")
     message(STATUS "--- Using CMake ${CMAKE_VERSION} (${CMAKE_COMMAND})")
 endif()
 
