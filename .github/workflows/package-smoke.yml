@@ -8,6 +8,25 @@ on:
       - main
 
 jobs:
+  fetchcontent-consumer-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.31.0"
+          ninjaVersion: "^1.13.1"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Consume libsl3 via FetchContent
+        run: |
+          cmake -S tests/fc-consumer -B build/fc-consumer \
+            -DCMAKE_BUILD_TYPE=Release \
+            -Dsl3_SOURCE_TREE="$PWD"
+          cmake --build build/fc-consumer --parallel
+          ctest --test-dir build/fc-consumer --output-on-failure
+
   package-integration-linux-static-system-sqlite:
     runs-on: ubuntu-latest
     steps:
