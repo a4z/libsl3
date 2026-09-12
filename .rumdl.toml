@@ -6,3 +6,10 @@ respect-gitignore = true
 line-length = 80
 code-blocks = false
 tables = false
+
+[MD058]
+enabled = true
+
+[MD060]
+enabled = true
+style = "aligned"

@@ -17,7 +17,7 @@ jobs:
           ninjaVersion: "^1.13.1"
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Consume libsl3 via FetchContent
         run: |
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install system sqlite dev package
         run: |
@@ -64,7 +64,7 @@ jobs:
           ninjaVersion: "^1.13.1"
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run shared object package smoke test
         run: ./tools/testso.sh --config Release
@@ -78,7 +78,7 @@ jobs:
           ninjaVersion: "^1.13.1"
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run dynamic library package smoke test
         run: ./tools/testdynlib.sh --config Release
@@ -92,7 +92,7 @@ jobs:
           ninjaVersion: "^1.13.1"
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1

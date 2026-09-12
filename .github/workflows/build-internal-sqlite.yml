@@ -32,7 +32,7 @@ jobs:
         cmakeVersion: "~3.31.0"
         ninjaVersion: "^1.13.0"
     - name: Checkout repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Setup MSVC
       if: startsWith(matrix.build.os, 'windows')
       uses: ilammy/msvc-dev-cmd@v1
