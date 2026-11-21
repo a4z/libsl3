@@ -3,6 +3,7 @@
 module(
     name = "libsl3",
     version = "1.2.54001",
+    compatibility_level = 1,
 )
 
 # Core Bazel modules
