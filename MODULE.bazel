@@ -2,7 +2,8 @@
 
 module(
     name = "libsl3",
-    version = "1.2.53004",
+    version = "1.2.54001",
+    compatibility_level = 1,
 )
 
 # Core Bazel modules
@@ -13,4 +14,4 @@ bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "doctest", version = "2.5.3", dev_dependency = True)
 
 # SQLite from BCR
-bazel_dep(name = "sqlite3", version = "3.53.4", repo_name = "sqlite")
+bazel_dep(name = "sqlite3", version = "3.54.1", repo_name = "sqlite")
